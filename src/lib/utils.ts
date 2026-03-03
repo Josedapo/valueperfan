@@ -1,18 +1,24 @@
+import exchangeRate from "../data/exchange-rate.json";
+
+const EUR_TO_USD: number = exchangeRate.rate;
+
 export function formatCurrency(value: number): string {
-  if (value >= 1_000_000) {
-    return `€${(value / 1_000_000).toFixed(1)}M`;
+  const usd = value * EUR_TO_USD;
+  if (usd >= 1_000_000) {
+    return `$${(usd / 1_000_000).toFixed(1)}M`;
   }
-  if (value >= 1_000) {
-    return `€${(value / 1_000).toFixed(1)}K`;
+  if (usd >= 1_000) {
+    return `$${(usd / 1_000).toFixed(1)}K`;
   }
-  return `€${value.toFixed(0)}`;
+  return `$${usd.toFixed(0)}`;
 }
 
 export function formatVPF(value: number): string {
-  if (value >= 1) {
-    return `€${value.toFixed(2)}`;
+  const usd = value * EUR_TO_USD;
+  if (usd >= 1) {
+    return `$${usd.toFixed(2)}`;
   }
-  return `€${value.toFixed(4)}`;
+  return `$${usd.toFixed(4)}`;
 }
 
 export function formatFollowers(value: number): string {

@@ -142,6 +142,7 @@ export default async function AccountPage({
           />
           <MetricCard
             label="Total Value"
+            sublabel="Last 30 days"
             value={formatCurrency(account.totalValue)}
           />
           <MetricCard
@@ -189,10 +190,12 @@ export default async function AccountPage({
 
 function MetricCard({
   label,
+  sublabel,
   value,
   highlight = false,
 }: {
   label: string;
+  sublabel?: string;
   value: string;
   highlight?: boolean;
 }) {
@@ -203,6 +206,9 @@ function MetricCard({
       }`}
     >
       <p className="text-xs text-text-secondary">{label}</p>
+      {sublabel && (
+        <p className="text-[10px] italic text-text-muted">{sublabel}</p>
+      )}
       <p
         className={`mt-1 text-lg font-bold ${
           highlight ? "text-primary" : "text-text"

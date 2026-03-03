@@ -105,7 +105,16 @@ export default function RankingTable({ accounts }: { accounts: Account[] }) {
                 Followers
               </th>
               <th className="px-4 py-3 text-right font-bold text-primary">
-                {metric === "vpf" ? "Value/Fan" : "Total Value"}
+                {metric === "vpf" ? (
+                  "Value/Fan"
+                ) : (
+                  <>
+                    Total Value
+                    <span className="block text-[10px] font-normal italic text-text-muted normal-case tracking-normal">
+                      Last 30 days
+                    </span>
+                  </>
+                )}
               </th>
             </tr>
           </thead>

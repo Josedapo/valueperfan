@@ -50,7 +50,7 @@ export default function RootLayout({
               <div className="sticky top-4 pt-8 space-y-4">
                 <SponsorCard
                   name="Horizm"
-                  description="Advanced analytics for a complete view of digital exposure, helping partners maximize the value of their digital assets."
+                  description="Maximize your partnerships outcome"
                   url="https://www.horizm.com"
                   logo="/images/horizm-logo.png"
                 />
@@ -66,7 +66,7 @@ export default function RootLayout({
               <div className="sticky top-4 pt-8 space-y-4">
                 <SponsorCard
                   name="Lume"
-                  description="An objective, transparent way for creators to value their content and prove its worth to brands and agencies."
+                  description="Show your value. Know what your content is worth"
                   url="https://getlumeapp.com"
                   logo="/images/lume-logo.png"
                 />

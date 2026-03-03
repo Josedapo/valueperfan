@@ -16,7 +16,7 @@ export default function Home() {
         <p className="mt-3 text-lg text-text-secondary max-w-2xl mx-auto">
           Value Per Fan measures the real economic value each follower
           generates. Not followers. Not likes. Not arbitrary scores.{" "}
-          <span className="font-semibold text-primary">Real money.</span>
+          <span className="font-semibold text-primary underline">Real money.</span>
         </p>
       </section>
 
@@ -29,10 +29,10 @@ export default function Home() {
       <RankingTable accounts={data.accounts} />
 
       {/* Block 4: PME + VPF Explainer */}
-      <section className="max-w-3xl mx-auto w-full grid gap-6 sm:grid-cols-2">
+      <section className="w-full grid gap-6 sm:grid-cols-2">
         <div className="rounded-lg border border-border bg-surface p-5">
           <h2 className="text-sm font-bold text-primary uppercase tracking-wider">
-            Paid Media Equivalence
+            Total Value (Paid Media Equivalence)
           </h2>
           <p className="mt-2 text-sm text-text-secondary leading-relaxed">
             Every valuation on ValuePerFan represents what a brand would spend

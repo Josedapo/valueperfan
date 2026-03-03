@@ -1,7 +1,6 @@
 import { getAccountsData } from "../lib/data";
 import RankingTable from "../components/RankingTable";
 import SearchBar from "../components/SearchBar";
-import Sidebar from "../components/Sidebar";
 
 export default function Home() {
   const data = getAccountsData();
@@ -51,13 +50,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Block 3: Ranking + Sidebar */}
-      <div className="flex flex-col lg:flex-row gap-8">
-        <main className="flex-1 min-w-0">
-          <RankingTable accounts={data.accounts} />
-        </main>
-        <Sidebar />
-      </div>
+      {/* Block 4: Ranking */}
+      <RankingTable accounts={data.accounts} />
 
       {/* Disclaimer */}
       <p className="text-xs text-text-muted text-center">

@@ -72,14 +72,14 @@ export function MobileSponsorBar() {
 
   return (
     <div className="xl:hidden bg-surface border-b border-border">
-      <div className="flex items-center justify-center gap-6 px-4 py-2 overflow-x-auto text-xs">
+      <div className="flex items-center justify-center gap-3 px-4 py-2.5 overflow-x-auto text-xs">
         {sponsors.map((s) => (
           <a
             key={s.name}
             href={s.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 shrink-0 text-text hover:text-primary transition-colors"
+            className="flex items-center gap-1.5 shrink-0 rounded-md border border-border px-3 py-1.5 text-text hover:border-primary transition-colors"
           >
             <Image
               src={s.logo}
@@ -93,7 +93,7 @@ export function MobileSponsorBar() {
         ))}
         <a
           href="mailto:hello@valueperfan.com"
-          className="flex items-center gap-1.5 shrink-0 text-text-muted hover:text-primary transition-colors"
+          className="flex items-center gap-1.5 shrink-0 rounded-md border-2 border-dashed border-text-muted px-3 py-1.5 text-text-muted hover:border-primary hover:text-primary transition-colors"
         >
           <svg
             className="w-3.5 h-3.5"

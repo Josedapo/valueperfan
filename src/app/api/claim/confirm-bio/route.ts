@@ -62,16 +62,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "account_not_found" }, { status: 404 });
   }
 
-  // Send notification to admin (don't block response)
-  sendReviewNotification({
-    platform,
-    handle,
-    accountName: account.name,
-    claimantEmail: email,
-    bioCode: claim.bio_code,
-    claimId: claim.id,
-    profileUrl: account.profileUrl,
-  }).catch(console.error);
+  // Send notification to admin
+  try {
+    await sendReviewNotification({
+      platform,
+      handle,
+      accountName: account.name,
+      claimantEmail: email,
+      bioCode: claim.bio_code,
+      claimId: Number(claim.id),
+      profileUrl: account.profileUrl,
+    });
+  } catch (err) {
+    console.error("Failed to send review notification:", err);
+    return NextResponse.json(
+      { ok: true, warning: "Claim submitted but notification failed" }
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }

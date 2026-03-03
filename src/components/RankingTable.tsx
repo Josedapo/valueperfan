@@ -1,0 +1,189 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import type { Account } from "../lib/types";
+import { formatCurrency, formatVPF, formatFollowers } from "../lib/utils";
+import AccountAvatar from "./AccountAvatar";
+
+type Platform = "instagram" | "tiktok";
+type Metric = "vpf" | "totalValue";
+
+const ITEMS_PER_PAGE = 50;
+
+export default function RankingTable({ accounts }: { accounts: Account[] }) {
+  const [platform, setPlatform] = useState<Platform>("instagram");
+  const [metric, setMetric] = useState<Metric>("vpf");
+  const [page, setPage] = useState(1);
+
+  const filtered = useMemo(() => {
+    const byPlatform = accounts.filter((a) => a.platform === platform);
+    const sorted = [...byPlatform].sort((a, b) => {
+      if (metric === "vpf") return a.rank.vpf - b.rank.vpf;
+      return a.rank.totalValue - b.rank.totalValue;
+    });
+    return sorted;
+  }, [accounts, platform, metric]);
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginated = filtered.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE
+  );
+
+  function handlePlatformChange(p: Platform) {
+    setPlatform(p);
+    setPage(1);
+  }
+
+  function handleMetricChange(m: Metric) {
+    setMetric(m);
+    setPage(1);
+  }
+
+  return (
+    <div>
+      {/* Controls */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        {/* Platform selector */}
+        <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
+          <button
+            onClick={() => handlePlatformChange("instagram")}
+            className={`px-4 py-2 text-sm font-medium transition-colors ${
+              platform === "instagram"
+                ? "bg-primary text-white"
+                : "text-text-secondary hover:bg-surface-alt"
+            }`}
+          >
+            Instagram
+          </button>
+          <button
+            onClick={() => handlePlatformChange("tiktok")}
+            className={`px-4 py-2 text-sm font-medium transition-colors ${
+              platform === "tiktok"
+                ? "bg-primary text-white"
+                : "text-text-secondary hover:bg-surface-alt"
+            }`}
+          >
+            TikTok
+          </button>
+        </div>
+
+        {/* Metric toggle */}
+        <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
+          <button
+            onClick={() => handleMetricChange("vpf")}
+            className={`px-4 py-2 text-sm font-medium transition-colors ${
+              metric === "vpf"
+                ? "bg-primary text-white"
+                : "text-text-secondary hover:bg-surface-alt"
+            }`}
+          >
+            Value Per Fan
+          </button>
+          <button
+            onClick={() => handleMetricChange("totalValue")}
+            className={`px-4 py-2 text-sm font-medium transition-colors ${
+              metric === "totalValue"
+                ? "bg-primary text-white"
+                : "text-text-secondary hover:bg-surface-alt"
+            }`}
+          >
+            Total Value
+          </button>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border bg-surface-alt text-left text-xs font-medium uppercase tracking-wider text-text-secondary">
+              <th className="px-4 py-3 w-12">#</th>
+              <th className="px-4 py-3">Account</th>
+              <th className="px-4 py-3 text-right hidden sm:table-cell">
+                Followers
+              </th>
+              <th className="px-4 py-3 text-right font-bold text-primary">
+                {metric === "vpf" ? "Value/Fan" : "Total Value"}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginated.map((account) => {
+              const rank =
+                metric === "vpf" ? account.rank.vpf : account.rank.totalValue;
+              const value =
+                metric === "vpf"
+                  ? formatVPF(account.valuePerFan)
+                  : formatCurrency(account.totalValue);
+
+              return (
+                <tr
+                  key={`${account.platform}-${account.handle}`}
+                  className="border-b border-border last:border-0 hover:bg-surface-alt transition-colors"
+                >
+                  <td className="px-4 py-3 font-mono text-text-muted">
+                    {rank}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link
+                      href={`/account/${account.platform}/${account.slug}`}
+                      className="flex items-center gap-3 hover:text-primary transition-colors"
+                    >
+                      <AccountAvatar
+                        src={account.avatarUrl}
+                        name={account.name}
+                        size={36}
+                      />
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">{account.name}</p>
+                        <p className="text-xs text-text-muted truncate">
+                          @{account.handle}
+                        </p>
+                      </div>
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3 text-right text-text-secondary hidden sm:table-cell">
+                    {formatFollowers(account.followers)}
+                  </td>
+                  <td className="px-4 py-3 text-right font-semibold text-primary">
+                    {value}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between">
+          <p className="text-sm text-text-muted">
+            {filtered.length} accounts
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-text-secondary">
+              {page} / {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

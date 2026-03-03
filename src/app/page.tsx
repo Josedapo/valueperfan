@@ -1,5 +1,6 @@
 import { getAccountsData } from "../lib/data";
 import RankingTable from "../components/RankingTable";
+import SearchBar from "../components/SearchBar";
 import Sidebar from "../components/Sidebar";
 
 export default function Home() {
@@ -19,29 +20,9 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Block 2: Search (UI placeholder for Phase 5) */}
+      {/* Block 2: Search */}
       <section className="max-w-xl mx-auto w-full">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search by name or @handle..."
-            className="w-full rounded-lg border border-border bg-surface px-4 py-3 pl-10 text-sm placeholder-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            disabled
-          />
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </div>
+        <SearchBar />
       </section>
 
       {/* Block 3: Ranking + Sidebar */}

@@ -1,0 +1,177 @@
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { getAccountsData, getAccount, getNeighbors } from "../../../../lib/data";
+import {
+  formatCurrency,
+  formatVPF,
+  formatFollowers,
+} from "../../../../lib/utils";
+import AccountAvatar from "../../../../components/AccountAvatar";
+import MiniRanking from "../../../../components/MiniRanking";
+import BadgePreview from "../../../../components/BadgePreview";
+
+export async function generateStaticParams() {
+  const data = getAccountsData();
+  return data.accounts.map((account) => ({
+    platform: account.platform,
+    handle: account.slug,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ platform: string; handle: string }>;
+}) {
+  const { platform, handle } = await params;
+  const account = getAccount(platform, handle);
+  if (!account) return { title: "Account Not Found" };
+
+  const platformLabel =
+    account.platform === "instagram" ? "Instagram" : "TikTok";
+
+  return {
+    title: `${account.name} (@${account.handle}) ${platformLabel} Value — ${formatVPF(account.valuePerFan)}/fan`,
+    description: `See the real economic value of ${account.name}'s ${platformLabel} account. Value Per Fan: ${formatVPF(account.valuePerFan)}. Total Value: ${formatCurrency(account.totalValue)}. Ranked #${account.rank.vpf} out of ${getAccountsData().meta.platforms[account.platform]} accounts.`,
+  };
+}
+
+export default async function AccountPage({
+  params,
+}: {
+  params: Promise<{ platform: string; handle: string }>;
+}) {
+  const { platform, handle } = await params;
+  const account = getAccount(platform, handle);
+
+  if (!account) {
+    notFound();
+  }
+
+  const { above, below } = getNeighbors(account, 3);
+  const platformLabel =
+    account.platform === "instagram" ? "Instagram" : "TikTok";
+  const platformIcon = account.platform === "instagram" ? "📷" : "🎵";
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      {/* Breadcrumb */}
+      <nav className="mb-6 text-sm text-text-muted">
+        <Link href="/" className="hover:text-primary transition-colors">
+          Rankings
+        </Link>
+        <span className="mx-2">/</span>
+        <span className="capitalize">{platformLabel}</span>
+        <span className="mx-2">/</span>
+        <span className="text-text">{account.name}</span>
+      </nav>
+
+      {/* Account Header */}
+      <div className="rounded-lg border border-border bg-surface p-6">
+        <div className="flex items-start gap-4">
+          <AccountAvatar
+            src={account.avatarUrl}
+            name={account.name}
+            size={80}
+          />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-text truncate">
+                {account.name}
+              </h1>
+              <span className="text-lg" title={platformLabel}>
+                {platformIcon}
+              </span>
+            </div>
+            <p className="text-text-secondary">@{account.handle}</p>
+            {account.profileUrl && (
+              <a
+                href={account.profileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 inline-block text-sm text-primary hover:text-primary-dark transition-colors"
+              >
+                View on {platformLabel} →
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Metrics Grid */}
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <MetricCard
+            label="Value Per Fan"
+            value={formatVPF(account.valuePerFan)}
+            highlight
+          />
+          <MetricCard
+            label="Total Value"
+            value={formatCurrency(account.totalValue)}
+          />
+          <MetricCard
+            label="Followers"
+            value={formatFollowers(account.followers)}
+          />
+          <MetricCard label="Posts" value={account.posts.toLocaleString()} />
+        </div>
+
+        {/* Ranking Positions */}
+        <div className="mt-4 flex gap-4">
+          <div className="flex-1 rounded-lg bg-primary-light px-4 py-3 text-center">
+            <p className="text-xs text-text-secondary">Rank by Value/Fan</p>
+            <p className="text-xl font-bold text-primary">
+              #{account.rank.vpf}
+            </p>
+          </div>
+          <div className="flex-1 rounded-lg bg-surface-alt px-4 py-3 text-center">
+            <p className="text-xs text-text-secondary">Rank by Total Value</p>
+            <p className="text-xl font-bold text-text">
+              #{account.rank.totalValue}
+            </p>
+          </div>
+        </div>
+
+        {/* Disclaimer */}
+        <p className="mt-4 text-xs text-text-muted">
+          Valuations are estimates based on public data and PME (Paid Media
+          Equivalence) methodology.
+          {account.platform === "instagram" &&
+            " Instagram Stories are not included in calculations due to their ephemeral nature."}
+        </p>
+      </div>
+
+      {/* Mini Ranking + Badge */}
+      <div className="mt-6 grid gap-6 sm:grid-cols-2">
+        <MiniRanking above={above} current={account} below={below} />
+        <BadgePreview account={account} />
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({
+  label,
+  value,
+  highlight = false,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div
+      className={`rounded-lg px-4 py-3 text-center ${
+        highlight ? "bg-primary-light" : "bg-surface-alt"
+      }`}
+    >
+      <p className="text-xs text-text-secondary">{label}</p>
+      <p
+        className={`mt-1 text-lg font-bold ${
+          highlight ? "text-primary" : "text-text"
+        }`}
+      >
+        {value}
+      </p>
+    </div>
+  );
+}

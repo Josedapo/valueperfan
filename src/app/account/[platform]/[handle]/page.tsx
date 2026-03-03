@@ -29,10 +29,28 @@ export async function generateMetadata({
 
   const platformLabel =
     account.platform === "instagram" ? "Instagram" : "TikTok";
+  const title = `${account.name} (@${account.handle}) ${platformLabel} Value — ${formatVPF(account.valuePerFan)}/fan`;
+  const description = `See the real economic value of ${account.name}'s ${platformLabel} account. Value Per Fan: ${formatVPF(account.valuePerFan)}. Total Value: ${formatCurrency(account.totalValue)}. Ranked #${account.rank.vpf} out of ${getAccountsData().meta.platforms[account.platform]} accounts.`;
+  const url = `https://valueperfan.com/account/${account.platform}/${account.slug}`;
 
   return {
-    title: `${account.name} (@${account.handle}) ${platformLabel} Value — ${formatVPF(account.valuePerFan)}/fan`,
-    description: `See the real economic value of ${account.name}'s ${platformLabel} account. Value Per Fan: ${formatVPF(account.valuePerFan)}. Total Value: ${formatCurrency(account.totalValue)}. Ranked #${account.rank.vpf} out of ${getAccountsData().meta.platforms[account.platform]} accounts.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "ValuePerFan",
+      type: "profile",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: url,
+    },
   };
 }
 
@@ -53,8 +71,26 @@ export default async function AccountPage({
     account.platform === "instagram" ? "Instagram" : "TikTok";
   const platformIcon = account.platform === "instagram" ? "📷" : "🎵";
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    name: `${account.name} - ${platformLabel} Value Per Fan`,
+    description: `Economic valuation of ${account.name}'s ${platformLabel} account`,
+    mainEntity: {
+      "@type": "Person",
+      name: account.name,
+      url: account.profileUrl || undefined,
+      sameAs: account.profileUrl ? [account.profileUrl] : undefined,
+    },
+  };
+
   return (
     <div className="max-w-3xl mx-auto">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-text-muted">
         <Link href="/" className="hover:text-primary transition-colors">

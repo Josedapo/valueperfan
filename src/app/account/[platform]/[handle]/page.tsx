@@ -67,7 +67,8 @@ export default async function AccountPage({
     notFound();
   }
 
-  const { above, below } = getNeighbors(account, 3);
+  const vpfNeighbors = getNeighbors(account, 3, "vpf");
+  const tvNeighbors = getNeighbors(account, 3, "totalValue");
   const platformLabel =
     account.platform === "instagram" ? "Instagram" : "TikTok";
 
@@ -139,15 +140,17 @@ export default async function AccountPage({
             highlight
           />
           <MetricCard
-            label="Total Value"
-            sublabel="Last 30 days"
+            label="Total Value (Last 30 days)"
             value={formatCurrency(account.totalValue)}
           />
           <MetricCard
             label="Followers"
             value={formatFollowers(account.followers)}
           />
-          <MetricCard label="Posts" value={account.posts.toLocaleString()} />
+          <MetricCard
+            label="Posts (Last 30 days)"
+            value={account.posts.toLocaleString()}
+          />
         </div>
 
         {/* Ranking Positions */}
@@ -167,20 +170,42 @@ export default async function AccountPage({
         </div>
 
         {/* PME Context */}
-        <p className="mt-4 text-xs text-text-secondary leading-relaxed">
-          This valuation represents what brands would pay in paid media to
-          match the results this content delivers organically. Calculated
-          using Paid Media Equivalence (PME), the standard used across
-          professional sports and entertainment.
-          {account.platform === "instagram" &&
-            " Instagram Stories are not included due to their ephemeral nature."}
-        </p>
+        <div className="mt-4 text-xs text-text-secondary leading-relaxed space-y-1.5">
+          <p>
+            This valuation represents what brands would pay in paid media to
+            match the results this content delivers organically.
+          </p>
+          <p>
+            Calculated using Paid Media Equivalence (PME), the standard used
+            across professional sports and entertainment.
+          </p>
+          {account.platform === "instagram" && (
+            <p>
+              Instagram Stories are not included due to their ephemeral nature.
+            </p>
+          )}
+        </div>
       </div>
 
-      {/* Mini Ranking + Badge */}
-      <div className="mt-6 grid gap-6 sm:grid-cols-2">
-        <MiniRanking above={above} current={account} below={below} />
+      {/* Badge Preview — full width */}
+      <div className="mt-6">
         <BadgePreview account={account} />
+      </div>
+
+      {/* Mini Rankings — VPF + Total Value side by side */}
+      <div className="mt-6 grid gap-6 sm:grid-cols-2">
+        <MiniRanking
+          above={vpfNeighbors.above}
+          current={account}
+          below={vpfNeighbors.below}
+          metric="vpf"
+        />
+        <MiniRanking
+          above={tvNeighbors.above}
+          current={account}
+          below={tvNeighbors.below}
+          metric="totalValue"
+        />
       </div>
     </div>
   );
@@ -188,12 +213,10 @@ export default async function AccountPage({
 
 function MetricCard({
   label,
-  sublabel,
   value,
   highlight = false,
 }: {
   label: string;
-  sublabel?: string;
   value: string;
   highlight?: boolean;
 }) {
@@ -204,9 +227,6 @@ function MetricCard({
       }`}
     >
       <p className="text-xs text-text-secondary">{label}</p>
-      {sublabel && (
-        <p className="text-[10px] italic text-text-muted">{sublabel}</p>
-      )}
       <p
         className={`mt-1 text-lg font-bold ${
           highlight ? "text-primary" : "text-text"

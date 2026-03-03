@@ -24,11 +24,14 @@ export function getAccount(
 
 export function getNeighbors(
   account: Account,
-  count: number = 3
+  count: number = 3,
+  metric: "vpf" | "totalValue" = "vpf"
 ): { above: Account[]; below: Account[] } {
   const platformAccounts = getAccountsByPlatform(account.platform);
-  const sorted = [...platformAccounts].sort(
-    (a, b) => a.rank.vpf - b.rank.vpf
+  const sorted = [...platformAccounts].sort((a, b) =>
+    metric === "vpf"
+      ? a.rank.vpf - b.rank.vpf
+      : a.rank.totalValue - b.rank.totalValue
   );
   const index = sorted.findIndex(
     (a) => a.handle === account.handle && a.platform === account.platform

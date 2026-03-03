@@ -9,6 +9,7 @@ import {
 import AccountAvatar from "../../../../components/AccountAvatar";
 import MiniRanking from "../../../../components/MiniRanking";
 import BadgePreview from "../../../../components/BadgePreview";
+import PlatformIcon from "../../../../components/PlatformIcon";
 
 export async function generateStaticParams() {
   const data = getAccountsData();
@@ -69,7 +70,6 @@ export default async function AccountPage({
   const { above, below } = getNeighbors(account, 3);
   const platformLabel =
     account.platform === "instagram" ? "Instagram" : "TikTok";
-  const platformIcon = account.platform === "instagram" ? "📷" : "🎵";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -115,9 +115,7 @@ export default async function AccountPage({
               <h1 className="text-2xl font-bold text-text truncate">
                 {account.name}
               </h1>
-              <span className="text-lg" title={platformLabel}>
-                {platformIcon}
-              </span>
+              <PlatformIcon platform={account.platform} size={22} />
             </div>
             <p className="text-text-secondary">@{account.handle}</p>
             {account.profileUrl && (

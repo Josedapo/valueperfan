@@ -31,10 +31,6 @@ export function formatFollowers(value: number): string {
   return value.toString();
 }
 
-export function platformIcon(platform: "instagram" | "tiktok"): string {
-  return platform === "instagram" ? "📷" : "🎵";
-}
-
 export function platformUrl(
   platform: "instagram" | "tiktok",
   handle: string

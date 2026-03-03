@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Account } from "../lib/types";
 import { formatCurrency, formatVPF, formatFollowers } from "../lib/utils";
 import AccountAvatar from "./AccountAvatar";
+import PlatformIcon from "./PlatformIcon";
 
 type Platform = "instagram" | "tiktok";
 type Metric = "vpf" | "totalValue";
@@ -49,22 +50,32 @@ export default function RankingTable({ accounts }: { accounts: Account[] }) {
         <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
           <button
             onClick={() => handlePlatformChange("instagram")}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
               platform === "instagram"
                 ? "bg-primary text-white"
                 : "text-text-secondary hover:bg-surface-alt"
             }`}
           >
+            <PlatformIcon
+              platform="instagram"
+              size={16}
+              className={platform === "instagram" ? "brightness-0 invert" : ""}
+            />
             Instagram
           </button>
           <button
             onClick={() => handlePlatformChange("tiktok")}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
               platform === "tiktok"
                 ? "bg-primary text-white"
                 : "text-text-secondary hover:bg-surface-alt"
             }`}
           >
+            <PlatformIcon
+              platform="tiktok"
+              size={16}
+              className={platform === "tiktok" ? "brightness-0 invert" : ""}
+            />
             TikTok
           </button>
         </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Fuse from "fuse.js";
 import type { SearchEntry } from "../lib/types";
 import AccountAvatar from "./AccountAvatar";
+import PlatformIcon from "./PlatformIcon";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -126,9 +127,7 @@ export default function SearchBar() {
                         @{entry.handle}
                       </p>
                     </div>
-                    <span className="text-[10px] font-medium text-text-muted bg-surface-alt rounded px-1.5 py-0.5 uppercase">
-                      {entry.platform === "instagram" ? "IG" : "TK"}
-                    </span>
+                    <PlatformIcon platform={entry.platform} size={18} />
                   </Link>
                 </li>
               ))}

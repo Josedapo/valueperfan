@@ -56,7 +56,7 @@ export default function Home() {
       {/* Disclaimer */}
       <p className="text-xs text-text-muted text-center">
         All valuations are estimates based on public data and PME (Paid Media
-        Equivalence) methodology.
+        Equivalence) proprietary methodology.
       </p>
     </div>
   );

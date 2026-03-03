@@ -8,7 +8,7 @@ import {
 } from "../../../../lib/utils";
 import AccountAvatar from "../../../../components/AccountAvatar";
 import MiniRanking from "../../../../components/MiniRanking";
-import BadgePreview from "../../../../components/BadgePreview";
+import ClaimFlow from "../../../../components/ClaimFlow";
 import PlatformIcon from "../../../../components/PlatformIcon";
 
 export async function generateStaticParams() {
@@ -187,9 +187,16 @@ export default async function AccountPage({
         </div>
       </div>
 
-      {/* Badge Preview — full width */}
+      {/* Claim Flow — full width */}
       <div className="mt-6">
-        <BadgePreview account={account} />
+        <ClaimFlow
+          platform={account.platform}
+          handle={account.handle}
+          slug={account.slug}
+          name={account.name}
+          vpf={formatVPF(account.valuePerFan)}
+          rankVpf={account.rank.vpf}
+        />
       </div>
 
       {/* Mini Rankings — VPF + Total Value side by side */}

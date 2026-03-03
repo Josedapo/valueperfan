@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Top facet -->
+  <path d="M16 2 L26 12 L16 30 Z" fill="#059669"/>
+  <!-- Left facet (lighter) -->
+  <path d="M16 2 L6 12 L16 30 Z" fill="#10b981"/>
+  <!-- Top crown left -->
+  <path d="M6 12 L16 2 L16 12 Z" fill="#34d399"/>
+  <!-- Top crown right -->
+  <path d="M26 12 L16 2 L16 12 Z" fill="#059669"/>
+  <!-- Center line highlight -->
+  <path d="M6 12 L26 12 L16 30 Z" fill="url(#gem-grad)" opacity="0.3"/>
+  <defs>
+    <linearGradient id="gem-grad" x1="16" y1="12" x2="16" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="white" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

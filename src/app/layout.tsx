@@ -16,11 +16,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ValuePerFan — The Real Economic Value of Social Media",
+    default: "ValuePerFan — The real value of social media followers",
     template: "%s | ValuePerFan",
   },
   description:
-    "Discover the real economic value of any social media account. Rankings powered by Value Per Fan — a democratic metric where smaller creators can rank above celebrities.",
+    "Value Per Fan measures the real economic value each follower generates. Objective valuations powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

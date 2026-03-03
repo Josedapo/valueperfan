@@ -126,8 +126,8 @@ export default function SearchBar() {
                         @{entry.handle}
                       </p>
                     </div>
-                    <span className="text-xs text-text-muted capitalize">
-                      {entry.platform === "instagram" ? "📷" : "🎵"}
+                    <span className="text-[10px] font-medium text-text-muted bg-surface-alt rounded px-1.5 py-0.5 uppercase">
+                      {entry.platform === "instagram" ? "IG" : "TK"}
                     </span>
                   </Link>
                 </li>

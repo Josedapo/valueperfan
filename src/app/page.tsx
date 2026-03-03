@@ -15,8 +15,8 @@ export default function Home() {
         </h1>
         <p className="mt-3 text-lg text-text-secondary max-w-2xl mx-auto">
           Value Per Fan measures the real economic value each follower
-          generates. Not followers. Not likes. Not arbitrary scores. Real
-          money.
+          generates. Not followers. Not likes. Not arbitrary scores.{" "}
+          <span className="font-semibold text-primary">Real money.</span>
         </p>
       </section>
 
@@ -25,7 +25,10 @@ export default function Home() {
         <SearchBar />
       </section>
 
-      {/* Block 3: PME + VPF Explainer */}
+      {/* Block 3: Ranking */}
+      <RankingTable accounts={data.accounts} />
+
+      {/* Block 4: PME + VPF Explainer */}
       <section className="max-w-3xl mx-auto w-full grid gap-6 sm:grid-cols-2">
         <div className="rounded-lg border border-border bg-surface p-5">
           <h2 className="text-sm font-bold text-primary uppercase tracking-wider">
@@ -50,14 +53,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Block 4: Ranking */}
-      <RankingTable accounts={data.accounts} />
-
       {/* Disclaimer */}
       <p className="text-xs text-text-muted text-center">
-        Instagram Stories are not included in calculations due to their
-        ephemeral nature. All valuations are estimates based on public data and
-        PME (Paid Media Equivalence) methodology.
+        All valuations are estimates based on public data and PME (Paid Media
+        Equivalence) methodology.
       </p>
     </div>
   );

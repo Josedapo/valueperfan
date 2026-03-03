@@ -30,8 +30,8 @@ export async function generateMetadata({
 
   const platformLabel =
     account.platform === "instagram" ? "Instagram" : "TikTok";
-  const title = `${account.name} (@${account.handle}) ${platformLabel} Value — ${formatVPF(account.valuePerFan)}/fan`;
-  const description = `See the real economic value of ${account.name}'s ${platformLabel} account. Value Per Fan: ${formatVPF(account.valuePerFan)}. Total Value: ${formatCurrency(account.totalValue)}. Ranked #${account.rank.vpf} out of ${getAccountsData().meta.platforms[account.platform]} accounts.`;
+  const title = `${account.name} (@${account.handle}) ${platformLabel} Value — ${formatVPF(account.valuePerFan)}/1K fans`;
+  const description = `See the real economic value of ${account.name}'s ${platformLabel} account. Value Per 1K Fans: ${formatVPF(account.valuePerFan)}. Total Value: ${formatCurrency(account.totalValue)}. Ranked #${account.rank.vpf} out of ${getAccountsData().meta.platforms[account.platform]} accounts.`;
   const url = `https://valueperfan.com/account/${account.platform}/${account.slug}`;
 
   return {
@@ -135,7 +135,7 @@ export default async function AccountPage({
         {/* Metrics Grid */}
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
           <MetricCard
-            label="Value Per Fan"
+            label="Value Per 1K Fans"
             value={formatVPF(account.valuePerFan)}
             highlight
           />
@@ -156,7 +156,7 @@ export default async function AccountPage({
         {/* Ranking Positions */}
         <div className="mt-4 flex gap-4">
           <div className="flex-1 rounded-lg bg-primary-light px-4 py-3 text-center">
-            <p className="text-xs text-text-secondary">Rank by Value/Fan</p>
+            <p className="text-xs text-text-secondary">Rank by Value/1K Fans</p>
             <p className="text-xl font-bold text-primary">
               #{account.rank.vpf}
             </p>

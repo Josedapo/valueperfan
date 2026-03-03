@@ -137,7 +137,7 @@ export default function ClaimFlow({
   const badgePill = (
     <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-surface px-3 py-1.5 text-sm">
       <span className="font-bold text-primary">VPF</span>
-      <span className="text-text font-medium">{vpf}/fan</span>
+      <span className="text-text font-medium">{vpf}/1K</span>
       <span className="text-text-muted">#{rankVpf}</span>
     </div>
   );

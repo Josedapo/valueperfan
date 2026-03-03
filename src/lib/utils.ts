@@ -14,11 +14,8 @@ export function formatCurrency(value: number): string {
 }
 
 export function formatVPF(value: number): string {
-  const usd = value * EUR_TO_USD;
-  if (usd >= 1) {
-    return `$${usd.toFixed(2)}`;
-  }
-  return `$${usd.toFixed(4)}`;
+  const usd = value * EUR_TO_USD * 1000;
+  return `$${usd.toFixed(2)}`;
 }
 
 export function formatFollowers(value: number): string {

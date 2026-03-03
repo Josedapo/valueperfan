@@ -42,13 +42,13 @@ export default function Home() {
         </div>
         <div className="rounded-lg border border-border bg-surface p-5">
           <h2 className="text-sm font-bold text-primary uppercase tracking-wider">
-            Value Per Fan
+            Value Per 1K Fans
           </h2>
           <p className="mt-2 text-sm text-text-secondary leading-relaxed">
-            Total value divided by followers. This simple metric reveals who
-            generates the most value per follower — regardless of size. A
-            creator with 10,000 engaged followers can rank above a celebrity
-            with millions.
+            Total value divided by every 1,000 followers. This simple metric
+            reveals who generates the most value per follower — regardless of
+            size. A creator with 10,000 engaged followers can rank above a
+            celebrity with millions.
           </p>
         </div>
       </section>

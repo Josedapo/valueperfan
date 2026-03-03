@@ -18,7 +18,7 @@ export default function MiniRanking({
 }) {
   const title =
     metric === "vpf"
-      ? "Ranking Neighbors (Value Per Fan)"
+      ? "Ranking Neighbors (Value Per 1K Fans)"
       : "Ranking Neighbors (Total Value)";
 
   return (

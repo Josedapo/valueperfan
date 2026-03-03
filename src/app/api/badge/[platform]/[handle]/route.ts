@@ -19,7 +19,7 @@ export async function GET(
 
   // Calculate widths based on text
   const labelWidth = label.length * 7.5 + 16;
-  const vpfText = `${vpf}/fan`;
+  const vpfText = `${vpf}/1K`;
   const vpfWidth = vpfText.length * 7 + 16;
   const rankWidth = rank.length * 7.5 + 16;
   const totalWidth = labelWidth + vpfWidth + rankWidth;

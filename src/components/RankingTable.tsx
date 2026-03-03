@@ -90,7 +90,7 @@ export default function RankingTable({ accounts }: { accounts: Account[] }) {
                 : "text-text-secondary hover:bg-surface-alt"
             }`}
           >
-            Value Per Fan
+            Value Per 1K Fans
           </button>
           <button
             onClick={() => handleMetricChange("totalValue")}
@@ -117,7 +117,7 @@ export default function RankingTable({ accounts }: { accounts: Account[] }) {
               </th>
               <th className="px-4 py-3 text-right font-bold text-primary">
                 {metric === "vpf" ? (
-                  "Value/Fan"
+                  "Value/1K Fans"
                 ) : (
                   <>
                     Total Value

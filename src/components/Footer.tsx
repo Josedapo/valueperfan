@@ -8,15 +8,12 @@ export default function Footer() {
               Value<span className="text-primary">Per</span>Fan
             </p>
             <p className="mt-1 text-xs text-text-muted">
-              Economic valuations based on Paid Media Equivalence (PME)
+              Objective valuations powered by Paid Media Equivalence — the
+              real cost of achieving the same results through paid media.
             </p>
           </div>
           <div className="text-xs text-text-muted">
             <p>
-              Valuations are estimates based on public data and proprietary
-              algorithms.
-            </p>
-            <p className="mt-1">
               Instagram Stories are not included in calculations due to their
               ephemeral nature.
             </p>

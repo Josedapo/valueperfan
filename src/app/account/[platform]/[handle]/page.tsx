@@ -167,12 +167,14 @@ export default async function AccountPage({
           </div>
         </div>
 
-        {/* Disclaimer */}
-        <p className="mt-4 text-xs text-text-muted">
-          Valuations are estimates based on public data and PME (Paid Media
-          Equivalence) methodology.
+        {/* PME Context */}
+        <p className="mt-4 text-xs text-text-secondary leading-relaxed">
+          This valuation represents what brands would pay in paid media to
+          match the results this content delivers organically. Calculated
+          using Paid Media Equivalence (PME), the standard used across
+          professional sports and entertainment.
           {account.platform === "instagram" &&
-            " Instagram Stories are not included in calculations due to their ephemeral nature."}
+            " Instagram Stories are not included due to their ephemeral nature."}
         </p>
       </div>
 

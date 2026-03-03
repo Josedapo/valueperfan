@@ -1,11 +1,15 @@
+import Image from "next/image";
+
 export function SponsorCard({
   name,
   description,
   url,
+  logo,
 }: {
   name: string;
   description: string;
   url: string;
+  logo: string;
 }) {
   return (
     <a
@@ -14,8 +18,14 @@ export function SponsorCard({
       rel="noopener noreferrer"
       className="block rounded-lg border border-border bg-surface p-4 hover:border-primary transition-colors"
     >
-      {/* Logo placeholder — will be replaced with actual logos */}
-      <div className="w-full h-12 rounded-md bg-surface-alt border border-border flex items-center justify-center mb-3">
+      <div className="flex items-center gap-2.5 mb-2">
+        <Image
+          src={logo}
+          alt={name}
+          width={28}
+          height={28}
+          className="h-7 w-7 object-contain"
+        />
         <span className="text-sm font-semibold text-text">{name}</span>
       </div>
       <p className="text-xs text-text-secondary leading-relaxed">
@@ -51,10 +61,12 @@ export function MobileSponsorBar() {
     {
       name: "Horizm",
       url: "https://www.horizm.com",
+      logo: "/images/horizm-logo.png",
     },
     {
       name: "Lume",
       url: "https://getlumeapp.com",
+      logo: "/images/lume-logo.png",
     },
   ];
 
@@ -69,9 +81,13 @@ export function MobileSponsorBar() {
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 shrink-0 text-text hover:text-primary transition-colors"
           >
-            <span className="w-5 h-5 rounded bg-surface-alt border border-border text-text flex items-center justify-center text-[10px] font-bold shrink-0">
-              {s.name[0]}
-            </span>
+            <Image
+              src={s.logo}
+              alt={s.name}
+              width={18}
+              height={18}
+              className="h-[18px] w-[18px] object-contain shrink-0"
+            />
             <span className="font-medium">{s.name}</span>
           </a>
         ))}

@@ -52,6 +52,7 @@ export default function RootLayout({
                   name="Horizm"
                   description="Social media valuation for Rights Holders"
                   url="https://www.horizm.com"
+                  logo="/images/horizm-logo.png"
                 />
                 <AdvertiseSlot />
               </div>
@@ -67,6 +68,7 @@ export default function RootLayout({
                   name="Lume"
                   description="Know your real value as a creator"
                   url="https://getlumeapp.com"
+                  logo="/images/lume-logo.png"
                 />
                 <AdvertiseSlot />
               </div>

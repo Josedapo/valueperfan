@@ -120,9 +120,14 @@ export default function SearchBar() {
                       size={32}
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">
-                        {entry.name}
-                      </p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-sm font-medium truncate">
+                          {entry.name}
+                        </p>
+                        <span className="shrink-0 rounded-full bg-surface-alt border border-border px-2 py-0.5 text-[10px] text-text-muted">
+                          {entry.category}
+                        </span>
+                      </div>
                       <p className="text-xs text-text-muted">
                         @{entry.handle}
                       </p>

@@ -34,4 +34,5 @@ export interface SearchEntry {
   platform: "instagram" | "tiktok";
   slug: string;
   avatarUrl: string;
+  category: string;
 }

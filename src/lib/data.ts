@@ -22,6 +22,11 @@ export function getAccount(
   );
 }
 
+export function getAccountsByCategory(category: string): Account[] {
+  const data = getAccountsData();
+  return data.accounts.filter((a) => a.category === category);
+}
+
 export function getNeighbors(
   account: Account,
   count: number = 3,

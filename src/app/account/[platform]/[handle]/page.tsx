@@ -6,6 +6,7 @@ import {
   formatVPF,
   formatFollowers,
 } from "../../../../lib/utils";
+import { categoryToSlug, categoryPluralLabel } from "../../../../lib/categories";
 import AccountAvatar from "../../../../components/AccountAvatar";
 import MiniRanking from "../../../../components/MiniRanking";
 import ClaimFlow from "../../../../components/ClaimFlow";
@@ -98,6 +99,13 @@ export default async function AccountPage({
           Rankings
         </Link>
         <span className="mx-2">/</span>
+        <Link
+          href={`/ranking/${categoryToSlug(account.category)}`}
+          className="hover:text-primary transition-colors"
+        >
+          {categoryPluralLabel(account.category)}
+        </Link>
+        <span className="mx-2">/</span>
         <span className="capitalize">{platformLabel}</span>
         <span className="mx-2">/</span>
         <span className="text-text">{account.name}</span>
@@ -118,7 +126,15 @@ export default async function AccountPage({
               </h1>
               <PlatformIcon platform={account.platform} size={22} />
             </div>
-            <p className="text-text-secondary">@{account.handle}</p>
+            <div className="flex items-center gap-2 mt-0.5">
+              <p className="text-text-secondary">@{account.handle}</p>
+              <Link
+                href={`/ranking/${categoryToSlug(account.category)}`}
+                className="inline-flex items-center rounded-full bg-surface-alt border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary hover:text-primary hover:border-primary transition-colors"
+              >
+                {account.category}
+              </Link>
+            </div>
             {account.profileUrl && (
               <a
                 href={account.profileUrl}

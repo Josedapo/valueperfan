@@ -186,6 +186,7 @@ function main() {
     platform: a.platform,
     slug: a.slug,
     avatarUrl: a.avatarUrl,
+    category: a.category,
   }));
 
   // Write output files

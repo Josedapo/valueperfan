@@ -1,12 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sendSuggestionEmail } from "../../../lib/email";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const { handle, platform, email } = body;
 
-  // For the prototype, just log the suggestion
-  // In production, this would store in a database or send an email
-  console.log("Account suggestion received:", { handle, platform, email });
+  if (!handle || !platform || !email) {
+    return NextResponse.json({ error: "missing_fields" }, { status: 400 });
+  }
+
+  try {
+    await sendSuggestionEmail({
+      handle,
+      platform,
+      requesterEmail: email,
+    });
+  } catch (error) {
+    console.error("Failed to send suggestion email:", error);
+    return NextResponse.json({ error: "email_failed" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true });
 }

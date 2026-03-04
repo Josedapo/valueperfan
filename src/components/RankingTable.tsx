@@ -146,7 +146,7 @@ export default function RankingTable({ accounts }: { accounts: Account[] }) {
                   <td className="px-4 py-3 font-mono text-text-muted">
                     {rank}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 max-w-0">
                     <Link
                       href={`/account/${account.platform}/${account.slug}`}
                       className="flex items-center gap-3 hover:text-primary transition-colors"
@@ -156,7 +156,7 @@ export default function RankingTable({ accounts }: { accounts: Account[] }) {
                         name={account.name}
                         size={36}
                       />
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="font-medium truncate">{account.name}</p>
                         <p className="text-xs text-text-muted truncate">
                           @{account.handle}

@@ -130,6 +130,37 @@ export async function sendReviewNotification({
   });
 }
 
+export async function sendSuggestionEmail({
+  handle,
+  platform,
+  requesterEmail,
+}: {
+  handle: string;
+  platform: string;
+  requesterEmail: string;
+}) {
+  const platformLabel = platform === "instagram" ? "Instagram" : "TikTok";
+
+  const resend = getResend();
+  await resend.emails.send({
+    from: FROM,
+    to: "jodapogo@gmail.com",
+    subject: `New account suggestion: @${handle} on ${platformLabel}`,
+    html: `
+      <div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto;">
+        <h2 style="color: #059669;">New Account Suggestion</h2>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+          <tr><td style="padding: 4px 0; color: #6b7280;">Handle</td><td style="padding: 4px 0;"><strong>@${handle}</strong></td></tr>
+          <tr><td style="padding: 4px 0; color: #6b7280;">Platform</td><td style="padding: 4px 0;">${platformLabel}</td></tr>
+          <tr><td style="padding: 4px 0; color: #6b7280;">Requested by</td><td style="padding: 4px 0;">${requesterEmail}</td></tr>
+        </table>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
+        <p style="color: #9ca3af; font-size: 12px;">ValuePerFan — Account suggestion notification</p>
+      </div>
+    `,
+  });
+}
+
 export async function sendApprovalEmail({
   to,
   platform,

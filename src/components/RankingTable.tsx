@@ -107,15 +107,15 @@ export default function RankingTable({ accounts }: { accounts: Account[] }) {
 
       {/* Table */}
       <div className="overflow-x-auto rounded-lg border border-border bg-surface">
-        <table className="w-full text-sm">
+        <table className="w-full table-fixed text-sm">
           <thead>
             <tr className="border-b border-border bg-surface-alt text-left text-xs font-medium uppercase tracking-wider text-text-secondary">
-              <th className="px-4 py-3 w-12">#</th>
+              <th className="px-4 py-3 w-14">#</th>
               <th className="px-4 py-3">Account</th>
-              <th className="px-4 py-3 text-right hidden sm:table-cell">
+              <th className="px-4 py-3 text-right hidden sm:table-cell w-28">
                 Followers
               </th>
-              <th className="px-4 py-3 text-right font-bold text-primary">
+              <th className="px-4 py-3 text-right font-bold text-primary w-28 sm:w-32">
                 {metric === "vpf" ? (
                   "Value/1K Fans"
                 ) : (
@@ -146,7 +146,7 @@ export default function RankingTable({ accounts }: { accounts: Account[] }) {
                   <td className="px-4 py-3 font-mono text-text-muted">
                     {rank}
                   </td>
-                  <td className="px-4 py-3 max-w-0">
+                  <td className="px-4 py-3">
                     <Link
                       href={`/account/${account.platform}/${account.slug}`}
                       className="flex items-center gap-3 hover:text-primary transition-colors"

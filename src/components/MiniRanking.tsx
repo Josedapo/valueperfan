@@ -26,7 +26,12 @@ export default function MiniRanking({
       <div className="px-4 py-3 bg-surface-alt border-b border-border">
         <h3 className="text-sm font-semibold text-text">{title}</h3>
       </div>
-      <table className="w-full text-sm">
+      <table className="w-full table-fixed text-sm">
+        <colgroup>
+          <col className="w-14" />
+          <col />
+          <col className="w-24" />
+        </colgroup>
         <tbody>
           {above.map((account) => (
             <RankingRow
@@ -76,7 +81,7 @@ function RankingRow({
       <td className="px-4 py-2.5 font-mono text-text-muted w-12">
         #{rank}
       </td>
-      <td className="px-4 py-2.5 max-w-0">
+      <td className="px-4 py-2.5 overflow-hidden">
         <div className="flex items-center gap-2">
           <AccountAvatar
             src={account.avatarUrl}

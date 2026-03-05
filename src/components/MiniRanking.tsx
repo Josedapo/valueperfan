@@ -1,4 +1,7 @@
-import Link from "next/link";
+"use client";
+
+import { useTranslations } from "next-intl";
+import { useRouter } from "../i18n/navigation";
 import type { Account } from "../lib/types";
 import { formatVPF, formatCurrency } from "../lib/utils";
 import AccountAvatar from "./AccountAvatar";
@@ -16,10 +19,9 @@ export default function MiniRanking({
   below: Account[];
   metric?: Metric;
 }) {
+  const t = useTranslations("account");
   const title =
-    metric === "vpf"
-      ? "Ranking Neighbors (Value Per 1K Fans)"
-      : "Ranking Neighbors (Total Value)";
+    metric === "vpf" ? t("neighborhoodVpf") : t("neighborhoodTv");
 
   return (
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
@@ -63,6 +65,7 @@ function RankingRow({
   isCurrent?: boolean;
   metric: Metric;
 }) {
+  const router = useRouter();
   const rank =
     metric === "vpf" ? account.rank.vpf : account.rank.totalValue;
   const value =
@@ -70,12 +73,20 @@ function RankingRow({
       ? formatVPF(account.valuePerFan)
       : formatCurrency(account.totalValue);
 
-  const row = (
+  return (
     <tr
+      onClick={
+        isCurrent
+          ? undefined
+          : () =>
+              router.push(
+                `/account/${account.platform}/${account.slug}`
+              )
+      }
       className={`border-b border-border last:border-0 ${
         isCurrent
           ? "bg-primary-light font-semibold"
-          : "hover:bg-surface-alt transition-colors"
+          : "hover:bg-surface-alt transition-colors cursor-pointer"
       }`}
     >
       <td className="px-4 py-2.5 font-mono text-text-muted w-12">
@@ -95,16 +106,5 @@ function RankingRow({
       </td>
       <td className="px-4 py-2.5 text-right text-primary">{value}</td>
     </tr>
-  );
-
-  if (isCurrent) return row;
-
-  return (
-    <Link
-      href={`/account/${account.platform}/${account.slug}`}
-      className="contents"
-    >
-      {row}
-    </Link>
   );
 }

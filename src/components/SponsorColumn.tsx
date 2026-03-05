@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export function SponsorCard({
   name,
@@ -36,6 +37,8 @@ export function SponsorCard({
 }
 
 export function AdvertiseSlot() {
+  const t = useTranslations("sponsor");
+
   return (
     <a
       href="mailto:jose.poveda@horizm.com"
@@ -49,14 +52,17 @@ export function AdvertiseSlot() {
         <path d="M22 3L12 9H5C3.9 9 3 9.9 3 11V13C3 14.1 3.9 15 5 15H6L8 21H10L8 15H12L22 21V3Z" />
       </svg>
       <p className="text-sm font-semibold text-text-muted group-hover:text-primary transition-colors mt-2">
-        Advertise
+        {t("advertise")}
       </p>
-      <p className="text-xs text-text-muted mt-0.5">18/20 spots left</p>
+      <p className="text-xs text-text-muted mt-0.5">
+        {t("spotsLeft", { count: 18 })}
+      </p>
     </a>
   );
 }
 
 export function MobileSponsorBar() {
+  const t = useTranslations("sponsor");
   const sponsors = [
     {
       name: "Horizm",
@@ -102,7 +108,7 @@ export function MobileSponsorBar() {
           >
             <path d="M22 3L12 9H5C3.9 9 3 9.9 3 11V13C3 14.1 3.9 15 5 15H6L8 21H10L8 15H12L22 21V3Z" />
           </svg>
-          <span>Advertise</span>
+          <span>{t("advertise")}</span>
         </a>
       </div>
     </div>

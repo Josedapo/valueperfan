@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "title": "ValuePerFan — El valor real de los seguidores en redes sociales",
+    "description": "Value Per Fan mide el valor económico real que genera cada seguidor. Valoraciones objetivas basadas en Paid Media Equivalence. No mide seguidores. No mide likes. Es dinero real.",
+    "titleTemplate": "%s | ValuePerFan"
+  },
+  "header": {
+    "tagline": "El <accent>valor real</accent> de los seguidores en redes sociales"
+  },
+  "footer": {
+    "description": "Valoraciones objetivas basadas en Paid Media Equivalence — el coste real de conseguir los mismos resultados a través de publicidad pagada.",
+    "copyright": "\u00a92026 ValuePerFan"
+  },
+  "home": {
+    "title": "El <highlight>valor real</highlight> de los seguidores en redes sociales",
+    "subtitle": "Value Per Fan mide el valor económico real que genera cada seguidor. No mide seguidores. No mide likes. No son puntuaciones arbitrarias. <highlight>Es dinero real.</highlight>",
+    "pmeTitle": "Valor Total (Paid Media Equivalence)",
+    "pmeDescription": "Cada valoración en ValuePerFan representa lo que una marca gastaría en campañas de publicidad pagada para conseguir los mismos resultados que el contenido orgánico genera. No es una estimación. No es una puntuación. Es el valor real de mercado.",
+    "vpfTitle": "Valor por cada 1K Fans",
+    "vpfDescription": "El valor total dividido entre cada 1.000 seguidores. Esta métrica simple revela quién genera más valor por seguidor — independientemente del tamaño. Un creador con 10.000 seguidores comprometidos puede superar a una celebridad con millones.",
+    "disclaimer": "Todas las valoraciones son estimaciones basadas en datos públicos y la metodología propietaria PME (Paid Media Equivalence)."
+  },
+  "ranking": {
+    "titleSuffix": "Ranking de Valor",
+    "subtitle": "El valor económico real de {category} en redes sociales. Basado en Paid Media Equivalence.",
+    "metaTitle": "Ranking de Valor en Redes Sociales de {category}",
+    "metaDescription": "Descubre el valor económico real de {category} en redes sociales. Rankings basados en Paid Media Equivalence. No mide seguidores. No mide likes. Es dinero real.",
+    "allCategories": "Todas las categorías",
+    "valuePerFan": "Valor por 1K Fans",
+    "valuePerFanShort": "Valor/1K Fans",
+    "totalValue": "Valor Total",
+    "last30days": "Últimos 30 días",
+    "followers": "Seguidores",
+    "category": "Categoría",
+    "account": "Cuenta",
+    "accounts": "{count} cuentas",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "notFound": "Categoría no encontrada"
+  },
+  "account": {
+    "rankings": "Rankings",
+    "viewOn": "Ver en {platform} →",
+    "valuePerFan": "Valor por 1K Fans",
+    "totalValueLabel": "Valor Total (Últimos 30 días)",
+    "followersLabel": "Seguidores",
+    "postsLabel": "Posts (Últimos 30 días)",
+    "rankByVpf": "Ranking por Valor/1K Fans",
+    "rankByTotalValue": "Ranking por Valor Total",
+    "pmeContext1": "Esta valoración representa lo que las marcas pagarían en publicidad para igualar los resultados que este contenido genera de forma orgánica.",
+    "pmeContext2": "Calculado mediante Paid Media Equivalence (PME), el estándar utilizado en el deporte y el entretenimiento profesional.",
+    "instagramStoriesNote": "Las Instagram Stories no están incluidas debido a su naturaleza efímera.",
+    "neighborhoodVpf": "Vecinos en el Ranking (Valor por 1K Fans)",
+    "neighborhoodTv": "Vecinos en el Ranking (Valor Total)",
+    "notFound": "Cuenta no encontrada",
+    "metaTitle": "{name} (@{handle}) Valor en {platform} — {vpf}/1K fans",
+    "metaDescription": "Descubre el valor económico real de la cuenta de {platform} de {name}. Valor por 1K Fans: {vpf}. Valor Total: {totalValue}. Ranking #{rank} de {total} cuentas.",
+    "jsonLdName": "{name} - Valor por Fan en {platform}",
+    "jsonLdDescription": "Valoración económica de la cuenta de {platform} de {name}"
+  },
+  "claim": {
+    "badgeTitle": "Badge para tu web",
+    "checking": "Comprobando estado...",
+    "claimCta": "Reclama esta cuenta para obtener tu badge",
+    "claimButton": "Reclamar esta cuenta",
+    "emailPrompt": "Introduce tu email para iniciar el proceso de reclamación de {name}",
+    "sendVerification": "Enviar verificación",
+    "sending": "Enviando...",
+    "cancel": "Cancelar",
+    "invalidEmail": "Introduce una dirección de email válida.",
+    "genericError": "Algo ha salido mal. Inténtalo de nuevo.",
+    "checkInbox": "¡Revisa tu bandeja de entrada!",
+    "emailSentMessage": "Hemos enviado un enlace de verificación a <bold>{email}</bold>. Haz clic en el enlace para continuar con el proceso.",
+    "bioPrompt": "Añade este código a tu bio de {platform} para demostrar que eres el propietario:",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "bioRemovalNote": "Puedes eliminar el código de tu bio después de que se apruebe tu reclamación.",
+    "bioAdded": "Ya he añadido el código",
+    "submitting": "Enviando...",
+    "pendingReviewTitle": "Estamos verificando tu reclamación",
+    "pendingReviewMessage": "Comprobaremos tu bio de {platform} y te notificaremos por email cuando se apruebe.",
+    "claimedByOther": "Esta cuenta ya ha sido reclamada.",
+    "youOwnThis": "Esta página es tuya",
+    "addBadge": "Añade este badge a tu web:",
+    "copyEmbed": "Copiar código"
+  },
+  "search": {
+    "placeholder": "Buscar por nombre o @usuario...",
+    "thankYou": "¡Gracias!",
+    "notifyWhenAvailable": "Te avisaremos cuando esta cuenta esté disponible.",
+    "close": "Cerrar",
+    "cantFind": "¿No encuentras esta cuenta?",
+    "suggestPrompt": "Sugiérela y la añadiremos a nuestra base de datos.",
+    "emailOptional": "Tu email (opcional)",
+    "suggestButton": "Sugerir cuenta"
+  },
+  "sponsor": {
+    "advertise": "Anunciarse",
+    "spotsLeft": "{count}/20 espacios disponibles"
+  },
+  "categories": {
+    "Athlete": "Deportistas",
+    "Musician": "Músicos",
+    "Celebrity": "Celebridades",
+    "Content Creator": "Creadores de contenido",
+    "Actor": "Actores",
+    "Model": "Modelos",
+    "Comedian": "Comediantes",
+    "TV Presenter": "Presentadores de TV"
+  },
+  "email": {
+    "verifySubject": "Verifica tu reclamación de {name} en ValuePerFan",
+    "step1Title": "Paso 1: Verifica tu email",
+    "verifyButton": "Verificar email",
+    "claimIntro": "Has solicitado reclamar <bold>{name}</bold> (@{handle}) en {platform}.",
+    "step2Title": "Paso 2: Demuestra que eres el propietario",
+    "step2Prompt": "Después de verificar tu email, añade este código a tu bio de {platform}:",
+    "bioRemovalNote": "Puedes eliminar el código de tu bio después de que se apruebe tu reclamación.",
+    "ignoreMessage": "Si no has solicitado esto, puedes ignorar este email.",
+    "approvalSubject": "¡Tu reclamación de {name} ha sido aprobada!",
+    "approvalTitle": "¡Reclamación aprobada!",
+    "approvalMessage": "Tu reclamación de <bold>{name}</bold> (@{handle}) en {platform} ha sido verificada.",
+    "badgeAccess": "Ya puedes acceder a tu badge:",
+    "goToPage": "Ir a tu página",
+    "removeBioCode": "Ya puedes eliminar el código de verificación de tu bio de {platform} si aún no lo has hecho."
+  },
+  "languageSwitcher": {
+    "en": "EN",
+    "es": "ES",
+    "br": "BR"
+  }
+}

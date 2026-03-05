@@ -1,39 +1,66 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { getAccountsData, getAccount, getNeighbors } from "../../../../lib/data";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getAccountsData,
+  getAccount,
+  getNeighbors,
+} from "../../../../../lib/data";
 import {
   formatCurrency,
   formatVPF,
   formatFollowers,
-} from "../../../../lib/utils";
-import { categoryToSlug, categoryPluralLabel } from "../../../../lib/categories";
-import AccountAvatar from "../../../../components/AccountAvatar";
-import MiniRanking from "../../../../components/MiniRanking";
-import ClaimFlow from "../../../../components/ClaimFlow";
-import PlatformIcon from "../../../../components/PlatformIcon";
+} from "../../../../../lib/utils";
+import {
+  categoryToSlug,
+  categoryPluralLabel,
+} from "../../../../../lib/categories";
+import { locales } from "../../../../../i18n/config";
+import { Link } from "../../../../../i18n/navigation";
+import AccountAvatar from "../../../../../components/AccountAvatar";
+import MiniRanking from "../../../../../components/MiniRanking";
+import ClaimFlow from "../../../../../components/ClaimFlow";
+import PlatformIcon from "../../../../../components/PlatformIcon";
 
 export async function generateStaticParams() {
   const data = getAccountsData();
-  return data.accounts.map((account) => ({
-    platform: account.platform,
-    handle: account.slug,
-  }));
+  return locales.flatMap((locale) =>
+    data.accounts.map((account) => ({
+      locale,
+      platform: account.platform,
+      handle: account.slug,
+    }))
+  );
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ platform: string; handle: string }>;
+  params: Promise<{ locale: string; platform: string; handle: string }>;
 }) {
-  const { platform, handle } = await params;
+  const { locale, platform, handle } = await params;
   const account = getAccount(platform, handle);
-  if (!account) return { title: "Account Not Found" };
+  const t = await getTranslations({ locale, namespace: "account" });
+
+  if (!account) return { title: t("notFound") };
 
   const platformLabel =
     account.platform === "instagram" ? "Instagram" : "TikTok";
-  const title = `${account.name} (@${account.handle}) ${platformLabel} Value — ${formatVPF(account.valuePerFan)}/1K fans`;
-  const description = `See the real economic value of ${account.name}'s ${platformLabel} account. Value Per 1K Fans: ${formatVPF(account.valuePerFan)}. Total Value: ${formatCurrency(account.totalValue)}. Ranked #${account.rank.vpf} out of ${getAccountsData().meta.platforms[account.platform]} accounts.`;
-  const url = `https://valueperfan.com/account/${account.platform}/${account.slug}`;
+  const title = t("metaTitle", {
+    name: account.name,
+    handle: account.handle,
+    platform: platformLabel,
+    vpf: formatVPF(account.valuePerFan),
+  });
+  const description = t("metaDescription", {
+    name: account.name,
+    platform: platformLabel,
+    vpf: formatVPF(account.valuePerFan),
+    totalValue: formatCurrency(account.totalValue),
+    rank: account.rank.vpf,
+    total: getAccountsData().meta.platforms[account.platform],
+  });
+  const basePath = `/account/${account.platform}/${account.slug}`;
+  const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}${basePath}`;
 
   return {
     title,
@@ -45,13 +72,14 @@ export async function generateMetadata({
       siteName: "ValuePerFan",
       type: "profile",
     },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
+    twitter: { card: "summary", title, description },
     alternates: {
       canonical: url,
+      languages: {
+        en: `https://valueperfan.com${basePath}`,
+        es: `https://valueperfan.com/es${basePath}`,
+        "pt-BR": `https://valueperfan.com/br${basePath}`,
+      },
     },
   };
 }
@@ -59,15 +87,17 @@ export async function generateMetadata({
 export default async function AccountPage({
   params,
 }: {
-  params: Promise<{ platform: string; handle: string }>;
+  params: Promise<{ locale: string; platform: string; handle: string }>;
 }) {
-  const { platform, handle } = await params;
+  const { locale, platform, handle } = await params;
+  setRequestLocale(locale);
   const account = getAccount(platform, handle);
 
   if (!account) {
     notFound();
   }
 
+  const t = await getTranslations("account");
   const vpfNeighbors = getNeighbors(account, 3, "vpf");
   const tvNeighbors = getNeighbors(account, 3, "totalValue");
   const platformLabel =
@@ -76,8 +106,11 @@ export default async function AccountPage({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
-    name: `${account.name} - ${platformLabel} Value Per Fan`,
-    description: `Economic valuation of ${account.name}'s ${platformLabel} account`,
+    name: t("jsonLdName", { name: account.name, platform: platformLabel }),
+    description: t("jsonLdDescription", {
+      name: account.name,
+      platform: platformLabel,
+    }),
     mainEntity: {
       "@type": "Person",
       name: account.name,
@@ -96,7 +129,7 @@ export default async function AccountPage({
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-text-muted">
         <Link href="/" className="hover:text-primary transition-colors">
-          Rankings
+          {t("rankings")}
         </Link>
         <span className="mx-2">/</span>
         <Link
@@ -142,7 +175,7 @@ export default async function AccountPage({
                 rel="noopener noreferrer"
                 className="mt-1 inline-block text-sm text-primary hover:text-primary-dark transition-colors"
               >
-                View on {platformLabel} →
+                {t("viewOn", { platform: platformLabel })}
               </a>
             )}
           </div>
@@ -151,20 +184,20 @@ export default async function AccountPage({
         {/* Metrics Grid */}
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
           <MetricCard
-            label="Value Per 1K Fans"
+            label={t("valuePerFan")}
             value={formatVPF(account.valuePerFan)}
             highlight
           />
           <MetricCard
-            label="Total Value (Last 30 days)"
+            label={t("totalValueLabel")}
             value={formatCurrency(account.totalValue)}
           />
           <MetricCard
-            label="Followers"
+            label={t("followersLabel")}
             value={formatFollowers(account.followers)}
           />
           <MetricCard
-            label="Posts (Last 30 days)"
+            label={t("postsLabel")}
             value={account.posts.toLocaleString()}
           />
         </div>
@@ -172,13 +205,15 @@ export default async function AccountPage({
         {/* Ranking Positions */}
         <div className="mt-4 flex gap-4">
           <div className="flex-1 rounded-lg bg-primary-light px-4 py-3 text-center">
-            <p className="text-xs text-text-secondary">Rank by Value/1K Fans</p>
+            <p className="text-xs text-text-secondary">{t("rankByVpf")}</p>
             <p className="text-xl font-bold text-primary">
               #{account.rank.vpf}
             </p>
           </div>
           <div className="flex-1 rounded-lg bg-surface-alt px-4 py-3 text-center">
-            <p className="text-xs text-text-secondary">Rank by Total Value</p>
+            <p className="text-xs text-text-secondary">
+              {t("rankByTotalValue")}
+            </p>
             <p className="text-xl font-bold text-text">
               #{account.rank.totalValue}
             </p>
@@ -187,18 +222,10 @@ export default async function AccountPage({
 
         {/* PME Context */}
         <div className="mt-4 text-xs text-text-secondary leading-relaxed space-y-1.5">
-          <p>
-            This valuation represents what brands would pay in paid media to
-            match the results this content delivers organically.
-          </p>
-          <p>
-            Calculated using Paid Media Equivalence (PME), the standard used
-            across professional sports and entertainment.
-          </p>
+          <p>{t("pmeContext1")}</p>
+          <p>{t("pmeContext2")}</p>
           {account.platform === "instagram" && (
-            <p>
-              Instagram Stories are not included due to their ephemeral nature.
-            </p>
+            <p>{t("instagramStoriesNote")}</p>
           )}
         </div>
       </div>

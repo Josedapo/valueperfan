@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "../i18n/navigation";
 import type { Account } from "../lib/types";
 import { formatCurrency, formatVPF, formatFollowers } from "../lib/utils";
 import AccountAvatar from "./AccountAvatar";
@@ -19,6 +20,7 @@ export default function RankingTable({
   accounts: Account[];
   showCategoryFilter?: boolean;
 }) {
+  const t = useTranslations("ranking");
   const [platform, setPlatform] = useState<Platform>("instagram");
   const [metric, setMetric] = useState<Metric>("vpf");
   const [category, setCategory] = useState<string>("all");
@@ -110,7 +112,7 @@ export default function RankingTable({
               onChange={(e) => handleCategoryChange(e.target.value)}
               className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
-              <option value="all">All Categories</option>
+              <option value="all">{t("allCategories")}</option>
               {categories.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -130,7 +132,7 @@ export default function RankingTable({
                 : "text-text-secondary hover:bg-surface-alt"
             }`}
           >
-            Value Per 1K Fans
+            {t("valuePerFan")}
           </button>
           <button
             onClick={() => handleMetricChange("totalValue")}
@@ -140,7 +142,7 @@ export default function RankingTable({
                 : "text-text-secondary hover:bg-surface-alt"
             }`}
           >
-            Total Value
+            {t("totalValue")}
           </button>
         </div>
       </div>
@@ -151,23 +153,23 @@ export default function RankingTable({
           <thead>
             <tr className="border-b border-border bg-surface-alt text-left text-xs font-medium uppercase tracking-wider text-text-secondary">
               <th className="px-4 py-3 w-14">#</th>
-              <th className="px-4 py-3">Account</th>
+              <th className="px-4 py-3">{t("account")}</th>
               {showCategoryColumn && (
                 <th className="px-4 py-3 hidden sm:table-cell w-28">
-                  Category
+                  {t("category")}
                 </th>
               )}
               <th className="px-4 py-3 text-right hidden sm:table-cell w-28">
-                Followers
+                {t("followers")}
               </th>
               <th className="px-4 py-3 text-right font-bold text-primary w-28 sm:w-32">
                 {metric === "vpf" ? (
-                  "Value/1K Fans"
+                  t("valuePerFanShort")
                 ) : (
                   <>
-                    Total Value
+                    {t("totalValue")}
                     <span className="block text-[10px] font-normal italic text-text-muted normal-case tracking-normal">
-                      Last 30 days
+                      {t("last30days")}
                     </span>
                   </>
                 )}
@@ -231,7 +233,7 @@ export default function RankingTable({
       {totalPages > 1 && (
         <div className="mt-4 flex items-center justify-between">
           <p className="text-sm text-text-muted">
-            {filtered.length} accounts
+            {t("accounts", { count: filtered.length })}
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -239,7 +241,7 @@ export default function RankingTable({
               disabled={page === 1}
               className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Previous
+              {t("previous")}
             </button>
             <span className="text-sm text-text-secondary">
               {page} / {totalPages}
@@ -249,7 +251,7 @@ export default function RankingTable({
               disabled={page === totalPages}
               className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Next
+              {t("next")}
             </button>
           </div>
         </div>

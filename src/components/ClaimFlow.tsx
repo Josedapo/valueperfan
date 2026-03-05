@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface ClaimFlowProps {
   platform: string;
@@ -29,6 +30,7 @@ export default function ClaimFlow({
   vpf,
   rankVpf,
 }: ClaimFlowProps) {
+  const t = useTranslations("claim");
   const [state, setState] = useState<FlowState>("loading");
   const [email, setEmail] = useState("");
   const [bioCode, setBioCode] = useState("");
@@ -86,15 +88,15 @@ export default function ClaimFlow({
         }
         setError(
           data.error === "invalid_email"
-            ? "Please enter a valid email address."
-            : "Something went wrong. Please try again."
+            ? t("invalidEmail")
+            : t("genericError")
         );
         return;
       }
 
       setState("email_sent");
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("genericError"));
     } finally {
       setSubmitting(false);
     }
@@ -112,13 +114,13 @@ export default function ClaimFlow({
       });
 
       if (!res.ok) {
-        setError("Something went wrong. Please try again.");
+        setError(t("genericError"));
         return;
       }
 
       setState("pending_review");
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("genericError"));
     } finally {
       setSubmitting(false);
     }
@@ -160,7 +162,7 @@ export default function ClaimFlow({
         <div className="flex items-center gap-2">
           {starIcon}
           <h3 className="text-sm font-semibold text-primary">
-            Embeddable Badge
+            {t("badgeTitle")}
           </h3>
         </div>
         {badgePill}
@@ -168,19 +170,19 @@ export default function ClaimFlow({
 
       {/* State-specific content */}
       {state === "loading" && (
-        <p className="text-xs text-primary-dark">Checking claim status...</p>
+        <p className="text-xs text-primary-dark">{t("checking")}</p>
       )}
 
       {state === "unclaimed" && (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <p className="text-xs text-primary-dark font-medium">
-            Claim this account to get your embeddable badge
+            {t("claimCta")}
           </p>
           <button
             onClick={() => setState("email_form")}
             className="shrink-0 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors"
           >
-            Claim this Account
+            {t("claimButton")}
           </button>
         </div>
       )}
@@ -188,7 +190,7 @@ export default function ClaimFlow({
       {state === "email_form" && (
         <form onSubmit={handleSubmitEmail} className="space-y-3">
           <p className="text-xs text-primary-dark font-medium">
-            Enter your email to start the claim process for {name}
+            {t("emailPrompt", { name })}
           </p>
           <div className="flex gap-2">
             <input
@@ -204,7 +206,7 @@ export default function ClaimFlow({
               disabled={submitting}
               className="shrink-0 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors disabled:opacity-50"
             >
-              {submitting ? "Sending..." : "Send Verification"}
+              {submitting ? t("sending") : t("sendVerification")}
             </button>
             <button
               type="button"
@@ -214,7 +216,7 @@ export default function ClaimFlow({
               }}
               className="shrink-0 rounded-lg border border-primary/30 px-3 py-2 text-xs font-medium text-primary-dark hover:bg-primary/10 transition-colors"
             >
-              Cancel
+              {t("cancel")}
             </button>
           </div>
           {error && <p className="text-xs text-red-600">{error}</p>}
@@ -224,12 +226,13 @@ export default function ClaimFlow({
       {state === "email_sent" && (
         <div className="space-y-1">
           <p className="text-xs text-primary-dark font-semibold">
-            Check your inbox!
+            {t("checkInbox")}
           </p>
           <p className="text-xs text-primary-dark">
-            We sent a verification link to{" "}
-            <span className="font-medium">{email}</span>. Click the link to
-            continue the claim process.
+            {t.rich("emailSentMessage", {
+              email,
+              bold: (chunks) => <span className="font-medium">{chunks}</span>,
+            })}
           </p>
         </div>
       )}
@@ -237,7 +240,7 @@ export default function ClaimFlow({
       {state === "pending_bio" && (
         <div className="space-y-3">
           <p className="text-xs text-primary-dark font-medium">
-            Add this code to your {platformLabel} bio to prove ownership:
+            {t("bioPrompt", { platform: platformLabel })}
           </p>
           <div className="flex items-center gap-2">
             <code className="flex-1 rounded-lg bg-surface border border-primary/20 px-4 py-2.5 text-base font-bold font-mono tracking-wider text-primary text-center">
@@ -247,19 +250,17 @@ export default function ClaimFlow({
               onClick={() => copyToClipboard(bioCode, "bio")}
               className="shrink-0 rounded-lg border border-primary/30 px-3 py-2.5 text-xs font-medium text-primary-dark hover:bg-primary/10 transition-colors"
             >
-              {copied === "bio" ? "Copied!" : "Copy"}
+              {copied === "bio" ? t("copied") : t("copy")}
             </button>
           </div>
-          <p className="text-xs text-text-muted">
-            You can remove the code from your bio after your claim is approved.
-          </p>
+          <p className="text-xs text-text-muted">{t("bioRemovalNote")}</p>
           <div className="flex gap-2">
             <button
               onClick={handleConfirmBio}
               disabled={submitting}
               className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors disabled:opacity-50"
             >
-              {submitting ? "Submitting..." : "I've added the code"}
+              {submitting ? t("submitting") : t("bioAdded")}
             </button>
           </div>
           {error && <p className="text-xs text-red-600">{error}</p>}
@@ -269,18 +270,17 @@ export default function ClaimFlow({
       {state === "pending_review" && (
         <div className="space-y-1">
           <p className="text-xs text-primary-dark font-semibold">
-            We&apos;re verifying your claim
+            {t("pendingReviewTitle")}
           </p>
           <p className="text-xs text-primary-dark">
-            We&apos;ll check your {platformLabel} bio and notify you by email
-            once your claim is approved.
+            {t("pendingReviewMessage", { platform: platformLabel })}
           </p>
         </div>
       )}
 
       {state === "claimed_by_other" && (
         <p className="text-xs text-primary-dark font-medium">
-          This account has been claimed.
+          {t("claimedByOther")}
         </p>
       )}
 
@@ -295,11 +295,11 @@ export default function ClaimFlow({
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
             </svg>
             <p className="text-xs text-primary-dark font-semibold">
-              You own this page
+              {t("youOwnThis")}
             </p>
           </div>
           <p className="text-xs text-primary-dark font-medium">
-            Add this badge to your website:
+            {t("addBadge")}
           </p>
           <div className="relative">
             <pre className="rounded-lg bg-surface border border-primary/20 px-4 py-3 text-xs font-mono text-text overflow-x-auto whitespace-pre-wrap break-all">
@@ -310,7 +310,7 @@ export default function ClaimFlow({
             onClick={() => copyToClipboard(embedCode, "embed")}
             className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors"
           >
-            {copied === "embed" ? "Copied!" : "Copy Embed Code"}
+            {copied === "embed" ? t("copied") : t("copyEmbed")}
           </button>
         </div>
       )}

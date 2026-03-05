@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "../i18n/navigation";
 import Fuse from "fuse.js";
 import type { SearchEntry } from "../lib/types";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
 
 export default function SearchBar() {
+  const t = useTranslations("search");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchEntry[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -81,7 +83,7 @@ export default function SearchBar() {
           onFocus={() => {
             if (results.length > 0 || showSuggest) setIsOpen(true);
           }}
-          placeholder="Search by name or @handle..."
+          placeholder={t("placeholder")}
           className="w-full rounded-lg border border-border bg-surface px-4 py-3 pl-10 text-sm placeholder-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <svg
@@ -159,6 +161,7 @@ function SuggestForm({
   query: string;
   onClose: () => void;
 }) {
+  const t = useTranslations("search");
   const [platform, setPlatform] = useState<"instagram" | "tiktok">("instagram");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -176,15 +179,15 @@ function SuggestForm({
   if (submitted) {
     return (
       <div className="p-4 text-center">
-        <p className="text-sm font-medium text-primary">Thank you!</p>
+        <p className="text-sm font-medium text-primary">{t("thankYou")}</p>
         <p className="mt-1 text-xs text-text-secondary">
-          We&apos;ll notify you when this account is available.
+          {t("notifyWhenAvailable")}
         </p>
         <button
           onClick={onClose}
           className="mt-2 text-xs text-text-muted hover:text-text"
         >
-          Close
+          {t("close")}
         </button>
       </div>
     );
@@ -192,11 +195,9 @@ function SuggestForm({
 
   return (
     <div className="p-4">
-      <p className="text-sm font-medium text-text">
-        Can&apos;t find this account?
-      </p>
+      <p className="text-sm font-medium text-text">{t("cantFind")}</p>
       <p className="mt-1 text-xs text-text-secondary">
-        Suggest it and we&apos;ll add it to our database.
+        {t("suggestPrompt")}
       </p>
       <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-2">
         <div className="flex gap-2">
@@ -221,14 +222,14 @@ function SuggestForm({
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Your email (optional)"
+          placeholder={t("emailOptional")}
           className="rounded border border-border px-3 py-1.5 text-sm placeholder-text-muted"
         />
         <button
           type="submit"
           className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark transition-colors"
         >
-          Suggest Account
+          {t("suggestButton")}
         </button>
       </form>
     </div>

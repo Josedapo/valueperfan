@@ -1,4 +1,8 @@
+import { useTranslations } from "next-intl";
+
 export default function Footer() {
+  const t = useTranslations("footer");
+
   return (
     <footer className="border-t border-border bg-surface py-8 mt-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -8,13 +12,10 @@ export default function Footer() {
               Value<span className="text-primary">Per</span>Fan
             </p>
             <p className="mt-1 text-xs text-text-muted">
-              Objective valuations powered by Paid Media Equivalence — the
-              real cost of achieving the same results through paid media.
+              {t("description")}
             </p>
           </div>
-          <p className="text-xs text-text-muted shrink-0">
-            &copy;2026 ValuePerFan
-          </p>
+          <p className="text-xs text-text-muted shrink-0">{t("copyright")}</p>
         </div>
       </div>
     </footer>

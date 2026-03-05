@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "title": "ValuePerFan — The real value of social media followers",
+    "description": "Value Per Fan measures the real economic value each follower generates. Objective valuations powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
+    "titleTemplate": "%s | ValuePerFan"
+  },
+  "header": {
+    "tagline": "The <accent>real value</accent> of social media followers"
+  },
+  "footer": {
+    "description": "Objective valuations powered by Paid Media Equivalence — the real cost of achieving the same results through paid media.",
+    "copyright": "\u00a92026 ValuePerFan"
+  },
+  "home": {
+    "title": "The <highlight>real value</highlight> of social media followers",
+    "subtitle": "Value Per Fan measures the real economic value each follower generates. Not followers. Not likes. Not arbitrary scores. <highlight>Real money.</highlight>",
+    "pmeTitle": "Total Value (Paid Media Equivalence)",
+    "pmeDescription": "Every valuation on ValuePerFan represents what a brand would spend on paid media campaigns to achieve the same results that organic content delivers. Not a guess. Not a score. The real market value.",
+    "vpfTitle": "Value Per 1K Fans",
+    "vpfDescription": "Total value divided by every 1,000 followers. This simple metric reveals who generates the most value per follower — regardless of size. A creator with 10,000 engaged followers can rank above a celebrity with millions.",
+    "disclaimer": "All valuations are estimates based on public data and PME (Paid Media Equivalence) proprietary methodology."
+  },
+  "ranking": {
+    "titleSuffix": "Value Ranking",
+    "subtitle": "The real economic value of {category} on social media. Powered by Paid Media Equivalence.",
+    "metaTitle": "{category} Social Media Value Ranking",
+    "metaDescription": "See the real economic value of {category} on social media. Rankings powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
+    "allCategories": "All Categories",
+    "valuePerFan": "Value Per 1K Fans",
+    "valuePerFanShort": "Value/1K Fans",
+    "totalValue": "Total Value",
+    "last30days": "Last 30 days",
+    "followers": "Followers",
+    "category": "Category",
+    "account": "Account",
+    "accounts": "{count} accounts",
+    "previous": "Previous",
+    "next": "Next",
+    "notFound": "Category Not Found"
+  },
+  "account": {
+    "rankings": "Rankings",
+    "viewOn": "View on {platform} →",
+    "valuePerFan": "Value Per 1K Fans",
+    "totalValueLabel": "Total Value (Last 30 days)",
+    "followersLabel": "Followers",
+    "postsLabel": "Posts (Last 30 days)",
+    "rankByVpf": "Rank by Value/1K Fans",
+    "rankByTotalValue": "Rank by Total Value",
+    "pmeContext1": "This valuation represents what brands would pay in paid media to match the results this content delivers organically.",
+    "pmeContext2": "Calculated using Paid Media Equivalence (PME), the standard used across professional sports and entertainment.",
+    "instagramStoriesNote": "Instagram Stories are not included due to their ephemeral nature.",
+    "neighborhoodVpf": "Ranking Neighbors (Value Per 1K Fans)",
+    "neighborhoodTv": "Ranking Neighbors (Total Value)",
+    "notFound": "Account Not Found",
+    "metaTitle": "{name} (@{handle}) {platform} Value — {vpf}/1K fans",
+    "metaDescription": "See the real economic value of {name}'s {platform} account. Value Per 1K Fans: {vpf}. Total Value: {totalValue}. Ranked #{rank} out of {total} accounts.",
+    "jsonLdName": "{name} - {platform} Value Per Fan",
+    "jsonLdDescription": "Economic valuation of {name}'s {platform} account"
+  },
+  "claim": {
+    "badgeTitle": "Embeddable Badge",
+    "checking": "Checking claim status...",
+    "claimCta": "Claim this account to get your embeddable badge",
+    "claimButton": "Claim this Account",
+    "emailPrompt": "Enter your email to start the claim process for {name}",
+    "sendVerification": "Send Verification",
+    "sending": "Sending...",
+    "cancel": "Cancel",
+    "invalidEmail": "Please enter a valid email address.",
+    "genericError": "Something went wrong. Please try again.",
+    "checkInbox": "Check your inbox!",
+    "emailSentMessage": "We sent a verification link to <bold>{email}</bold>. Click the link to continue the claim process.",
+    "bioPrompt": "Add this code to your {platform} bio to prove ownership:",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "bioRemovalNote": "You can remove the code from your bio after your claim is approved.",
+    "bioAdded": "I've added the code",
+    "submitting": "Submitting...",
+    "pendingReviewTitle": "We're verifying your claim",
+    "pendingReviewMessage": "We'll check your {platform} bio and notify you by email once your claim is approved.",
+    "claimedByOther": "This account has been claimed.",
+    "youOwnThis": "You own this page",
+    "addBadge": "Add this badge to your website:",
+    "copyEmbed": "Copy Embed Code"
+  },
+  "search": {
+    "placeholder": "Search by name or @handle...",
+    "thankYou": "Thank you!",
+    "notifyWhenAvailable": "We'll notify you when this account is available.",
+    "close": "Close",
+    "cantFind": "Can't find this account?",
+    "suggestPrompt": "Suggest it and we'll add it to our database.",
+    "emailOptional": "Your email (optional)",
+    "suggestButton": "Suggest Account"
+  },
+  "sponsor": {
+    "advertise": "Advertise",
+    "spotsLeft": "{count}/20 spots left"
+  },
+  "categories": {
+    "Athlete": "Athletes",
+    "Musician": "Musicians",
+    "Celebrity": "Celebrities",
+    "Content Creator": "Content Creators",
+    "Actor": "Actors",
+    "Model": "Models",
+    "Comedian": "Comedians",
+    "TV Presenter": "TV Presenters"
+  },
+  "email": {
+    "verifySubject": "Verify your claim for {name} on ValuePerFan",
+    "step1Title": "Step 1: Verify your email",
+    "verifyButton": "Verify Email",
+    "claimIntro": "You requested to claim <bold>{name}</bold> (@{handle}) on {platform}.",
+    "step2Title": "Step 2: Prove you own the account",
+    "step2Prompt": "After verifying your email, add this code to your {platform} bio:",
+    "bioRemovalNote": "You can remove the code from your bio after your claim is approved.",
+    "ignoreMessage": "If you didn't request this, you can safely ignore this email.",
+    "approvalSubject": "Your claim for {name} has been approved!",
+    "approvalTitle": "Claim Approved!",
+    "approvalMessage": "Your claim for <bold>{name}</bold> (@{handle}) on {platform} has been verified.",
+    "badgeAccess": "You can now access your embeddable badge:",
+    "goToPage": "Go to your page",
+    "removeBioCode": "You can now remove the verification code from your {platform} bio if you haven't already."
+  },
+  "languageSwitcher": {
+    "en": "EN",
+    "es": "ES",
+    "br": "BR"
+  }
+}

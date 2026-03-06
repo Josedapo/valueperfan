@@ -21,16 +21,23 @@ import MiniRanking from "../../../../../components/MiniRanking";
 import ClaimFlow from "../../../../../components/ClaimFlow";
 import PlatformIcon from "../../../../../components/PlatformIcon";
 
+// Pre-render top 200 accounts (by VPF rank) per locale for fast initial load + SEO.
+// Remaining accounts are generated on-demand via ISR and cached for 24h.
 export async function generateStaticParams() {
   const data = getAccountsData();
+  const top = data.accounts
+    .filter((a) => a.rank.vpf <= 200);
   return locales.flatMap((locale) =>
-    data.accounts.map((account) => ({
+    top.map((account) => ({
       locale,
       platform: account.platform,
       handle: account.slug,
     }))
   );
 }
+
+export const dynamicParams = true;
+export const revalidate = 86400; // 24 hours
 
 export async function generateMetadata({
   params,

@@ -1,13 +1,12 @@
 import accountsData from "../data/accounts.json";
 import type { Account, AccountsData } from "./types";
+import type { Platform, Metric } from "./platform";
 
 export function getAccountsData(): AccountsData {
   return accountsData as AccountsData;
 }
 
-export function getAccountsByPlatform(
-  platform: "instagram" | "tiktok"
-): Account[] {
+export function getAccountsByPlatform(platform: Platform): Account[] {
   const data = getAccountsData();
   return data.accounts.filter((a) => a.platform === platform);
 }
@@ -30,7 +29,7 @@ export function getAccountsByCategory(category: string): Account[] {
 export function getNeighbors(
   account: Account,
   count: number = 3,
-  metric: "vpf" | "totalValue" = "vpf"
+  metric: Metric = "vpf"
 ): { above: Account[]; below: Account[] } {
   const platformAccounts = getAccountsByPlatform(account.platform);
   const sorted = [...platformAccounts].sort((a, b) =>

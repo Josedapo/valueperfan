@@ -1,13 +1,15 @@
 import { Pool } from "@neondatabase/serverless";
+import { env } from "./config";
+import type { Platform } from "./platform";
 
 export interface ClaimRow {
   id: number;
-  platform: string;
+  platform: Platform;
   handle: string;
   email: string;
   token: string;
   bio_code: string;
-  status: string;
+  status: "pending_email" | "pending_bio" | "pending_review" | "verified";
   created_at: string;
   email_verified_at: string | null;
   review_requested_at: string | null;
@@ -18,9 +20,7 @@ let pool: Pool | null = null;
 
 function getPool(): Pool {
   if (!pool) {
-    const url = process.env.POSTGRES_URL;
-    if (!url) throw new Error("POSTGRES_URL is not set");
-    pool = new Pool({ connectionString: url });
+    pool = new Pool({ connectionString: env.postgresUrl });
   }
   return pool;
 }

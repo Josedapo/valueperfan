@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAccountsData } from "../lib/data";
 import { getCategorySlugs } from "../lib/categories";
-
-const BASE_URL = "https://valueperfan.com";
+import { BASE_URL } from "../lib/config";
 
 function localizedUrl(path: string, locale: string): string {
   return locale === "en"

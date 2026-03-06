@@ -3,11 +3,12 @@ import { query, type ClaimRow } from "../../../../lib/db";
 import { verifyCookie } from "../../../../lib/cookies";
 import { getAccount } from "../../../../lib/data";
 import { sendReviewNotification } from "../../../../lib/email";
+import type { Platform } from "../../../../lib/platform";
 
 export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
-  let body: { platform?: string; handle?: string };
+  let body: { platform?: Platform; handle?: string };
   try {
     body = await request.json();
   } catch {

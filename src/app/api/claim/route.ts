@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import { query, type ClaimRow } from "../../../lib/db";
 import { getAccount } from "../../../lib/data";
 import { sendVerificationEmail } from "../../../lib/email";
+import type { Platform } from "../../../lib/platform";
 
 export const runtime = "nodejs";
 
@@ -17,7 +18,7 @@ function generateBioCode(): string {
 }
 
 export async function POST(request: NextRequest) {
-  let body: { platform?: string; handle?: string; email?: string };
+  let body: { platform?: Platform; handle?: string; email?: string };
   try {
     body = await request.json();
   } catch {

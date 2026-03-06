@@ -3,10 +3,9 @@
 import { useTranslations } from "next-intl";
 import { useRouter } from "../i18n/navigation";
 import type { Account } from "../lib/types";
+import type { Metric } from "../lib/platform";
 import { formatVPF, formatCurrency } from "../lib/utils";
 import AccountAvatar from "./AccountAvatar";
-
-type Metric = "vpf" | "totalValue";
 
 export default function MiniRanking({
   above,

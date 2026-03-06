@@ -14,6 +14,8 @@ import {
   categoryToSlug,
   categoryPluralLabel,
 } from "../../../../../lib/categories";
+import { platformLabel } from "../../../../../lib/platform";
+import { SSG_TOP_ACCOUNTS } from "../../../../../lib/config";
 import { locales } from "../../../../../i18n/config";
 import { Link } from "../../../../../i18n/navigation";
 import AccountAvatar from "../../../../../components/AccountAvatar";
@@ -21,12 +23,12 @@ import MiniRanking from "../../../../../components/MiniRanking";
 import ClaimFlow from "../../../../../components/ClaimFlow";
 import PlatformIcon from "../../../../../components/PlatformIcon";
 
-// Pre-render top 200 accounts (by VPF rank) per locale for fast initial load + SEO.
-// Remaining accounts are generated on-demand via ISR and cached for 24h.
+// Pre-render top accounts (by VPF rank) per locale for fast initial load + SEO.
+// Remaining accounts are generated on-demand via ISR.
 export async function generateStaticParams() {
   const data = getAccountsData();
   const top = data.accounts
-    .filter((a) => a.rank.vpf <= 200);
+    .filter((a) => a.rank.vpf <= SSG_TOP_ACCOUNTS);
   return locales.flatMap((locale) =>
     top.map((account) => ({
       locale,
@@ -50,17 +52,16 @@ export async function generateMetadata({
 
   if (!account) return { title: t("notFound") };
 
-  const platformLabel =
-    account.platform === "instagram" ? "Instagram" : "TikTok";
+  const pLabel = platformLabel(account.platform);
   const title = t("metaTitle", {
     name: account.name,
     handle: account.handle,
-    platform: platformLabel,
+    platform: pLabel,
     vpf: formatVPF(account.valuePerFan),
   });
   const description = t("metaDescription", {
     name: account.name,
-    platform: platformLabel,
+    platform: pLabel,
     vpf: formatVPF(account.valuePerFan),
     totalValue: formatCurrency(account.totalValue),
     rank: account.rank.vpf,
@@ -107,16 +108,15 @@ export default async function AccountPage({
   const t = await getTranslations("account");
   const vpfNeighbors = getNeighbors(account, 3, "vpf");
   const tvNeighbors = getNeighbors(account, 3, "totalValue");
-  const platformLabel =
-    account.platform === "instagram" ? "Instagram" : "TikTok";
+  const pLabel = platformLabel(account.platform);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
-    name: t("jsonLdName", { name: account.name, platform: platformLabel }),
+    name: t("jsonLdName", { name: account.name, platform: pLabel }),
     description: t("jsonLdDescription", {
       name: account.name,
-      platform: platformLabel,
+      platform: pLabel,
     }),
     mainEntity: {
       "@type": "Person",
@@ -146,7 +146,7 @@ export default async function AccountPage({
           {categoryPluralLabel(account.category)}
         </Link>
         <span className="mx-2">/</span>
-        <span className="capitalize">{platformLabel}</span>
+        <span className="capitalize">{pLabel}</span>
         <span className="mx-2">/</span>
         <span className="text-text">{account.name}</span>
       </nav>
@@ -182,7 +182,7 @@ export default async function AccountPage({
                 rel="noopener noreferrer"
                 className="mt-1 inline-block text-sm text-primary hover:text-primary-dark transition-colors"
               >
-                {t("viewOn", { platform: platformLabel })}
+                {t("viewOn", { platform: pLabel })}
               </a>
             )}
           </div>

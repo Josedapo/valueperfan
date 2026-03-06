@@ -1,6 +1,8 @@
+import type { Platform } from "./platform";
+
 export interface Account {
   handle: string;
-  platform: "instagram" | "tiktok";
+  platform: Platform;
   name: string;
   avatarUrl: string;
   followers: number;
@@ -20,10 +22,7 @@ export interface AccountsData {
   meta: {
     lastUpdated: string;
     totalAccounts: number;
-    platforms: {
-      instagram: number;
-      tiktok: number;
-    };
+    platforms: Record<Platform, number>;
   };
   accounts: Account[];
 }
@@ -31,7 +30,7 @@ export interface AccountsData {
 export interface SearchEntry {
   handle: string;
   name: string;
-  platform: "instagram" | "tiktok";
+  platform: Platform;
   slug: string;
   avatarUrl: string;
   category: string;

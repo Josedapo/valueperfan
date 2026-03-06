@@ -1,11 +1,12 @@
 import Image from "next/image";
+import { platformLabel, type Platform } from "../lib/platform";
 
 export default function PlatformIcon({
   platform,
   size = 16,
   className = "",
 }: {
-  platform: "instagram" | "tiktok";
+  platform: Platform;
   size?: number;
   className?: string;
 }) {
@@ -13,12 +14,11 @@ export default function PlatformIcon({
     platform === "instagram"
       ? "/images/icon-instagram.png"
       : "/images/icon-tiktok.png";
-  const alt = platform === "instagram" ? "Instagram" : "TikTok";
 
   return (
     <Image
       src={src}
-      alt={alt}
+      alt={platformLabel(platform)}
       width={size}
       height={size}
       className={`inline-block object-contain ${className}`}

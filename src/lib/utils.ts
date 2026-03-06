@@ -27,13 +27,3 @@ export function formatFollowers(value: number): string {
   }
   return value.toString();
 }
-
-export function platformUrl(
-  platform: "instagram" | "tiktok",
-  handle: string
-): string {
-  if (platform === "tiktok") {
-    return `https://www.tiktok.com/@${handle}`;
-  }
-  return `https://www.instagram.com/${handle}/`;
-}

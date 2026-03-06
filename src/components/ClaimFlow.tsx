@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { platformLabel, type Platform } from "../lib/platform";
 
 interface ClaimFlowProps {
-  platform: string;
+  platform: Platform;
   handle: string;
   slug: string;
   name: string;
@@ -38,7 +39,7 @@ export default function ClaimFlow({
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState<"bio" | "embed" | null>(null);
 
-  const platformLabel = platform === "instagram" ? "Instagram" : "TikTok";
+  const pLabel = platformLabel(platform);
 
   const checkStatus = useCallback(async () => {
     try {
@@ -240,7 +241,7 @@ export default function ClaimFlow({
       {state === "pending_bio" && (
         <div className="space-y-3">
           <p className="text-xs text-primary-dark font-medium">
-            {t("bioPrompt", { platform: platformLabel })}
+            {t("bioPrompt", { platform: pLabel })}
           </p>
           <div className="flex items-center gap-2">
             <code className="flex-1 rounded-lg bg-surface border border-primary/20 px-4 py-2.5 text-base font-bold font-mono tracking-wider text-primary text-center">
@@ -273,7 +274,7 @@ export default function ClaimFlow({
             {t("pendingReviewTitle")}
           </p>
           <p className="text-xs text-primary-dark">
-            {t("pendingReviewMessage", { platform: platformLabel })}
+            {t("pendingReviewMessage", { platform: pLabel })}
           </p>
         </div>
       )}

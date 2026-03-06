@@ -1,9 +1,8 @@
 import { createHmac } from "node:crypto";
+import { env, COOKIE_MAX_AGE } from "./config";
 
 function getSecret(): string {
-  const secret = process.env.CLAIM_SECRET;
-  if (!secret) throw new Error("CLAIM_SECRET is not set");
-  return secret;
+  return env.claimSecret;
 }
 
 function hmac(data: string): string {
@@ -34,7 +33,7 @@ export function verifyCookie(value: string): string | null {
 
 export function getSetCookieHeader(email: string): string {
   const value = signCookie(email);
-  const maxAge = 365 * 24 * 60 * 60; // 1 year
+  const maxAge = COOKIE_MAX_AGE;
   return `vpf_session=${value}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${maxAge}`;
 }
 

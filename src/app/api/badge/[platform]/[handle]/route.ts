@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAccount } from "../../../../../lib/data";
 import { formatVPF } from "../../../../../lib/utils";
+import { CACHE_BADGE_SVG } from "../../../../../lib/config";
 
 export async function GET(
   _request: NextRequest,
@@ -17,7 +18,6 @@ export async function GET(
   const rank = `#${account.rank.vpf}`;
   const label = "ValuePerFan";
 
-  // Calculate widths based on text
   const labelWidth = label.length * 7.5 + 16;
   const vpfText = `${vpf}/1K`;
   const vpfWidth = vpfText.length * 7 + 16;
@@ -45,7 +45,7 @@ export async function GET(
   return new NextResponse(svg, {
     headers: {
       "Content-Type": "image/svg+xml",
-      "Cache-Control": "public, max-age=86400, s-maxage=86400",
+      "Cache-Control": CACHE_BADGE_SVG,
     },
   });
 }

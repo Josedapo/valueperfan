@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "../i18n/navigation";
 import Fuse from "fuse.js";
 import type { SearchEntry } from "../lib/types";
+import type { Platform } from "../lib/platform";
+import { SEARCH_RESULTS_LIMIT, SEARCH_DEBOUNCE_MS, SEARCH_MIN_CHARS } from "../lib/config";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
 
@@ -49,14 +51,14 @@ export default function SearchBar() {
   const handleSearch = useCallback(
     (value: string) => {
       setQuery(value);
-      if (!fuse || value.length < 2) {
+      if (!fuse || value.length < SEARCH_MIN_CHARS) {
         setResults([]);
         setIsOpen(false);
         setShowSuggest(false);
         return;
       }
 
-      const searchResults = fuse.search(value, { limit: 8 });
+      const searchResults = fuse.search(value, { limit: SEARCH_RESULTS_LIMIT });
       const items = searchResults.map((r) => r.item);
       setResults(items);
       setIsOpen(true);
@@ -69,7 +71,7 @@ export default function SearchBar() {
   useEffect(() => {
     const timer = setTimeout(() => {
       handleSearch(query);
-    }, 200);
+    }, SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(timer);
   }, [query, handleSearch]);
 
@@ -162,7 +164,7 @@ function SuggestForm({
   onClose: () => void;
 }) {
   const t = useTranslations("search");
-  const [platform, setPlatform] = useState<"instagram" | "tiktok">("instagram");
+  const [platform, setPlatform] = useState<Platform>("instagram");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
@@ -210,7 +212,7 @@ function SuggestForm({
           <select
             value={platform}
             onChange={(e) =>
-              setPlatform(e.target.value as "instagram" | "tiktok")
+              setPlatform(e.target.value as Platform)
             }
             className="rounded border border-border bg-surface px-2 py-1.5 text-sm"
           >

@@ -4,14 +4,11 @@ import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "../i18n/navigation";
 import type { Account } from "../lib/types";
+import type { Platform, Metric } from "../lib/platform";
 import { formatCurrency, formatVPF, formatFollowers } from "../lib/utils";
+import { ITEMS_PER_PAGE } from "../lib/config";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
-
-type Platform = "instagram" | "tiktok";
-type Metric = "vpf" | "totalValue";
-
-const ITEMS_PER_PAGE = 50;
 
 export default function RankingTable({
   accounts,

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { CONTACT_EMAIL } from "../lib/config";
 
 export function SponsorCard({
   name,
@@ -41,7 +42,7 @@ export function AdvertiseSlot() {
 
   return (
     <a
-      href="mailto:jose.poveda@horizm.com"
+      href={`mailto:${CONTACT_EMAIL}`}
       className="group block rounded-lg border-2 border-dashed border-text-muted p-4 hover:border-primary transition-colors text-center"
     >
       <svg
@@ -98,7 +99,7 @@ export function MobileSponsorBar() {
           </a>
         ))}
         <a
-          href="mailto:jose.poveda@horizm.com"
+          href={`mailto:${CONTACT_EMAIL}`}
           className="flex items-center gap-1.5 shrink-0 rounded-md border-2 border-dashed border-text-muted px-3 py-1.5 text-text-muted hover:border-primary hover:text-primary transition-colors"
         >
           <svg

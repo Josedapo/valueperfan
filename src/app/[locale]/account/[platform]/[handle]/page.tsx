@@ -212,18 +212,18 @@ export default async function AccountPage({
         <div className="mt-5 grid grid-cols-2 gap-3">
           <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
             <p className="text-xs text-text-secondary">
-              {t("valuePerFan")}
-            </p>
-            <p className="mt-1 text-2xl font-bold text-primary">
-              {formatVPF(account.valuePerFan)}
-            </p>
-          </div>
-          <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
-            <p className="text-xs text-text-secondary">
               {t("totalValueLabel")}
             </p>
             <p className="mt-1 text-2xl font-bold text-primary">
               {formatCurrency(account.totalValue)}
+            </p>
+          </div>
+          <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
+            <p className="text-xs text-text-secondary">
+              {t("valuePerFan")}
+            </p>
+            <p className="mt-1 text-2xl font-bold text-primary">
+              {formatVPF(account.valuePerFan)}
             </p>
           </div>
         </div>
@@ -267,16 +267,16 @@ export default async function AccountPage({
         </h2>
         <div className="grid gap-6 sm:grid-cols-2">
           <MiniRanking
-            above={vpfNeighbors.above}
-            current={account}
-            below={vpfNeighbors.below}
-            metric="vpf"
-          />
-          <MiniRanking
             above={tvNeighbors.above}
             current={account}
             below={tvNeighbors.below}
             metric="totalValue"
+          />
+          <MiniRanking
+            above={vpfNeighbors.above}
+            current={account}
+            below={vpfNeighbors.below}
+            metric="vpf"
           />
         </div>
 
@@ -289,18 +289,18 @@ export default async function AccountPage({
             </h3>
             <div className="grid gap-6 sm:grid-cols-2">
               <MiniRanking
-                above={countryVpf.above}
-                current={account}
-                below={countryVpf.below}
-                metric="vpf"
-                startRank={countryVpf.currentRank - countryVpf.above.length}
-              />
-              <MiniRanking
                 above={countryTv.above}
                 current={account}
                 below={countryTv.below}
                 metric="totalValue"
                 startRank={countryTv.currentRank - countryTv.above.length}
+              />
+              <MiniRanking
+                above={countryVpf.above}
+                current={account}
+                below={countryVpf.below}
+                metric="vpf"
+                startRank={countryVpf.currentRank - countryVpf.above.length}
               />
             </div>
           </div>

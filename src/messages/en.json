@@ -36,7 +36,7 @@
     "accounts": "{count} accounts",
     "previous": "Previous",
     "next": "Next",
-    "countryTitle": "{country} — Social Media Economic Value Ranking",
+    "countryTitle": "{country} — <highlight>Real value</highlight> of social media followers",
     "countryMetaTitle": "{country} — Social Media Economic Value Ranking",
     "countryMetaDescription": "See the real economic value of social media accounts in {country}. Rankings powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
     "countrySubtitle": "The real economic value of social media accounts in {country}. Powered by Paid Media Equivalence.",

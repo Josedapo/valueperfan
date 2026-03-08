@@ -65,7 +65,12 @@ export default async function CountryRankingPage({
     <div className="flex flex-col gap-8">
       <section className="text-center py-6">
         <h1 className="text-3xl sm:text-4xl font-bold text-text">
-          {t("countryTitle", { country: countryInfo.name })}
+          {t.rich("countryTitle", {
+            country: countryInfo.name,
+            highlight: (chunks) => (
+              <span className="text-primary">{chunks}</span>
+            ),
+          })}
         </h1>
         <p className="mt-3 text-lg text-text-secondary max-w-2xl mx-auto">
           {t("countrySubtitle", { country: countryInfo.name })}

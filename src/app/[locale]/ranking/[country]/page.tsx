@@ -1,36 +1,31 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAccountsData } from "../../../../lib/data";
-import {
-  slugToCategory,
-  getCategorySlugs,
-  categoryPluralLabel,
-} from "../../../../lib/categories";
+import { getCountries, slugToCountry } from "../../../../lib/countries";
 import { locales } from "../../../../i18n/config";
 import RankingTable from "../../../../components/RankingTable";
 import SearchBar from "../../../../components/SearchBar";
 
 export async function generateStaticParams() {
-  const categorySlugs = getCategorySlugs();
+  const countries = getCountries();
   return locales.flatMap((locale) =>
-    categorySlugs.map(({ slug }) => ({ locale, category: slug }))
+    countries.map(({ slug }) => ({ locale, country: slug }))
   );
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; category: string }>;
+  params: Promise<{ locale: string; country: string }>;
 }) {
-  const { locale, category: slug } = await params;
-  const categoryName = slugToCategory(slug);
+  const { locale, country: slug } = await params;
+  const countryInfo = slugToCountry(slug);
   const t = await getTranslations({ locale, namespace: "ranking" });
 
-  if (!categoryName) return { title: t("notFound") };
+  if (!countryInfo) return { title: t("notFound") };
 
-  const label = categoryPluralLabel(categoryName);
-  const title = t("metaTitle", { category: label.toLowerCase() });
-  const description = t("metaDescription", { category: label.toLowerCase() });
+  const title = t("countryMetaTitle", { country: countryInfo.name });
+  const description = t("countryMetaDescription", { country: countryInfo.name });
   const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}/ranking/${slug}`;
 
   return {
@@ -49,33 +44,32 @@ export async function generateMetadata({
   };
 }
 
-export default async function CategoryRankingPage({
+export default async function CountryRankingPage({
   params,
 }: {
-  params: Promise<{ locale: string; category: string }>;
+  params: Promise<{ locale: string; country: string }>;
 }) {
-  const { locale, category: slug } = await params;
+  const { locale, country: slug } = await params;
   setRequestLocale(locale);
-  const categoryName = slugToCategory(slug);
-  if (!categoryName) notFound();
+  const countryInfo = slugToCountry(slug);
+  if (!countryInfo) notFound();
 
   const t = await getTranslations("ranking");
   const data = getAccountsData();
-  const categoryAccounts = data.accounts.filter(
-    (a) => a.category === categoryName
+  const countryAccounts = data.accounts.filter(
+    (a) => a.country === countryInfo.name
   );
-
-  const label = categoryPluralLabel(categoryName);
+  const countries = getCountries().map((c) => ({ name: c.name, slug: c.slug }));
 
   return (
     <div className="flex flex-col gap-8">
       <section className="text-center py-6">
         <h1 className="text-3xl sm:text-4xl font-bold text-text">
-          {label}{" "}
+          {countryInfo.name}{" "}
           <span className="text-primary">{t("titleSuffix")}</span>
         </h1>
         <p className="mt-3 text-lg text-text-secondary max-w-2xl mx-auto">
-          {t("subtitle", { category: label.toLowerCase() })}
+          {t("countrySubtitle", { country: countryInfo.name })}
         </p>
       </section>
 
@@ -83,7 +77,11 @@ export default async function CategoryRankingPage({
         <SearchBar />
       </section>
 
-      <RankingTable accounts={categoryAccounts} showCategoryFilter={false} />
+      <RankingTable
+        accounts={countryAccounts}
+        countries={countries}
+        currentCountrySlug={slug}
+      />
     </div>
   );
 }

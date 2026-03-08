@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "../i18n/navigation";
+import { Link, useRouter } from "../i18n/navigation";
 import type { Account } from "../lib/types";
 import type { Platform, Metric } from "../lib/platform";
 import { formatCurrency, formatVPF, formatFollowers } from "../lib/utils";
@@ -10,37 +10,34 @@ import { ITEMS_PER_PAGE } from "../lib/config";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
 
+interface CountryOption {
+  name: string;
+  slug: string;
+}
+
 export default function RankingTable({
   accounts,
-  showCategoryFilter = true,
+  countries,
+  currentCountrySlug = "all",
 }: {
   accounts: Account[];
-  showCategoryFilter?: boolean;
+  countries: CountryOption[];
+  currentCountrySlug?: string;
 }) {
   const t = useTranslations("ranking");
+  const router = useRouter();
   const [platform, setPlatform] = useState<Platform>("instagram");
   const [metric, setMetric] = useState<Metric>("vpf");
-  const [category, setCategory] = useState<string>("all");
   const [page, setPage] = useState(1);
 
-  const categories = useMemo(() => {
-    const cats = new Set(accounts.map((a) => a.category));
-    return Array.from(cats).sort();
-  }, [accounts]);
-
-  const showCategoryColumn = categories.length > 1;
-
   const filtered = useMemo(() => {
-    let result = accounts.filter((a) => a.platform === platform);
-    if (category !== "all") {
-      result = result.filter((a) => a.category === category);
-    }
+    const result = accounts.filter((a) => a.platform === platform);
     const sorted = [...result].sort((a, b) => {
       if (metric === "vpf") return a.rank.vpf - b.rank.vpf;
       return a.rank.totalValue - b.rank.totalValue;
     });
     return sorted;
-  }, [accounts, platform, metric, category]);
+  }, [accounts, platform, metric]);
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = filtered.slice(
@@ -58,9 +55,12 @@ export default function RankingTable({
     setPage(1);
   }
 
-  function handleCategoryChange(c: string) {
-    setCategory(c);
-    setPage(1);
+  function handleCountryChange(slug: string) {
+    if (slug === "all") {
+      router.push("/");
+    } else {
+      router.push(`/ranking/${slug}`);
+    }
   }
 
   return (
@@ -102,17 +102,17 @@ export default function RankingTable({
             </button>
           </div>
 
-          {/* Category filter */}
-          {showCategoryFilter && categories.length > 1 && (
+          {/* Country filter (navigates to country route) */}
+          {countries.length > 0 && (
             <select
-              value={category}
-              onChange={(e) => handleCategoryChange(e.target.value)}
+              value={currentCountrySlug}
+              onChange={(e) => handleCountryChange(e.target.value)}
               className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
-              <option value="all">{t("allCategories")}</option>
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+              <option value="all">{t("allCountries")}</option>
+              {countries.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
                 </option>
               ))}
             </select>
@@ -151,11 +151,9 @@ export default function RankingTable({
             <tr className="border-b border-border bg-surface-alt text-left text-xs font-medium uppercase tracking-wider text-text-secondary">
               <th className="px-4 py-3 w-14">#</th>
               <th className="px-4 py-3">{t("account")}</th>
-              {showCategoryColumn && (
-                <th className="px-4 py-3 hidden sm:table-cell w-28">
-                  {t("category")}
-                </th>
-              )}
+              <th className="px-4 py-3 hidden sm:table-cell w-28">
+                {t("category")}
+              </th>
               <th className="px-4 py-3 text-right hidden sm:table-cell w-28">
                 {t("followers")}
               </th>
@@ -208,11 +206,9 @@ export default function RankingTable({
                       </div>
                     </Link>
                   </td>
-                  {showCategoryColumn && (
-                    <td className="px-4 py-3 text-xs text-text-secondary hidden sm:table-cell">
-                      {account.category}
-                    </td>
-                  )}
+                  <td className="px-4 py-3 text-xs text-text-secondary hidden sm:table-cell">
+                    {account.category}
+                  </td>
                   <td className="px-4 py-3 text-right text-text-secondary hidden sm:table-cell">
                     {formatFollowers(account.followers)}
                   </td>

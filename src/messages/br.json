@@ -25,7 +25,7 @@
     "subtitle": "O valor econômico real de {category} nas redes sociais. Baseado em Paid Media Equivalence.",
     "metaTitle": "Ranking de Valor nas Redes Sociais de {category}",
     "metaDescription": "Veja o valor econômico real de {category} nas redes sociais. Rankings baseados em Paid Media Equivalence. Não seguidores. Não curtidas. Dinheiro real.",
-    "allCategories": "Todas as categorias",
+    "allCountries": "Todos os países",
     "valuePerFan": "Valor por 1K Fãs",
     "valuePerFanShort": "Valor/1K Fãs",
     "totalValue": "Valor Total",
@@ -36,7 +36,10 @@
     "accounts": "{count} contas",
     "previous": "Anterior",
     "next": "Próximo",
-    "notFound": "Categoria não encontrada"
+    "countryMetaTitle": "Ranking de Valor nas Redes Sociais em {country}",
+    "countryMetaDescription": "Veja o valor econômico real das contas de redes sociais em {country}. Rankings baseados em Paid Media Equivalence. Não seguidores. Não curtidas. Dinheiro real.",
+    "countrySubtitle": "O valor econômico real das contas de redes sociais em {country}. Baseado em Paid Media Equivalence.",
+    "notFound": "Não encontrado"
   },
   "account": {
     "rankings": "Rankings",

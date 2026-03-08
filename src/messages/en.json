@@ -25,7 +25,7 @@
     "subtitle": "The real economic value of {category} on social media. Powered by Paid Media Equivalence.",
     "metaTitle": "{category} Social Media Value Ranking",
     "metaDescription": "See the real economic value of {category} on social media. Rankings powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
-    "allCategories": "All Categories",
+    "allCountries": "All Countries",
     "valuePerFan": "Value Per 1K Fans",
     "valuePerFanShort": "Value/1K Fans",
     "totalValue": "Total Value",
@@ -36,7 +36,10 @@
     "accounts": "{count} accounts",
     "previous": "Previous",
     "next": "Next",
-    "notFound": "Category Not Found"
+    "countryMetaTitle": "{country} Social Media Value Ranking",
+    "countryMetaDescription": "See the real economic value of social media accounts in {country}. Rankings powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
+    "countrySubtitle": "The real economic value of social media accounts in {country}. Powered by Paid Media Equivalence.",
+    "notFound": "Not Found"
   },
   "account": {
     "rankings": "Rankings",

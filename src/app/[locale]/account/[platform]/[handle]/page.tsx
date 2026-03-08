@@ -10,10 +10,6 @@ import {
   formatVPF,
   formatFollowers,
 } from "../../../../../lib/utils";
-import {
-  categoryToSlug,
-  categoryPluralLabel,
-} from "../../../../../lib/categories";
 import { platformLabel } from "../../../../../lib/platform";
 import { SSG_TOP_ACCOUNTS } from "../../../../../lib/config";
 import { locales } from "../../../../../i18n/config";
@@ -139,13 +135,6 @@ export default async function AccountPage({
           {t("rankings")}
         </Link>
         <span className="mx-2">/</span>
-        <Link
-          href={`/ranking/${categoryToSlug(account.category)}`}
-          className="hover:text-primary transition-colors"
-        >
-          {categoryPluralLabel(account.category)}
-        </Link>
-        <span className="mx-2">/</span>
         <span className="capitalize">{pLabel}</span>
         <span className="mx-2">/</span>
         <span className="text-text">{account.name}</span>
@@ -168,12 +157,9 @@ export default async function AccountPage({
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <p className="text-text-secondary">@{account.handle}</p>
-              <Link
-                href={`/ranking/${categoryToSlug(account.category)}`}
-                className="inline-flex items-center rounded-full bg-surface-alt border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary hover:text-primary hover:border-primary transition-colors"
-              >
+              <span className="inline-flex items-center rounded-full bg-surface-alt border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary">
                 {account.category}
-              </Link>
+              </span>
             </div>
             {account.profileUrl && (
               <a

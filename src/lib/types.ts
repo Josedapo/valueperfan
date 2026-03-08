@@ -9,8 +9,13 @@ export interface Account {
   posts: number;
   valuePerFan: number;
   totalValue: number;
+  impressions: number;
+  engagement: number;
+  engRate: number;
   category: string;
   profileUrl: string;
+  country: string | null;
+  countryCode: string | null;
   rank: {
     vpf: number;
     totalValue: number;
@@ -21,6 +26,7 @@ export interface Account {
 export interface AccountsData {
   meta: {
     lastUpdated: string;
+    dataMonth: string;
     totalAccounts: number;
     platforms: Record<Platform, number>;
   };
@@ -34,4 +40,10 @@ export interface SearchEntry {
   slug: string;
   avatarUrl: string;
   category: string;
+  country: string | null;
+}
+
+export interface RankingHistory {
+  months: string[];
+  accounts: Record<string, Record<string, { vpf: number; totalValue: number }>>;
 }

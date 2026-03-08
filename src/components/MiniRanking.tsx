@@ -12,15 +12,21 @@ export default function MiniRanking({
   current,
   below,
   metric = "vpf",
+  startRank,
 }: {
   above: Account[];
   current: Account;
   below: Account[];
   metric?: Metric;
+  startRank?: number;
 }) {
   const t = useTranslations("account");
   const title =
     metric === "vpf" ? t("neighborhoodVpf") : t("neighborhoodTv");
+
+  // If startRank is provided, use sequential numbering from that position.
+  // Otherwise, use the pre-calculated global rank from each account.
+  const allAccounts = [...above, current, ...below];
 
   return (
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
@@ -34,21 +40,26 @@ export default function MiniRanking({
           <col className="w-32" />
         </colgroup>
         <tbody>
-          {above.map((account) => (
-            <RankingRow
-              key={`${account.platform}-${account.handle}`}
-              account={account}
-              metric={metric}
-            />
-          ))}
-          <RankingRow account={current} isCurrent metric={metric} />
-          {below.map((account) => (
-            <RankingRow
-              key={`${account.platform}-${account.handle}`}
-              account={account}
-              metric={metric}
-            />
-          ))}
+          {allAccounts.map((account, index) => {
+            const rank = startRank
+              ? startRank + index
+              : metric === "vpf"
+                ? account.rank.vpf
+                : account.rank.totalValue;
+            const isCurrent =
+              account.handle === current.handle &&
+              account.platform === current.platform;
+
+            return (
+              <RankingRow
+                key={`${account.platform}-${account.handle}`}
+                account={account}
+                metric={metric}
+                isCurrent={isCurrent}
+                rank={rank}
+              />
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -59,14 +70,14 @@ function RankingRow({
   account,
   isCurrent = false,
   metric,
+  rank,
 }: {
   account: Account;
   isCurrent?: boolean;
   metric: Metric;
+  rank: number;
 }) {
   const router = useRouter();
-  const rank =
-    metric === "vpf" ? account.rank.vpf : account.rank.totalValue;
   const value =
     metric === "vpf"
       ? formatVPF(account.valuePerFan)

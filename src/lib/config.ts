@@ -22,6 +22,7 @@ export const CONTACT_EMAIL = "jose.poveda@horizm.com";
 // Pagination & search
 export const ITEMS_PER_PAGE = 50;
 export const MIN_ACCOUNTS_PER_COUNTRY = 20;
+export const MIN_ACCOUNTS_FOR_COUNTRY_RANKING = 10;
 export const SEARCH_RESULTS_LIMIT = 8;
 export const SEARCH_DEBOUNCE_MS = 200;
 export const SEARCH_MIN_CHARS = 2;

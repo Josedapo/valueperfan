@@ -4,6 +4,7 @@ import {
   getAccountsData,
   getAccount,
   getNeighbors,
+  getAccountsByCountryAndPlatform,
 } from "../../../../../lib/data";
 import {
   formatCurrency,
@@ -12,7 +13,10 @@ import {
   countryCodeToFlag,
 } from "../../../../../lib/utils";
 import { platformLabel } from "../../../../../lib/platform";
-import { SSG_TOP_ACCOUNTS } from "../../../../../lib/config";
+import {
+  SSG_TOP_ACCOUNTS,
+  MIN_ACCOUNTS_FOR_COUNTRY_RANKING,
+} from "../../../../../lib/config";
 import { locales } from "../../../../../i18n/config";
 import { Link } from "../../../../../i18n/navigation";
 import AccountAvatar from "../../../../../components/AccountAvatar";
@@ -24,8 +28,7 @@ import PlatformIcon from "../../../../../components/PlatformIcon";
 // Remaining accounts are generated on-demand via ISR.
 export async function generateStaticParams() {
   const data = getAccountsData();
-  const top = data.accounts
-    .filter((a) => a.rank.vpf <= SSG_TOP_ACCOUNTS);
+  const top = data.accounts.filter((a) => a.rank.vpf <= SSG_TOP_ACCOUNTS);
   return locales.flatMap((locale) =>
     top.map((account) => ({
       locale,
@@ -107,6 +110,19 @@ export default async function AccountPage({
   const tvNeighbors = getNeighbors(account, 3, "totalValue");
   const pLabel = platformLabel(account.platform);
 
+  // Country rankings (if account has a country with enough accounts)
+  const countryAccounts = account.country
+    ? getAccountsByCountryAndPlatform(account.country, account.platform)
+    : [];
+  const showCountryRankings =
+    countryAccounts.length >= MIN_ACCOUNTS_FOR_COUNTRY_RANKING;
+  const countryVpf = showCountryRankings
+    ? getNeighbors(account, 3, "vpf", countryAccounts)
+    : null;
+  const countryTv = showCountryRankings
+    ? getNeighbors(account, 3, "totalValue", countryAccounts)
+    : null;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
@@ -180,30 +196,33 @@ export default async function AccountPage({
           </div>
         </div>
 
-        {/* Value Metrics */}
-        <div className="mt-6">
-          <h2 className="text-xs font-bold text-primary uppercase tracking-wider mb-3">
-            {t("valueSectionTitle")}
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <MetricCard
-              label={t("valuePerFan")}
-              value={formatVPF(account.valuePerFan)}
-              highlight
-            />
-            <MetricCard
-              label={t("totalValueLabel")}
-              value={formatCurrency(account.totalValue)}
-            />
-            <MetricCard
-              label={t("rankByVpf")}
-              value={`#${account.rank.vpf}`}
-              highlight
-            />
-            <MetricCard
-              label={t("rankByTotalValue")}
-              value={`#${account.rank.totalValue}`}
-            />
+        {/* Claim CTA — inline */}
+        <div className="mt-4">
+          <ClaimFlow
+            platform={account.platform}
+            handle={account.handle}
+            slug={account.slug}
+            name={account.name}
+          />
+        </div>
+
+        {/* Value — highlighted */}
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
+            <p className="text-xs text-text-secondary">
+              {t("valuePerFan")}
+            </p>
+            <p className="mt-1 text-2xl font-bold text-primary">
+              {formatVPF(account.valuePerFan)}
+            </p>
+          </div>
+          <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
+            <p className="text-xs text-text-secondary">
+              {t("totalValueLabel")}
+            </p>
+            <p className="mt-1 text-2xl font-bold text-primary">
+              {formatCurrency(account.totalValue)}
+            </p>
           </div>
         </div>
 
@@ -246,32 +265,53 @@ export default async function AccountPage({
         </div>
       </div>
 
-      {/* Claim Flow — full width */}
+      {/* Rankings Section */}
       <div className="mt-6">
-        <ClaimFlow
-          platform={account.platform}
-          handle={account.handle}
-          slug={account.slug}
-          name={account.name}
-          vpf={formatVPF(account.valuePerFan)}
-          rankVpf={account.rank.vpf}
-        />
-      </div>
+        <h2 className="text-sm font-bold text-text uppercase tracking-wider mb-4">
+          {t("rankingsSectionTitle")}
+        </h2>
 
-      {/* Mini Rankings — VPF + Total Value side by side */}
-      <div className="mt-6 grid gap-6 sm:grid-cols-2">
-        <MiniRanking
-          above={vpfNeighbors.above}
-          current={account}
-          below={vpfNeighbors.below}
-          metric="vpf"
-        />
-        <MiniRanking
-          above={tvNeighbors.above}
-          current={account}
-          below={tvNeighbors.below}
-          metric="totalValue"
-        />
+        {/* Global Rankings */}
+        <div className="grid gap-6 sm:grid-cols-2">
+          <MiniRanking
+            above={vpfNeighbors.above}
+            current={account}
+            below={vpfNeighbors.below}
+            metric="vpf"
+          />
+          <MiniRanking
+            above={tvNeighbors.above}
+            current={account}
+            below={tvNeighbors.below}
+            metric="totalValue"
+          />
+        </div>
+
+        {/* Country Rankings */}
+        {showCountryRankings && countryVpf && countryTv && (
+          <div className="mt-6">
+            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">
+              {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
+              {t("countryRankingsTitle", { country: account.country ?? "" })}
+            </h3>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <MiniRanking
+                above={countryVpf.above}
+                current={account}
+                below={countryVpf.below}
+                metric="vpf"
+                startRank={countryVpf.currentRank - countryVpf.above.length}
+              />
+              <MiniRanking
+                above={countryTv.above}
+                current={account}
+                below={countryTv.below}
+                metric="totalValue"
+                startRank={countryTv.currentRank - countryTv.above.length}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -280,26 +320,14 @@ export default async function AccountPage({
 function MetricCard({
   label,
   value,
-  highlight = false,
 }: {
   label: string;
   value: string;
-  highlight?: boolean;
 }) {
   return (
-    <div
-      className={`rounded-lg px-4 py-3 text-center ${
-        highlight ? "bg-primary-light" : "bg-surface-alt"
-      }`}
-    >
+    <div className="rounded-lg bg-surface-alt px-4 py-3 text-center">
       <p className="text-xs text-text-secondary">{label}</p>
-      <p
-        className={`mt-1 text-lg font-bold ${
-          highlight ? "text-primary" : "text-text"
-        }`}
-      >
-        {value}
-      </p>
+      <p className="mt-1 text-lg font-bold text-text">{value}</p>
     </div>
   );
 }

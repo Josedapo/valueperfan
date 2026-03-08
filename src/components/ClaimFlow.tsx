@@ -9,8 +9,6 @@ interface ClaimFlowProps {
   handle: string;
   slug: string;
   name: string;
-  vpf: string;
-  rankVpf: number;
 }
 
 type FlowState =
@@ -28,8 +26,6 @@ export default function ClaimFlow({
   handle,
   slug,
   name,
-  vpf,
-  rankVpf,
 }: ClaimFlowProps) {
   const t = useTranslations("claim");
   const [state, setState] = useState<FlowState>("loading");
@@ -37,7 +33,7 @@ export default function ClaimFlow({
   const [bioCode, setBioCode] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [copied, setCopied] = useState<"bio" | "embed" | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const pLabel = platformLabel(platform);
 
@@ -127,194 +123,162 @@ export default function ClaimFlow({
     }
   }
 
-  function copyToClipboard(text: string, type: "bio" | "embed") {
+  function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then(() => {
-      setCopied(type);
-      setTimeout(() => setCopied(null), 2000);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     });
   }
 
-  const embedCode = `<a href="https://valueperfan.com/account/${platform}/${slug}?ref=badge">\n  <img src="https://valueperfan.com/api/badge/${platform}/${slug}" alt="ValuePerFan badge" />\n</a>`;
+  // Loading — hidden
+  if (state === "loading") return null;
 
-  // Badge pill — always visible
-  const badgePill = (
-    <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-surface px-3 py-1.5 text-sm">
-      <span className="font-bold text-primary">VPF</span>
-      <span className="text-text font-medium">{vpf}/1K</span>
-      <span className="text-text-muted">#{rankVpf}</span>
-    </div>
-  );
-
-  // Star icon
-  const starIcon = (
-    <svg
-      className="w-5 h-5 text-primary shrink-0"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-    >
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-    </svg>
-  );
-
-  return (
-    <div className="rounded-lg border-2 border-primary/30 bg-primary-light p-4">
-      {/* Header row — always shown */}
-      <div className="flex items-center gap-3 mb-3">
-        <div className="flex items-center gap-2">
-          {starIcon}
-          <h3 className="text-sm font-semibold text-primary">
-            {t("badgeTitle")}
-          </h3>
-        </div>
-        {badgePill}
+  // Unclaimed — single inline CTA
+  if (state === "unclaimed") {
+    return (
+      <div className="flex items-center justify-between rounded-lg border border-primary/20 bg-primary-light/50 px-4 py-2.5">
+        <p className="text-sm text-primary-dark">
+          {t("claimInline")}
+        </p>
+        <button
+          onClick={() => setState("email_form")}
+          className="shrink-0 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-white hover:bg-primary-dark transition-colors"
+        >
+          {t("claimButton")}
+        </button>
       </div>
+    );
+  }
 
-      {/* State-specific content */}
-      {state === "loading" && (
-        <p className="text-xs text-primary-dark">{t("checking")}</p>
-      )}
-
-      {state === "unclaimed" && (
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <p className="text-xs text-primary-dark font-medium">
-            {t("claimCta")}
-          </p>
+  // Email form
+  if (state === "email_form") {
+    return (
+      <div className="rounded-lg border border-primary/20 bg-primary-light/50 p-4 space-y-3">
+        <p className="text-sm text-primary-dark font-medium">
+          {t("emailPrompt", { name })}
+        </p>
+        <form onSubmit={handleSubmitEmail} className="flex gap-2">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            required
+            className="flex-1 rounded-lg border border-primary/30 bg-surface px-3 py-2 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary"
+          />
           <button
-            onClick={() => setState("email_form")}
-            className="shrink-0 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors"
+            type="submit"
+            disabled={submitting}
+            className="shrink-0 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors disabled:opacity-50"
           >
-            {t("claimButton")}
+            {submitting ? t("sending") : t("sendVerification")}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setState("unclaimed");
+              setError("");
+            }}
+            className="shrink-0 rounded-lg border border-primary/30 px-3 py-2 text-xs font-medium text-primary-dark hover:bg-primary/10 transition-colors"
+          >
+            {t("cancel")}
+          </button>
+        </form>
+        {error && <p className="text-xs text-red-600">{error}</p>}
+      </div>
+    );
+  }
+
+  // Email sent
+  if (state === "email_sent") {
+    return (
+      <div className="rounded-lg border border-primary/20 bg-primary-light/50 p-4 space-y-1">
+        <p className="text-sm text-primary-dark font-semibold">
+          {t("checkInbox")}
+        </p>
+        <p className="text-xs text-primary-dark">
+          {t.rich("emailSentMessage", {
+            email,
+            bold: (chunks) => <span className="font-medium">{chunks}</span>,
+          })}
+        </p>
+      </div>
+    );
+  }
+
+  // Pending bio verification
+  if (state === "pending_bio") {
+    return (
+      <div className="rounded-lg border border-primary/20 bg-primary-light/50 p-4 space-y-3">
+        <p className="text-sm text-primary-dark font-medium">
+          {t("bioPrompt", { platform: pLabel })}
+        </p>
+        <div className="flex items-center gap-2">
+          <code className="flex-1 rounded-lg bg-surface border border-primary/20 px-4 py-2.5 text-base font-bold font-mono tracking-wider text-primary text-center">
+            {bioCode}
+          </code>
+          <button
+            onClick={() => copyToClipboard(bioCode)}
+            className="shrink-0 rounded-lg border border-primary/30 px-3 py-2.5 text-xs font-medium text-primary-dark hover:bg-primary/10 transition-colors"
+          >
+            {copied ? t("copied") : t("copy")}
           </button>
         </div>
-      )}
+        <p className="text-xs text-text-muted">{t("bioRemovalNote")}</p>
+        <button
+          onClick={handleConfirmBio}
+          disabled={submitting}
+          className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors disabled:opacity-50"
+        >
+          {submitting ? t("submitting") : t("bioAdded")}
+        </button>
+        {error && <p className="text-xs text-red-600">{error}</p>}
+      </div>
+    );
+  }
 
-      {state === "email_form" && (
-        <form onSubmit={handleSubmitEmail} className="space-y-3">
-          <p className="text-xs text-primary-dark font-medium">
-            {t("emailPrompt", { name })}
-          </p>
-          <div className="flex gap-2">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-              className="flex-1 rounded-lg border border-primary/30 bg-surface px-3 py-2 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary"
-            />
-            <button
-              type="submit"
-              disabled={submitting}
-              className="shrink-0 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors disabled:opacity-50"
-            >
-              {submitting ? t("sending") : t("sendVerification")}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setState("unclaimed");
-                setError("");
-              }}
-              className="shrink-0 rounded-lg border border-primary/30 px-3 py-2 text-xs font-medium text-primary-dark hover:bg-primary/10 transition-colors"
-            >
-              {t("cancel")}
-            </button>
-          </div>
-          {error && <p className="text-xs text-red-600">{error}</p>}
-        </form>
-      )}
+  // Pending review
+  if (state === "pending_review") {
+    return (
+      <div className="rounded-lg border border-primary/20 bg-primary-light/50 p-4 space-y-1">
+        <p className="text-sm text-primary-dark font-semibold">
+          {t("pendingReviewTitle")}
+        </p>
+        <p className="text-xs text-primary-dark">
+          {t("pendingReviewMessage", { platform: pLabel })}
+        </p>
+      </div>
+    );
+  }
 
-      {state === "email_sent" && (
-        <div className="space-y-1">
-          <p className="text-xs text-primary-dark font-semibold">
-            {t("checkInbox")}
-          </p>
-          <p className="text-xs text-primary-dark">
-            {t.rich("emailSentMessage", {
-              email,
-              bold: (chunks) => <span className="font-medium">{chunks}</span>,
-            })}
-          </p>
-        </div>
-      )}
-
-      {state === "pending_bio" && (
-        <div className="space-y-3">
-          <p className="text-xs text-primary-dark font-medium">
-            {t("bioPrompt", { platform: pLabel })}
-          </p>
-          <div className="flex items-center gap-2">
-            <code className="flex-1 rounded-lg bg-surface border border-primary/20 px-4 py-2.5 text-base font-bold font-mono tracking-wider text-primary text-center">
-              {bioCode}
-            </code>
-            <button
-              onClick={() => copyToClipboard(bioCode, "bio")}
-              className="shrink-0 rounded-lg border border-primary/30 px-3 py-2.5 text-xs font-medium text-primary-dark hover:bg-primary/10 transition-colors"
-            >
-              {copied === "bio" ? t("copied") : t("copy")}
-            </button>
-          </div>
-          <p className="text-xs text-text-muted">{t("bioRemovalNote")}</p>
-          <div className="flex gap-2">
-            <button
-              onClick={handleConfirmBio}
-              disabled={submitting}
-              className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors disabled:opacity-50"
-            >
-              {submitting ? t("submitting") : t("bioAdded")}
-            </button>
-          </div>
-          {error && <p className="text-xs text-red-600">{error}</p>}
-        </div>
-      )}
-
-      {state === "pending_review" && (
-        <div className="space-y-1">
-          <p className="text-xs text-primary-dark font-semibold">
-            {t("pendingReviewTitle")}
-          </p>
-          <p className="text-xs text-primary-dark">
-            {t("pendingReviewMessage", { platform: pLabel })}
-          </p>
-        </div>
-      )}
-
-      {state === "claimed_by_other" && (
-        <p className="text-xs text-primary-dark font-medium">
+  // Claimed by other
+  if (state === "claimed_by_other") {
+    return (
+      <div className="rounded-lg border border-primary/20 bg-primary-light/50 px-4 py-2.5">
+        <p className="text-sm text-primary-dark font-medium">
           {t("claimedByOther")}
         </p>
-      )}
+      </div>
+    );
+  }
 
-      {state === "owned" && (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-4 h-4 text-primary shrink-0"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
-            </svg>
-            <p className="text-xs text-primary-dark font-semibold">
-              {t("youOwnThis")}
-            </p>
-          </div>
-          <p className="text-xs text-primary-dark font-medium">
-            {t("addBadge")}
-          </p>
-          <div className="relative">
-            <pre className="rounded-lg bg-surface border border-primary/20 px-4 py-3 text-xs font-mono text-text overflow-x-auto whitespace-pre-wrap break-all">
-              {embedCode}
-            </pre>
-          </div>
-          <button
-            onClick={() => copyToClipboard(embedCode, "embed")}
-            className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors"
-          >
-            {copied === "embed" ? t("copied") : t("copyEmbed")}
-          </button>
-        </div>
-      )}
-    </div>
-  );
+  // Owned — simplified (no badge for now)
+  if (state === "owned") {
+    return (
+      <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary-light/50 px-4 py-2.5">
+        <svg
+          className="w-4 h-4 text-primary shrink-0"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+        </svg>
+        <p className="text-sm text-primary-dark font-semibold">
+          {t("youOwnThis")}
+        </p>
+      </div>
+    );
+  }
+
+  return null;
 }

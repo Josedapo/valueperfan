@@ -26,20 +26,33 @@ export function getAccountsByCategory(category: string): Account[] {
   return data.accounts.filter((a) => a.category === category);
 }
 
+export function getAccountsByCountryAndPlatform(
+  country: string,
+  platform: Platform
+): Account[] {
+  const data = getAccountsData();
+  return data.accounts.filter(
+    (a) => a.platform === platform && a.country === country
+  );
+}
+
 export function getNeighbors(
   account: Account,
   count: number = 3,
-  metric: Metric = "vpf"
-): { above: Account[]; below: Account[] } {
-  const platformAccounts = getAccountsByPlatform(account.platform);
-  const sorted = [...platformAccounts].sort((a, b) =>
+  metric: Metric = "vpf",
+  accountPool?: Account[]
+): { above: Account[]; below: Account[]; currentRank: number } {
+  const pool = accountPool ?? getAccountsByPlatform(account.platform);
+  const sorted = [...pool].sort((a, b) =>
     metric === "vpf"
-      ? a.rank.vpf - b.rank.vpf
-      : a.rank.totalValue - b.rank.totalValue
+      ? b.valuePerFan - a.valuePerFan
+      : b.totalValue - a.totalValue
   );
   const index = sorted.findIndex(
     (a) => a.handle === account.handle && a.platform === account.platform
   );
+
+  if (index === -1) return { above: [], below: [], currentRank: 0 };
 
   const total = count * 2; // total neighbors (excluding current)
   let start = Math.max(0, index - count);
@@ -57,5 +70,5 @@ export function getNeighbors(
   const above = sorted.slice(start, index);
   const below = sorted.slice(index + 1, end);
 
-  return { above, below };
+  return { above, below, currentRank: index + 1 };
 }

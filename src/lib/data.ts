@@ -41,8 +41,21 @@ export function getNeighbors(
     (a) => a.handle === account.handle && a.platform === account.platform
   );
 
-  const above = sorted.slice(Math.max(0, index - count), index);
-  const below = sorted.slice(index + 1, index + 1 + count);
+  const total = count * 2; // total neighbors (excluding current)
+  let start = Math.max(0, index - count);
+  let end = Math.min(sorted.length, index + count + 1);
+
+  // If not enough above, extend below
+  if (index < count) {
+    end = Math.min(sorted.length, index + 1 + (total - index));
+  }
+  // If not enough below, extend above
+  if (sorted.length - 1 - index < count) {
+    start = Math.max(0, index - (total - (sorted.length - 1 - index)));
+  }
+
+  const above = sorted.slice(start, index);
+  const below = sorted.slice(index + 1, end);
 
   return { above, below };
 }

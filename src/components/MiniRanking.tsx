@@ -31,7 +31,7 @@ export default function MiniRanking({
         <colgroup>
           <col className="w-14" />
           <col />
-          <col className="w-24" />
+          <col className="w-32" />
         </colgroup>
         <tbody>
           {above.map((account) => (

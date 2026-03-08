@@ -65,8 +65,7 @@ export default async function CountryRankingPage({
     <div className="flex flex-col gap-8">
       <section className="text-center py-6">
         <h1 className="text-3xl sm:text-4xl font-bold text-text">
-          {countryInfo.name}{" "}
-          <span className="text-primary">{t("titleSuffix")}</span>
+          {t("countryTitle", { country: countryInfo.name })}
         </h1>
         <p className="mt-3 text-lg text-text-secondary max-w-2xl mx-auto">
           {t("countrySubtitle", { country: countryInfo.name })}

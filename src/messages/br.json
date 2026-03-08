@@ -36,7 +36,8 @@
     "accounts": "{count} contas",
     "previous": "Anterior",
     "next": "Próximo",
-    "countryMetaTitle": "Ranking de Valor nas Redes Sociais em {country}",
+    "countryTitle": "{country} — Ranking de valor econômico nas Redes Sociais",
+    "countryMetaTitle": "{country} — Ranking de valor econômico nas Redes Sociais",
     "countryMetaDescription": "Veja o valor econômico real das contas de redes sociais em {country}. Rankings baseados em Paid Media Equivalence. Não seguidores. Não curtidas. Dinheiro real.",
     "countrySubtitle": "O valor econômico real das contas de redes sociais em {country}. Baseado em Paid Media Equivalence.",
     "notFound": "Não encontrado"

@@ -47,6 +47,25 @@ CATEGORY_MAP = {
     "Model": "Entertainment",
 }
 
+# --- Country name normalization: official long names → common short names ---
+COUNTRY_NAME_MAP = {
+    "Bolivia (Plurinational State of)": "Bolivia",
+    "Congo (Democratic Republic of the)": "DR Congo",
+    "Iran (Islamic Republic of)": "Iran",
+    "Korea (Republic of)": "South Korea",
+    "Korea (Democratic People's Republic of)": "North Korea",
+    "Lao People's Democratic Republic": "Laos",
+    "Macedonia (the former Yugoslav Republic of)": "North Macedonia",
+    "Moldova (Republic of)": "Moldova",
+    "Palestine, State of": "Palestine",
+    "Russian Federation": "Russia",
+    "Syrian Arab Republic": "Syria",
+    "Tanzania, United Republic of": "Tanzania",
+    "Venezuela (Bolivarian Republic of)": "Venezuela",
+    "Viet Nam": "Vietnam",
+    "Côte d'Ivoire": "Ivory Coast",
+}
+
 DEFAULT_AVATAR = "/images/default-avatar.svg"
 SCRIPT_DIR = Path(__file__).parent
 DATA_DIR = SCRIPT_DIR.parent / "src" / "data"
@@ -171,7 +190,9 @@ def process_excel(excel_path, month_label):
             cid = int(country_id)
             country_name = country_names.get(cid)
             country_code = country_codes.get(cid)
-            if not country_name:
+            if country_name:
+                country_name = COUNTRY_NAME_MAP.get(country_name, country_name)
+            else:
                 stats["country_missing"] += 1
         else:
             stats["country_missing"] += 1

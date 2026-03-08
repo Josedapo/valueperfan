@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "../i18n/navigation";
 import type { Account } from "../lib/types";
 import type { Platform, Metric } from "../lib/platform";
-import { formatCurrency, formatVPF, formatFollowers } from "../lib/utils";
+import { formatCurrency, formatVPF, formatFollowers, countryCodeToFlag } from "../lib/utils";
 import { ITEMS_PER_PAGE } from "../lib/config";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
@@ -172,9 +172,8 @@ export default function RankingTable({
             </tr>
           </thead>
           <tbody>
-            {paginated.map((account) => {
-              const rank =
-                metric === "vpf" ? account.rank.vpf : account.rank.totalValue;
+            {paginated.map((account, index) => {
+              const rank = (page - 1) * ITEMS_PER_PAGE + index + 1;
               const value =
                 metric === "vpf"
                   ? formatVPF(account.valuePerFan)
@@ -199,7 +198,14 @@ export default function RankingTable({
                         size={36}
                       />
                       <div className="min-w-0 flex-1">
-                        <p className="font-medium truncate">{account.name}</p>
+                        <p className="font-medium truncate">
+                          {account.name}
+                          {account.countryCode && (
+                            <span className="ml-1.5" title={account.country ?? undefined}>
+                              {countryCodeToFlag(account.countryCode)}
+                            </span>
+                          )}
+                        </p>
                         <p className="text-xs text-text-muted truncate">
                           @{account.handle}
                         </p>

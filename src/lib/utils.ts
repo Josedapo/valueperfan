@@ -18,6 +18,12 @@ export function formatVPF(value: number): string {
   return `$${usd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
+export function countryCodeToFlag(code: string): string {
+  return [...code.toUpperCase()].map(
+    (c) => String.fromCodePoint(0x1f1e6 - 65 + c.charCodeAt(0))
+  ).join("");
+}
+
 export function formatFollowers(value: number): string {
   if (value >= 1_000_000) {
     return `${(value / 1_000_000).toFixed(1)}M`;

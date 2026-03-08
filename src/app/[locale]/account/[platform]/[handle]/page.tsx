@@ -9,6 +9,7 @@ import {
   formatCurrency,
   formatVPF,
   formatFollowers,
+  countryCodeToFlag,
 } from "../../../../../lib/utils";
 import { platformLabel } from "../../../../../lib/platform";
 import { SSG_TOP_ACCOUNTS } from "../../../../../lib/config";
@@ -152,6 +153,11 @@ export default async function AccountPage({
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold text-text truncate">
                 {account.name}
+                {account.countryCode && (
+                  <span className="ml-2" title={account.country ?? undefined}>
+                    {countryCodeToFlag(account.countryCode)}
+                  </span>
+                )}
               </h1>
               <PlatformIcon platform={account.platform} size={22} />
             </div>

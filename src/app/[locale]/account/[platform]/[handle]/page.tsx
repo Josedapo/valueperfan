@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   getAccountsData,
   getAccount,
+  getAccountsByPlatform,
   getNeighbors,
   getAccountsByCountryAndPlatform,
 } from "../../../../../lib/data";
@@ -109,6 +110,7 @@ export default async function AccountPage({
   const vpfNeighbors = getNeighbors(account, 3, "vpf");
   const tvNeighbors = getNeighbors(account, 3, "totalValue");
   const pLabel = platformLabel(account.platform);
+  const globalTotal = getAccountsByPlatform(account.platform).length;
 
   // Country rankings (if account has a country with enough accounts)
   const countryAccounts = account.country
@@ -255,23 +257,14 @@ export default async function AccountPage({
           </div>
         </div>
 
-        {/* PME Context */}
-        <div className="mt-4 text-xs text-text-secondary leading-relaxed space-y-1.5">
-          <p>{t("pmeContext1")}</p>
-          <p>{t("pmeContext2")}</p>
-          {account.platform === "instagram" && (
-            <p>{t("instagramStoriesNote")}</p>
-          )}
-        </div>
       </div>
 
       {/* Rankings Section */}
       <div className="mt-6">
-        <h2 className="text-sm font-bold text-text uppercase tracking-wider mb-4">
-          {t("rankingsSectionTitle")}
-        </h2>
-
         {/* Global Rankings */}
+        <h2 className="text-sm font-bold text-text uppercase tracking-wider mb-4">
+          {t("globalRankingsTitle", { count: globalTotal.toLocaleString() })}
+        </h2>
         <div className="grid gap-6 sm:grid-cols-2">
           <MiniRanking
             above={vpfNeighbors.above}
@@ -292,7 +285,7 @@ export default async function AccountPage({
           <div className="mt-6">
             <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">
               {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
-              {t("countryRankingsTitle", { country: account.country ?? "" })}
+              {t("countryRankingsTitle", { country: account.country ?? "", count: countryAccounts.length.toLocaleString() })}
             </h3>
             <div className="grid gap-6 sm:grid-cols-2">
               <MiniRanking
@@ -311,6 +304,15 @@ export default async function AccountPage({
               />
             </div>
           </div>
+        )}
+      </div>
+
+      {/* PME Context */}
+      <div className="mt-6 text-xs text-text-secondary leading-relaxed space-y-1.5">
+        <p>{t("pmeContext1")}</p>
+        <p>{t("pmeContext2")}</p>
+        {account.platform === "instagram" && (
+          <p>{t("instagramStoriesNote")}</p>
         )}
       </div>
     </div>

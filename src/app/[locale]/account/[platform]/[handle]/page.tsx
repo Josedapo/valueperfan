@@ -180,42 +180,59 @@ export default async function AccountPage({
           </div>
         </div>
 
-        {/* Metrics Grid */}
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <MetricCard
-            label={t("valuePerFan")}
-            value={formatVPF(account.valuePerFan)}
-            highlight
-          />
-          <MetricCard
-            label={t("totalValueLabel")}
-            value={formatCurrency(account.totalValue)}
-          />
-          <MetricCard
-            label={t("followersLabel")}
-            value={formatFollowers(account.followers)}
-          />
-          <MetricCard
-            label={t("postsLabel")}
-            value={account.posts.toLocaleString()}
-          />
+        {/* Value Metrics */}
+        <div className="mt-6">
+          <h2 className="text-xs font-bold text-primary uppercase tracking-wider mb-3">
+            {t("valueSectionTitle")}
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <MetricCard
+              label={t("valuePerFan")}
+              value={formatVPF(account.valuePerFan)}
+              highlight
+            />
+            <MetricCard
+              label={t("totalValueLabel")}
+              value={formatCurrency(account.totalValue)}
+            />
+            <MetricCard
+              label={t("rankByVpf")}
+              value={`#${account.rank.vpf}`}
+              highlight
+            />
+            <MetricCard
+              label={t("rankByTotalValue")}
+              value={`#${account.rank.totalValue}`}
+            />
+          </div>
         </div>
 
-        {/* Ranking Positions */}
-        <div className="mt-4 flex gap-4">
-          <div className="flex-1 rounded-lg bg-primary-light px-4 py-3 text-center">
-            <p className="text-xs text-text-secondary">{t("rankByVpf")}</p>
-            <p className="text-xl font-bold text-primary">
-              #{account.rank.vpf}
-            </p>
-          </div>
-          <div className="flex-1 rounded-lg bg-surface-alt px-4 py-3 text-center">
-            <p className="text-xs text-text-secondary">
-              {t("rankByTotalValue")}
-            </p>
-            <p className="text-xl font-bold text-text">
-              #{account.rank.totalValue}
-            </p>
+        {/* Performance Metrics */}
+        <div className="mt-5">
+          <h2 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-3">
+            {t("performanceSectionTitle")}
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <MetricCard
+              label={t("followersLabel")}
+              value={formatFollowers(account.followers)}
+            />
+            <MetricCard
+              label={t("postsLabel")}
+              value={account.posts.toLocaleString()}
+            />
+            <MetricCard
+              label={t("impressionsLabel")}
+              value={formatFollowers(account.impressions)}
+            />
+            <MetricCard
+              label={t("engagementLabel")}
+              value={formatFollowers(account.engagement)}
+            />
+            <MetricCard
+              label={t("engRateLabel")}
+              value={`${(account.engRate * 100).toFixed(2)}%`}
+            />
           </div>
         </div>
 

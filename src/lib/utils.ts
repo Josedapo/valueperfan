@@ -15,7 +15,16 @@ export function formatCurrency(value: number): string {
 
 export function formatVPF(value: number): string {
   const usd = value * EUR_TO_USD * 1000;
-  return `$${usd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (usd >= 1_000_000) {
+    return `$${(usd / 1_000_000).toFixed(1)}M`;
+  }
+  if (usd >= 10_000) {
+    return `$${(usd / 1_000).toFixed(1)}K`;
+  }
+  if (usd >= 1_000) {
+    return `$${(usd / 1_000).toFixed(2)}K`;
+  }
+  return `$${usd.toFixed(2)}`;
 }
 
 export function countryCodeToFlag(code: string): string {

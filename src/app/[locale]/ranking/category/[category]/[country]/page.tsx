@@ -69,7 +69,6 @@ export default async function CategoryCountryRankingPage({
   const countryInfo = slugToCountry(countrySlug);
   if (!categoryInfo || !countryInfo) notFound();
 
-  const t = await getTranslations("ranking");
   const data = getAccountsData();
   const filtered = data.accounts.filter(
     (a) =>
@@ -86,25 +85,7 @@ export default async function CategoryCountryRankingPage({
 
   return (
     <div className="flex flex-col gap-8">
-      <section className="text-center py-6">
-        <h1 className="text-3xl sm:text-4xl font-bold text-text">
-          {t.rich("categoryCountryTitle", {
-            category: categoryInfo.name,
-            country: countryInfo.name,
-            highlight: (chunks) => (
-              <span className="text-primary">{chunks}</span>
-            ),
-          })}
-        </h1>
-        <p className="mt-3 text-lg text-text-secondary max-w-2xl mx-auto">
-          {t("categoryCountrySubtitle", {
-            category: categoryInfo.name,
-            country: countryInfo.name,
-          })}
-        </p>
-      </section>
-
-      <section className="max-w-xl mx-auto w-full">
+      <section className="max-w-xl mx-auto w-full pt-6">
         <SearchBar />
       </section>
 
@@ -114,6 +95,8 @@ export default async function CategoryCountryRankingPage({
         currentCountrySlug={countrySlug}
         categories={categories}
         currentCategorySlug={catSlug}
+        categoryName={categoryInfo.name}
+        countryName={countryInfo.name}
       />
     </div>
   );

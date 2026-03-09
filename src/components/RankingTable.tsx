@@ -27,12 +27,16 @@ export default function RankingTable({
   currentCountrySlug = "all",
   categories,
   currentCategorySlug = "all",
+  categoryName,
+  countryName,
 }: {
   accounts: Account[];
   countries: CountryOption[];
   currentCountrySlug?: string;
   categories?: CategoryOption[];
   currentCategorySlug?: string;
+  categoryName?: string;
+  countryName?: string;
 }) {
   const t = useTranslations("ranking");
   const router = useRouter();
@@ -89,8 +93,33 @@ export default function RankingTable({
     }
   }
 
+  // Determine which dynamic title key to use
+  function getDynamicTitleKey(): string {
+    if (categoryName && countryName) {
+      return metric === "vpf" ? "dynamicTitleCategoryCountryVpf" : "dynamicTitleCategoryCountryTotalValue";
+    }
+    if (categoryName) {
+      return metric === "vpf" ? "dynamicTitleCategoryVpf" : "dynamicTitleCategoryTotalValue";
+    }
+    if (countryName) {
+      return metric === "vpf" ? "dynamicTitleCountryVpf" : "dynamicTitleCountryTotalValue";
+    }
+    return metric === "vpf" ? "dynamicTitleVpf" : "dynamicTitleTotalValue";
+  }
+
   return (
     <div>
+      {/* Dynamic H1 */}
+      <h1 className="text-3xl sm:text-4xl font-bold text-text text-center mb-6">
+        {t.rich(getDynamicTitleKey(), {
+          ...(categoryName ? { category: categoryName } : {}),
+          ...(countryName ? { country: countryName } : {}),
+          highlight: (chunks) => (
+            <span className="text-primary">{chunks}</span>
+          ),
+        })}
+      </h1>
+
       {/* Controls */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-3">
@@ -171,7 +200,7 @@ export default function RankingTable({
                 : "text-text-secondary hover:bg-surface-alt"
             }`}
           >
-            {t("valuePerFan")}
+            {t("toggleVpf")}
           </button>
           <button
             onClick={() => handleMetricChange("totalValue")}
@@ -181,7 +210,7 @@ export default function RankingTable({
                 : "text-text-secondary hover:bg-surface-alt"
             }`}
           >
-            {t("totalValue")}
+            {t("toggleTotalValue")}
           </button>
         </div>
       </div>
@@ -201,10 +230,10 @@ export default function RankingTable({
               </th>
               <th className="px-4 py-3 text-right font-bold text-primary w-28 sm:w-32">
                 {metric === "vpf" ? (
-                  t("valuePerFanShort")
+                  t("columnVpf")
                 ) : (
                   <>
-                    {t("totalValue")}
+                    {t("columnTotalValue")}
                     <span className="block text-[10px] font-normal italic text-text-muted normal-case tracking-normal">
                       {t("last30days")}
                     </span>

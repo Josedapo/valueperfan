@@ -8,7 +8,9 @@
     "tagline": "The <accent>real value</accent> of social media followers"
   },
   "footer": {
+    "_locale": "en",
     "description": "Objective valuations powered by Paid Media Equivalence — the real cost of achieving the same results through paid media.",
+    "dataUpdated": "Last updated: {month}",
     "copyright": "\u00a92026 ValuePerFan"
   },
   "home": {

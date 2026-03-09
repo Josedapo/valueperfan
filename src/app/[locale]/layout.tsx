@@ -9,6 +9,7 @@ import {
   AdvertiseSlot,
   MobileSponsorBar,
 } from "../../components/SponsorColumn";
+import { getAccountsData } from "../../lib/data";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -84,7 +85,7 @@ export default async function LocaleLayout({
           </aside>
         </div>
       </div>
-      <Footer />
+      <Footer dataMonth={getAccountsData().meta.dataMonth} />
     </NextIntlClientProvider>
   );
 }

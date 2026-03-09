@@ -8,7 +8,9 @@
     "tagline": "O <accent>valor real</accent> dos seguidores nas redes sociais"
   },
   "footer": {
+    "_locale": "br",
     "description": "Avaliações objetivas baseadas em Paid Media Equivalence — o custo real de alcançar os mesmos resultados por meio de mídia paga.",
+    "dataUpdated": "Última atualização: {month}",
     "copyright": "\u00a92026 ValuePerFan"
   },
   "home": {

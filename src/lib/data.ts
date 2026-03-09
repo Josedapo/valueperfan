@@ -61,6 +61,34 @@ export function getAccountsByCategoryCountryAndPlatform(
   );
 }
 
+export interface EngRateBenchmark {
+  median: number;
+  percentile: number;
+  count: number;
+}
+
+export function getEngagementRateBenchmark(
+  category: string,
+  platform: Platform,
+  accountEngRate: number
+): EngRateBenchmark | null {
+  const pool = getAccountsByCategoryAndPlatform(category, platform);
+  if (pool.length < 10) return null;
+
+  const rates = pool.map((a) => a.engRate).sort((a, b) => a - b);
+  const mid = Math.floor(rates.length / 2);
+  const median =
+    rates.length % 2 === 0
+      ? (rates[mid - 1] + rates[mid]) / 2
+      : rates[mid];
+
+  // Percentile: % of accounts with ER <= this account's ER
+  const belowOrEqual = rates.filter((r) => r <= accountEngRate).length;
+  const percentile = Math.round((belowOrEqual / rates.length) * 100);
+
+  return { median, percentile, count: pool.length };
+}
+
 export function getNeighbors(
   account: Account,
   count: number = 3,

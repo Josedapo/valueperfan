@@ -8,6 +8,7 @@ import {
   getAccountsByCountryAndPlatform,
   getAccountsByCategoryAndPlatform,
   getAccountsByCategoryCountryAndPlatform,
+  getEngagementRateBenchmark,
 } from "../../../../../lib/data";
 import {
   formatCurrency,
@@ -15,7 +16,7 @@ import {
   formatFollowers,
   countryCodeToFlag,
 } from "../../../../../lib/utils";
-import { platformLabel } from "../../../../../lib/platform";
+import { platformLabel, type Platform } from "../../../../../lib/platform";
 import {
   SSG_TOP_ACCOUNTS,
   MIN_ACCOUNTS_FOR_COUNTRY_RANKING,
@@ -277,7 +278,7 @@ export default async function AccountPage({
           <h2 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-3">
             {t("performanceSectionTitle")}
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <MetricCard
               label={t("followersLabel")}
               value={formatFollowers(account.followers)}
@@ -294,11 +295,16 @@ export default async function AccountPage({
               label={t("engagementLabel")}
               value={formatFollowers(account.engagement)}
             />
-            <MetricCard
-              label={t("engRateLabel")}
-              value={`${(account.engRate * 100).toFixed(2)}%`}
-            />
           </div>
+
+          {/* Engagement Rate with Benchmark */}
+          <EngagementRateBenchmarkCard
+            engRate={account.engRate}
+            category={mappedCategory}
+            platform={account.platform}
+            platformLabel={pLabel}
+            t={t}
+          />
         </div>
 
       </div>
@@ -445,6 +451,117 @@ function MetricCard({
     <div className="rounded-lg bg-surface-alt px-4 py-3 text-center">
       <p className="text-xs text-text-secondary">{label}</p>
       <p className="mt-1 text-lg font-bold text-text">{value}</p>
+    </div>
+  );
+}
+
+function EngagementRateBenchmarkCard({
+  engRate,
+  category,
+  platform,
+  platformLabel: pLabel,
+  t,
+}: {
+  engRate: number;
+  category: string;
+  platform: Platform;
+  platformLabel: string;
+  t: (key: string, values?: Record<string, string | number>) => string;
+}) {
+  const benchmark = getEngagementRateBenchmark(category, platform, engRate);
+  const accountPct = (engRate * 100).toFixed(2);
+
+  if (!benchmark) {
+    // Not enough data — show simple card like before
+    return (
+      <div className="mt-3 rounded-lg bg-surface-alt px-4 py-3 text-center">
+        <p className="text-xs text-text-secondary">{t("engRateLabel")}</p>
+        <p className="mt-1 text-lg font-bold text-text">{accountPct}%</p>
+      </div>
+    );
+  }
+
+  const medianPct = (benchmark.median * 100).toFixed(2);
+  const position = Math.min(Math.max(benchmark.percentile, 2), 98);
+  const isTopHalf = benchmark.percentile >= 50;
+  const displayPercentile = Math.max(
+    1,
+    isTopHalf ? 100 - benchmark.percentile : benchmark.percentile
+  );
+
+  // 3 color tiers: top 25% green, bottom 25% red, middle amber
+  const tier =
+    benchmark.percentile >= 75 ? "green" : benchmark.percentile <= 25 ? "red" : "amber";
+  const barColor = { green: "bg-emerald-400", amber: "bg-amber-400", red: "bg-red-400" }[tier];
+  const dotColor = { green: "bg-emerald-500", amber: "bg-amber-500", red: "bg-red-500" }[tier];
+  const labelColor = { green: "text-emerald-400", amber: "text-amber-400", red: "text-red-400" }[tier];
+
+  return (
+    <div className="mt-3 rounded-lg bg-surface-alt px-4 py-4">
+      {/* Numbers row */}
+      <div className="flex items-center justify-between mb-4">
+        {/* Account's ER */}
+        <div className="text-center flex-1">
+          <p className="text-xs text-text-secondary">{t("engRateLabel")}</p>
+          <p className="mt-1 text-2xl font-bold text-text">{accountPct}%</p>
+        </div>
+
+        {/* Divider */}
+        <div className="w-px h-10 bg-border mx-4" />
+
+        {/* Category median */}
+        <div className="text-center flex-1">
+          <p className="text-xs text-text-secondary">
+            {t("engRateBenchmarkMedian", { category, platform: pLabel })}
+          </p>
+          <p className="mt-1 text-2xl font-bold text-text-secondary">
+            {medianPct}%
+          </p>
+        </div>
+
+      </div>
+
+      {/* Progress bar with floating label */}
+      <div className="relative h-2 rounded-full bg-border overflow-visible mt-9">
+        {/* Filled portion up to account position */}
+        <div
+          className={`absolute top-0 left-0 h-full rounded-full ${barColor}`}
+          style={{ width: `${position}%` }}
+        />
+
+        {/* Median marker (always at 50%) */}
+        <div
+          className="absolute top-1/2 -translate-y-1/2 w-0.5 h-4 bg-text-secondary"
+          style={{ left: "50%" }}
+          title={`Median: ${medianPct}%`}
+        />
+
+        {/* Account marker + floating label */}
+        <div
+          className="absolute"
+          style={{ left: `${position}%`, top: "50%", transform: "translate(-50%, -50%)" }}
+        >
+          {/* Floating label above */}
+          <span
+            className={`absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-semibold ${labelColor}`}
+          >
+            {isTopHalf
+              ? t("engRateBenchmarkPercentile", { percentile: displayPercentile })
+              : t("engRateBenchmarkBottom", { percentile: displayPercentile })}
+          </span>
+          {/* Dot */}
+          <div
+            className={`w-3 h-3 rounded-full border-2 border-white ${dotColor}`}
+          />
+        </div>
+      </div>
+
+      {/* Labels under bar */}
+      <div className="flex justify-between mt-1.5">
+        <span className="text-[10px] text-text-muted">{t("engRateBenchmarkLow")}</span>
+        <span className="text-[10px] text-text-muted">{t("engRateBenchmarkMedianLabel")}</span>
+        <span className="text-[10px] text-text-muted">{t("engRateBenchmarkHigh")}</span>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAccountsData } from "../lib/data";
 import { getCountries } from "../lib/countries";
+import { getCategories, getCategoryCountries } from "../lib/categories";
 import { BASE_URL } from "../lib/config";
 
 function localizedUrl(path: string, locale: string): string {
@@ -39,6 +40,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
+  const categories = getCategories();
+  const categoryUrls = categories.map(({ slug }) => ({
+    ...withAlternates(`/ranking/category/${slug}`),
+    lastModified: new Date(data.meta.lastUpdated),
+    changeFrequency: "weekly" as const,
+    priority: 0.9,
+  }));
+
+  const categoryCountryUrls = categories.flatMap((cat) =>
+    getCategoryCountries(cat.name).map((country) => ({
+      ...withAlternates(`/ranking/category/${cat.slug}/${country.slug}`),
+      lastModified: new Date(data.meta.lastUpdated),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }))
+  );
+
   return [
     {
       ...withAlternates("/"),
@@ -47,6 +65,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     ...countryUrls,
+    ...categoryUrls,
+    ...categoryCountryUrls,
     ...accountUrls,
   ];
 }

@@ -6,6 +6,8 @@ import {
   getAccountsByPlatform,
   getNeighbors,
   getAccountsByCountryAndPlatform,
+  getAccountsByCategoryAndPlatform,
+  getAccountsByCategoryCountryAndPlatform,
 } from "../../../../../lib/data";
 import {
   formatCurrency,
@@ -18,6 +20,7 @@ import {
   SSG_TOP_ACCOUNTS,
   MIN_ACCOUNTS_FOR_COUNTRY_RANKING,
 } from "../../../../../lib/config";
+import { mapCategory } from "../../../../../lib/categories";
 import { locales } from "../../../../../i18n/config";
 import { Link } from "../../../../../i18n/navigation";
 import AccountAvatar from "../../../../../components/AccountAvatar";
@@ -125,6 +128,39 @@ export default async function AccountPage({
     ? getNeighbors(account, 3, "totalValue", countryAccounts)
     : null;
 
+  // Category rankings
+  const mappedCategory = mapCategory(account.category);
+  const categoryAccounts = getAccountsByCategoryAndPlatform(
+    mappedCategory,
+    account.platform
+  );
+  const showCategoryRankings =
+    categoryAccounts.length >= MIN_ACCOUNTS_FOR_COUNTRY_RANKING;
+  const categoryVpf = showCategoryRankings
+    ? getNeighbors(account, 3, "vpf", categoryAccounts)
+    : null;
+  const categoryTv = showCategoryRankings
+    ? getNeighbors(account, 3, "totalValue", categoryAccounts)
+    : null;
+
+  // Category + Country rankings
+  const categoryCountryAccounts =
+    account.country
+      ? getAccountsByCategoryCountryAndPlatform(
+          mappedCategory,
+          account.country,
+          account.platform
+        )
+      : [];
+  const showCategoryCountryRankings =
+    categoryCountryAccounts.length >= MIN_ACCOUNTS_FOR_COUNTRY_RANKING;
+  const categoryCountryVpf = showCategoryCountryRankings
+    ? getNeighbors(account, 3, "vpf", categoryCountryAccounts)
+    : null;
+  const categoryCountryTv = showCategoryCountryRankings
+    ? getNeighbors(account, 3, "totalValue", categoryCountryAccounts)
+    : null;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
@@ -182,7 +218,7 @@ export default async function AccountPage({
             <div className="flex items-center gap-2 mt-0.5">
               <p className="text-text-secondary">@{account.handle}</p>
               <span className="inline-flex items-center rounded-full bg-surface-alt border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary">
-                {account.category}
+                {mapCategory(account.category)}
               </span>
             </div>
             {account.profileUrl && (
@@ -301,6 +337,57 @@ export default async function AccountPage({
                 below={countryVpf.below}
                 metric="vpf"
                 startRank={countryVpf.currentRank - countryVpf.above.length}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Category Rankings */}
+        {showCategoryRankings && categoryVpf && categoryTv && (
+          <div className="mt-6">
+            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">
+              {t("categoryRankingsTitle", { category: mappedCategory, count: categoryAccounts.length.toLocaleString() })}
+            </h3>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <MiniRanking
+                above={categoryTv.above}
+                current={account}
+                below={categoryTv.below}
+                metric="totalValue"
+                startRank={categoryTv.currentRank - categoryTv.above.length}
+              />
+              <MiniRanking
+                above={categoryVpf.above}
+                current={account}
+                below={categoryVpf.below}
+                metric="vpf"
+                startRank={categoryVpf.currentRank - categoryVpf.above.length}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Category + Country Rankings */}
+        {showCategoryCountryRankings && categoryCountryVpf && categoryCountryTv && (
+          <div className="mt-6">
+            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">
+              {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
+              {t("categoryCountryRankingsTitle", { category: mappedCategory, country: account.country ?? "", count: categoryCountryAccounts.length.toLocaleString() })}
+            </h3>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <MiniRanking
+                above={categoryCountryTv.above}
+                current={account}
+                below={categoryCountryTv.below}
+                metric="totalValue"
+                startRank={categoryCountryTv.currentRank - categoryCountryTv.above.length}
+              />
+              <MiniRanking
+                above={categoryCountryVpf.above}
+                current={account}
+                below={categoryCountryVpf.below}
+                metric="vpf"
+                startRank={categoryCountryVpf.currentRank - categoryCountryVpf.above.length}
               />
             </div>
           </div>

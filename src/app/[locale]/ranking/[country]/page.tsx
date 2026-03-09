@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAccountsData } from "../../../../lib/data";
 import { getCountries, slugToCountry } from "../../../../lib/countries";
+import { getCategories } from "../../../../lib/categories";
 import { locales } from "../../../../i18n/config";
 import RankingTable from "../../../../components/RankingTable";
 import SearchBar from "../../../../components/SearchBar";
@@ -60,6 +61,7 @@ export default async function CountryRankingPage({
     (a) => a.country === countryInfo.name
   );
   const countries = getCountries().map((c) => ({ name: c.name, slug: c.slug }));
+  const categories = getCategories().map((c) => ({ name: c.name, slug: c.slug }));
 
   return (
     <div className="flex flex-col gap-8">
@@ -85,6 +87,7 @@ export default async function CountryRankingPage({
         accounts={countryAccounts}
         countries={countries}
         currentCountrySlug={slug}
+        categories={categories}
       />
     </div>
   );

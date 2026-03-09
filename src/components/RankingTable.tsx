@@ -7,6 +7,7 @@ import type { Account } from "../lib/types";
 import type { Platform, Metric } from "../lib/platform";
 import { formatCurrency, formatVPF, formatFollowers, countryCodeToFlag } from "../lib/utils";
 import { ITEMS_PER_PAGE } from "../lib/config";
+import { mapCategory } from "../lib/categories";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
 
@@ -15,14 +16,23 @@ interface CountryOption {
   slug: string;
 }
 
+interface CategoryOption {
+  name: string;
+  slug: string;
+}
+
 export default function RankingTable({
   accounts,
   countries,
   currentCountrySlug = "all",
+  categories,
+  currentCategorySlug = "all",
 }: {
   accounts: Account[];
   countries: CountryOption[];
   currentCountrySlug?: string;
+  categories?: CategoryOption[];
+  currentCategorySlug?: string;
 }) {
   const t = useTranslations("ranking");
   const router = useRouter();
@@ -56,10 +66,26 @@ export default function RankingTable({
   }
 
   function handleCountryChange(slug: string) {
-    if (slug === "all") {
+    if (slug === "all" && currentCategorySlug === "all") {
       router.push("/");
+    } else if (slug === "all" && currentCategorySlug !== "all") {
+      router.push(`/ranking/category/${currentCategorySlug}`);
+    } else if (currentCategorySlug !== "all") {
+      router.push(`/ranking/category/${currentCategorySlug}/${slug}`);
     } else {
       router.push(`/ranking/${slug}`);
+    }
+  }
+
+  function handleCategoryChange(slug: string) {
+    if (slug === "all" && currentCountrySlug === "all") {
+      router.push("/");
+    } else if (slug === "all" && currentCountrySlug !== "all") {
+      router.push(`/ranking/${currentCountrySlug}`);
+    } else if (currentCountrySlug !== "all") {
+      router.push(`/ranking/category/${slug}/${currentCountrySlug}`);
+    } else {
+      router.push(`/ranking/category/${slug}`);
     }
   }
 
@@ -101,6 +127,22 @@ export default function RankingTable({
               TikTok
             </button>
           </div>
+
+          {/* Category filter */}
+          {categories && categories.length > 0 && (
+            <select
+              value={currentCategorySlug}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="all">{t("allCategories")}</option>
+              {categories.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          )}
 
           {/* Country filter (navigates to country route) */}
           {countries.length > 0 && (
@@ -213,7 +255,7 @@ export default function RankingTable({
                     </Link>
                   </td>
                   <td className="px-4 py-3 text-xs text-text-secondary hidden sm:table-cell">
-                    {account.category}
+                    {mapCategory(account.category)}
                   </td>
                   <td className="px-4 py-3 text-right text-text-secondary hidden sm:table-cell">
                     {formatFollowers(account.followers)}

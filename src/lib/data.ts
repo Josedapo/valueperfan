@@ -1,6 +1,7 @@
 import accountsData from "../data/accounts.json";
 import type { Account, AccountsData } from "./types";
 import type { Platform, Metric } from "./platform";
+import { mapCategory } from "./category-map";
 
 export function getAccountsData(): AccountsData {
   return accountsData as AccountsData;
@@ -33,6 +34,30 @@ export function getAccountsByCountryAndPlatform(
   const data = getAccountsData();
   return data.accounts.filter(
     (a) => a.platform === platform && a.country === country
+  );
+}
+
+export function getAccountsByCategoryAndPlatform(
+  categoryName: string,
+  platform: Platform
+): Account[] {
+  const data = getAccountsData();
+  return data.accounts.filter(
+    (a) => a.platform === platform && mapCategory(a.category) === categoryName
+  );
+}
+
+export function getAccountsByCategoryCountryAndPlatform(
+  categoryName: string,
+  country: string,
+  platform: Platform
+): Account[] {
+  const data = getAccountsData();
+  return data.accounts.filter(
+    (a) =>
+      a.platform === platform &&
+      mapCategory(a.category) === categoryName &&
+      a.country === country
   );
 }
 

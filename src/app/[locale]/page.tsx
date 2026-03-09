@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAccountsData } from "../../lib/data";
 import { getCountries } from "../../lib/countries";
+import { getCategories } from "../../lib/categories";
 import RankingTable from "../../components/RankingTable";
 import SearchBar from "../../components/SearchBar";
 
@@ -14,6 +15,7 @@ export default async function Home({
   const t = await getTranslations("home");
   const data = getAccountsData();
   const countries = getCountries().map((c) => ({ name: c.name, slug: c.slug }));
+  const categories = getCategories().map((c) => ({ name: c.name, slug: c.slug }));
 
   return (
     <div className="flex flex-col gap-8">
@@ -43,7 +45,7 @@ export default async function Home({
       </section>
 
       {/* Block 3: Ranking */}
-      <RankingTable accounts={data.accounts} countries={countries} />
+      <RankingTable accounts={data.accounts} countries={countries} categories={categories} />
 
       {/* Block 4: PME + VPF Explainer */}
       <section className="w-full grid gap-6 sm:grid-cols-2">

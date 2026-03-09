@@ -28,6 +28,7 @@ export function formatVPF(value: number): string {
 }
 
 export function countryCodeToFlag(code: string): string {
+  if (code === "XX") return "🌍";
   return [...code.toUpperCase()].map(
     (c) => String.fromCodePoint(0x1f1e6 - 65 + c.charCodeAt(0))
   ).join("");

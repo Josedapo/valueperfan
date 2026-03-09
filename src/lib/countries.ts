@@ -37,7 +37,11 @@ export function getCountries(): CountryInfo[] {
       slug: countryToSlug(name),
       count,
     }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => {
+      if (a.name === "Global") return 1;
+      if (b.name === "Global") return -1;
+      return a.name.localeCompare(b.name);
+    });
 }
 
 /**

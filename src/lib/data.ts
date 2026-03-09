@@ -4,7 +4,15 @@ import type { Platform, Metric } from "./platform";
 import { mapCategory } from "./category-map";
 
 export function getAccountsData(): AccountsData {
-  return accountsData as AccountsData;
+  const data = accountsData as AccountsData;
+  return {
+    ...data,
+    accounts: data.accounts.map((a) =>
+      a.country === null
+        ? { ...a, country: "Global", countryCode: "XX" }
+        : a
+    ),
+  };
 }
 
 export function getAccountsByPlatform(platform: Platform): Account[] {

@@ -86,7 +86,7 @@ export default function SearchBar() {
             if (results.length > 0 || showSuggest) setIsOpen(true);
           }}
           placeholder={t("placeholder")}
-          className="w-full rounded-lg border border-border bg-surface px-4 py-3 pl-10 text-sm placeholder-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          className="w-full rounded-lg border border-border bg-surface px-4 py-3 pl-10 text-base sm:text-sm placeholder-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <svg
           className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted"

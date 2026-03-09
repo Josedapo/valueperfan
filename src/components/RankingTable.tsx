@@ -10,6 +10,7 @@ import { ITEMS_PER_PAGE } from "../lib/config";
 import { mapCategory } from "../lib/categories";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
+import SearchBar from "./SearchBar";
 
 interface CountryOption {
   name: string;
@@ -29,6 +30,7 @@ export default function RankingTable({
   currentCategorySlug = "all",
   categoryName,
   countryName,
+  showHeading = true,
 }: {
   accounts: Account[];
   countries: CountryOption[];
@@ -37,6 +39,7 @@ export default function RankingTable({
   currentCategorySlug?: string;
   categoryName?: string;
   countryName?: string;
+  showHeading?: boolean;
 }) {
   const t = useTranslations("ranking");
   const router = useRouter();
@@ -109,16 +112,23 @@ export default function RankingTable({
 
   return (
     <div>
-      {/* Dynamic H1 */}
-      <h1 className="text-3xl sm:text-4xl font-bold text-text text-center mb-6">
-        {t.rich(getDynamicTitleKey(), {
-          ...(categoryName ? { category: categoryName } : {}),
-          ...(countryName ? { country: countryName } : {}),
-          highlight: (chunks) => (
-            <span className="text-primary">{chunks}</span>
-          ),
-        })}
-      </h1>
+      {/* Dynamic heading + search */}
+      {showHeading && (
+        <>
+          <h1 className="text-3xl sm:text-4xl font-bold text-text text-center mb-4">
+            {t.rich(getDynamicTitleKey(), {
+              ...(categoryName ? { category: categoryName } : {}),
+              ...(countryName ? { country: countryName } : {}),
+              highlight: (chunks) => (
+                <span className="text-primary">{chunks}</span>
+              ),
+            })}
+          </h1>
+          <div className="max-w-xl mx-auto w-full mb-6">
+            <SearchBar />
+          </div>
+        </>
+      )}
 
       {/* Controls */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

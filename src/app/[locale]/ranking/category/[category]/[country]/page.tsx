@@ -5,7 +5,6 @@ import { slugToCountry, countryToSlug } from "../../../../../../lib/countries";
 import { getCategories, slugToCategory, mapCategory, getCategoryCountries } from "../../../../../../lib/categories";
 import { locales } from "../../../../../../i18n/config";
 import RankingTable from "../../../../../../components/RankingTable";
-import SearchBar from "../../../../../../components/SearchBar";
 
 export async function generateStaticParams() {
   const categories = getCategories();
@@ -84,11 +83,7 @@ export default async function CategoryCountryRankingPage({
   const categories = getCategories().map((c) => ({ name: c.name, slug: c.slug }));
 
   return (
-    <div className="flex flex-col gap-8">
-      <section className="max-w-xl mx-auto w-full pt-6">
-        <SearchBar />
-      </section>
-
+    <div className="flex flex-col gap-8 pt-6">
       <RankingTable
         accounts={filtered}
         countries={categoryCountries}

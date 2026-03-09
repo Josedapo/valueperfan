@@ -19,13 +19,33 @@ export default async function Home({
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Block 1: Search */}
-      <section className="max-w-xl mx-auto w-full pt-6">
+      {/* Block 1: Tagline */}
+      <section className="text-center py-6">
+        <h1 className="text-3xl sm:text-4xl font-bold text-text">
+          {t.rich("title", {
+            highlight: (chunks) => (
+              <span className="text-primary">{chunks}</span>
+            ),
+          })}
+        </h1>
+        <p className="mt-3 text-lg text-text-secondary max-w-2xl mx-auto">
+          {t.rich("subtitle", {
+            highlight: (chunks) => (
+              <span className="font-semibold text-primary underline">
+                {chunks}
+              </span>
+            ),
+          })}
+        </p>
+      </section>
+
+      {/* Block 2: Search */}
+      <section className="max-w-xl mx-auto w-full">
         <SearchBar />
       </section>
 
-      {/* Block 2: Ranking */}
-      <RankingTable accounts={data.accounts} countries={countries} categories={categories} />
+      {/* Block 3: Ranking */}
+      <RankingTable accounts={data.accounts} countries={countries} categories={categories} showHeading={false} />
 
       {/* Block 4: PME + VPF Explainer */}
       <section className="w-full grid gap-6 sm:grid-cols-2">

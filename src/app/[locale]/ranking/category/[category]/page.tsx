@@ -21,11 +21,13 @@ export async function generateMetadata({
   const { locale, category: slug } = await params;
   const categoryInfo = slugToCategory(slug);
   const t = await getTranslations({ locale, namespace: "ranking" });
+  const tCategories = await getTranslations({ locale, namespace: "categories" });
 
   if (!categoryInfo) return { title: t("notFound") };
 
-  const title = t("categoryMetaTitle", { category: categoryInfo.name });
-  const description = t("categoryMetaDescription", { category: categoryInfo.name });
+  const translatedCategory = tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name;
+  const title = t("categoryMetaTitle", { category: translatedCategory });
+  const description = t("categoryMetaDescription", { category: translatedCategory });
   const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}/ranking/category/${slug}`;
 
   return {

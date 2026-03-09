@@ -42,6 +42,8 @@ export default function RankingTable({
   showHeading?: boolean;
 }) {
   const t = useTranslations("ranking");
+  const tCategories = useTranslations("categories");
+  const tCountries = useTranslations("countries");
   const router = useRouter();
   const [platform, setPlatform] = useState<Platform>("instagram");
   const [metric, setMetric] = useState<Metric>("vpf");
@@ -117,8 +119,8 @@ export default function RankingTable({
         <>
           <h1 className="text-3xl sm:text-4xl font-bold text-text text-center mb-4">
             {t.rich(getDynamicTitleKey(), {
-              ...(categoryName ? { category: categoryName } : {}),
-              ...(countryName ? { country: countryName } : {}),
+              ...(categoryName ? { category: tCategories.has(categoryName) ? tCategories(categoryName) : categoryName } : {}),
+              ...(countryName ? { country: tCountries.has(countryName) ? tCountries(countryName) : countryName } : {}),
               highlight: (chunks) => (
                 <span className="text-primary">{chunks}</span>
               ),
@@ -177,7 +179,7 @@ export default function RankingTable({
               <option value="all">{t("allCategories")}</option>
               {categories.map((c) => (
                 <option key={c.slug} value={c.slug}>
-                  {c.name}
+                  {tCategories.has(c.name) ? tCategories(c.name) : c.name}
                 </option>
               ))}
             </select>
@@ -193,7 +195,7 @@ export default function RankingTable({
               <option value="all">{t("allCountries")}</option>
               {countries.map((c) => (
                 <option key={c.slug} value={c.slug}>
-                  {c.name}
+                  {tCountries.has(c.name) ? tCountries(c.name) : c.name}
                 </option>
               ))}
             </select>
@@ -294,7 +296,7 @@ export default function RankingTable({
                     </Link>
                   </td>
                   <td className="px-4 py-3 text-xs text-text-secondary hidden sm:table-cell">
-                    {mapCategory(account.category)}
+                    {tCategories.has(mapCategory(account.category)) ? tCategories(mapCategory(account.category)) : mapCategory(account.category)}
                   </td>
                   <td className="px-4 py-3 text-right text-text-secondary hidden sm:table-cell">
                     {formatFollowers(account.followers)}

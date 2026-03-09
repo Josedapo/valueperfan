@@ -28,16 +28,20 @@ export async function generateMetadata({
   const categoryInfo = slugToCategory(catSlug);
   const countryInfo = slugToCountry(countrySlug);
   const t = await getTranslations({ locale, namespace: "ranking" });
+  const tCategories = await getTranslations({ locale, namespace: "categories" });
+  const tCountries = await getTranslations({ locale, namespace: "countries" });
 
   if (!categoryInfo || !countryInfo) return { title: t("notFound") };
 
+  const translatedCategory = tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name;
+  const translatedCountry = tCountries.has(countryInfo.name) ? tCountries(countryInfo.name) : countryInfo.name;
   const title = t("categoryCountryMetaTitle", {
-    category: categoryInfo.name,
-    country: countryInfo.name,
+    category: translatedCategory,
+    country: translatedCountry,
   });
   const description = t("categoryCountryMetaDescription", {
-    category: categoryInfo.name,
-    country: countryInfo.name,
+    category: translatedCategory,
+    country: translatedCountry,
   });
   const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}/ranking/category/${catSlug}/${countrySlug}`;
 

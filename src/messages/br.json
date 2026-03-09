@@ -73,6 +73,7 @@
     "countryRankingsTitle": "Rankings em {country} ({count} contas)",
     "categoryRankingsTitle": "Rankings de {category} ({count} contas)",
     "categoryCountryRankingsTitle": "{category} em {country} ({count} contas)",
+    "viewRanking": "Ver Ranking \u2192",
     "neighborhoodVpf": "Valor por 1K Fãs",
     "neighborhoodTv": "Valor Total",
     "notFound": "Conta não encontrada",

@@ -20,7 +20,8 @@ import {
   SSG_TOP_ACCOUNTS,
   MIN_ACCOUNTS_FOR_COUNTRY_RANKING,
 } from "../../../../../lib/config";
-import { mapCategory } from "../../../../../lib/categories";
+import { mapCategory, categoryToSlug } from "../../../../../lib/categories";
+import { countryToSlug } from "../../../../../lib/countries";
 import { locales } from "../../../../../i18n/config";
 import { Link } from "../../../../../i18n/navigation";
 import AccountAvatar from "../../../../../components/AccountAvatar";
@@ -128,8 +129,12 @@ export default async function AccountPage({
     ? getNeighbors(account, 3, "totalValue", countryAccounts)
     : null;
 
-  // Category rankings
+  // Slugs for ranking links
   const mappedCategory = mapCategory(account.category);
+  const categorySlug = categoryToSlug(mappedCategory);
+  const countrySlug = account.country ? countryToSlug(account.country) : null;
+
+  // Category rankings
   const categoryAccounts = getAccountsByCategoryAndPlatform(
     mappedCategory,
     account.platform
@@ -217,9 +222,12 @@ export default async function AccountPage({
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <p className="text-text-secondary">@{account.handle}</p>
-              <span className="inline-flex items-center rounded-full bg-surface-alt border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary">
-                {mapCategory(account.category)}
-              </span>
+              <Link
+                href={`/ranking/category/${categorySlug}`}
+                className="inline-flex items-center rounded-full bg-surface-alt border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary hover:border-primary hover:text-primary transition-colors"
+              >
+                {mappedCategory}
+              </Link>
             </div>
             {account.profileUrl && (
               <a
@@ -298,9 +306,14 @@ export default async function AccountPage({
       {/* Rankings Section */}
       <div className="mt-6">
         {/* Global Rankings */}
-        <h2 className="text-sm font-bold text-text uppercase tracking-wider mb-4">
-          {t("globalRankingsTitle", { count: globalTotal.toLocaleString() })}
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-bold text-text uppercase tracking-wider">
+            {t("globalRankingsTitle", { count: globalTotal.toLocaleString() })}
+          </h2>
+          <Link href="/" className="text-xs text-primary hover:text-primary-dark transition-colors">
+            {t("viewRanking")}
+          </Link>
+        </div>
         <div className="grid gap-6 sm:grid-cols-2">
           <MiniRanking
             above={tvNeighbors.above}
@@ -317,12 +330,17 @@ export default async function AccountPage({
         </div>
 
         {/* Country Rankings */}
-        {showCountryRankings && countryVpf && countryTv && (
+        {showCountryRankings && countryVpf && countryTv && countrySlug && (
           <div className="mt-6">
-            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">
-              {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
-              {t("countryRankingsTitle", { country: account.country ?? "", count: countryAccounts.length.toLocaleString() })}
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
+                {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
+                {t("countryRankingsTitle", { country: account.country ?? "", count: countryAccounts.length.toLocaleString() })}
+              </h3>
+              <Link href={`/ranking/${countrySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
+                {t("viewRanking")}
+              </Link>
+            </div>
             <div className="grid gap-6 sm:grid-cols-2">
               <MiniRanking
                 above={countryTv.above}
@@ -345,9 +363,14 @@ export default async function AccountPage({
         {/* Category Rankings */}
         {showCategoryRankings && categoryVpf && categoryTv && (
           <div className="mt-6">
-            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">
-              {t("categoryRankingsTitle", { category: mappedCategory, count: categoryAccounts.length.toLocaleString() })}
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
+                {t("categoryRankingsTitle", { category: mappedCategory, count: categoryAccounts.length.toLocaleString() })}
+              </h3>
+              <Link href={`/ranking/category/${categorySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
+                {t("viewRanking")}
+              </Link>
+            </div>
             <div className="grid gap-6 sm:grid-cols-2">
               <MiniRanking
                 above={categoryTv.above}
@@ -368,12 +391,17 @@ export default async function AccountPage({
         )}
 
         {/* Category + Country Rankings */}
-        {showCategoryCountryRankings && categoryCountryVpf && categoryCountryTv && (
+        {showCategoryCountryRankings && categoryCountryVpf && categoryCountryTv && countrySlug && (
           <div className="mt-6">
-            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">
-              {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
-              {t("categoryCountryRankingsTitle", { category: mappedCategory, country: account.country ?? "", count: categoryCountryAccounts.length.toLocaleString() })}
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
+                {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
+                {t("categoryCountryRankingsTitle", { category: mappedCategory, country: account.country ?? "", count: categoryCountryAccounts.length.toLocaleString() })}
+              </h3>
+              <Link href={`/ranking/category/${categorySlug}/${countrySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
+                {t("viewRanking")}
+              </Link>
+            </div>
             <div className="grid gap-6 sm:grid-cols-2">
               <MiniRanking
                 above={categoryCountryTv.above}

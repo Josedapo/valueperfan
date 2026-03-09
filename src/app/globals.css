@@ -18,4 +18,5 @@ body {
   background: var(--color-surface-alt);
   color: var(--color-text);
   font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
 }

@@ -29,6 +29,7 @@ import AccountAvatar from "../../../../../components/AccountAvatar";
 import MiniRanking from "../../../../../components/MiniRanking";
 import ClaimFlow from "../../../../../components/ClaimFlow";
 import PlatformIcon from "../../../../../components/PlatformIcon";
+import SearchBar from "../../../../../components/SearchBar";
 
 // Pre-render top accounts (by VPF rank) per locale for fast initial load + SEO.
 // Remaining accounts are generated on-demand via ISR.
@@ -200,6 +201,11 @@ export default async function AccountPage({
         <span className="mx-2">/</span>
         <span className="text-text">{account.name}</span>
       </nav>
+
+      {/* Search */}
+      <section className="max-w-xl mx-auto w-full mb-6">
+        <SearchBar />
+      </section>
 
       {/* Account Header */}
       <div className="rounded-lg border border-border bg-surface p-6">
@@ -491,7 +497,7 @@ function EngagementRateBenchmarkCard({
 
   // 3 color tiers: top 25% green, bottom 25% red, middle amber
   const tier =
-    benchmark.percentile >= 75 ? "green" : benchmark.percentile <= 25 ? "red" : "amber";
+    benchmark.percentile >= 50 ? "green" : benchmark.percentile >= 25 ? "amber" : "red";
   const barColor = { green: "bg-emerald-400", amber: "bg-amber-400", red: "bg-red-400" }[tier];
   const dotColor = { green: "bg-emerald-500", amber: "bg-amber-500", red: "bg-red-500" }[tier];
   const labelColor = { green: "text-emerald-400", amber: "text-amber-400", red: "text-red-400" }[tier];

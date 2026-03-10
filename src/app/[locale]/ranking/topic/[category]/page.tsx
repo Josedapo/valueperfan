@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAccountsData } from "../../../../../lib/data";
-import { getCountries, countryToSlug } from "../../../../../lib/countries";
 import { getCategories, slugToCategory, mapCategory, getCategoryCountries } from "../../../../../lib/categories";
+import { buildRankingMetadata } from "../../../../../lib/metadata";
 import { locales } from "../../../../../i18n/config";
 import RankingTable from "../../../../../components/RankingTable";
 
@@ -26,24 +26,12 @@ export async function generateMetadata({
   if (!categoryInfo) return { title: t("notFound") };
 
   const translatedCategory = tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name;
-  const title = t("categoryMetaTitle", { category: translatedCategory });
-  const description = t("categoryMetaDescription", { category: translatedCategory });
-  const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}/ranking/topic/${slug}`;
-
-  return {
-    title,
-    description,
-    openGraph: { title, description, url, siteName: "ValuePerFan" },
-    twitter: { card: "summary" as const, title, description },
-    alternates: {
-      canonical: url,
-      languages: {
-        en: `https://valueperfan.com/ranking/topic/${slug}`,
-        es: `https://valueperfan.com/es/ranking/topic/${slug}`,
-        "pt-BR": `https://valueperfan.com/br/ranking/topic/${slug}`,
-      },
-    },
-  };
+  return buildRankingMetadata({
+    locale,
+    title: t("categoryMetaTitle", { category: translatedCategory }),
+    description: t("categoryMetaDescription", { category: translatedCategory }),
+    path: `/ranking/topic/${slug}`,
+  });
 }
 
 export default async function CategoryRankingPage({

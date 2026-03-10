@@ -1,5 +1,18 @@
 import exchangeRate from "../data/exchange-rate.json";
 
+export function toSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+export function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 const EUR_TO_USD: number = exchangeRate.rate;
 
 export function formatCurrency(value: number): string {

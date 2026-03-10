@@ -3,9 +3,12 @@ import type { Account, AccountsData } from "./types";
 import type { Platform, Metric } from "./platform";
 import { mapCategory } from "./category-map";
 
+let cached: AccountsData | null = null;
+
 export function getAccountsData(): AccountsData {
+  if (cached) return cached;
   const data = accountsData as AccountsData;
-  return {
+  cached = {
     ...data,
     accounts: data.accounts.map((a) =>
       a.country === null
@@ -13,6 +16,7 @@ export function getAccountsData(): AccountsData {
         : a
     ),
   };
+  return cached;
 }
 
 export function getAccountsByPlatform(platform: Platform): Account[] {

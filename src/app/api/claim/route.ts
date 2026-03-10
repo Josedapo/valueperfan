@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import { query, type ClaimRow } from "../../../lib/db";
 import { getAccount } from "../../../lib/data";
 import { sendVerificationEmail } from "../../../lib/email";
+import { isValidEmail } from "../../../lib/utils";
 import type { Platform } from "../../../lib/platform";
 
 export const runtime = "nodejs";
@@ -31,8 +32,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "missing_fields" }, { status: 400 });
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  if (!isValidEmail(email)) {
     return NextResponse.json({ error: "invalid_email" }, { status: 400 });
   }
 

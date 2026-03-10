@@ -1,5 +1,6 @@
 import { getAccountsData } from "./data";
 import { MIN_ACCOUNTS_PER_COUNTRY } from "./config";
+import { toSlug } from "./utils";
 
 export interface CountryInfo {
   name: string;
@@ -8,12 +9,7 @@ export interface CountryInfo {
 }
 
 export function countryToSlug(country: string): string {
-  return country
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // remove accents
-    .replace(/[^a-z0-9]+/g, "-") // non-alphanumeric → hyphen
-    .replace(/^-|-$/g, ""); // trim hyphens
+  return toSlug(country);
 }
 
 /**

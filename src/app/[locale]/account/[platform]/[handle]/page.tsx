@@ -8,7 +8,6 @@ import {
   getAccountsByCountryAndPlatform,
   getAccountsByCategoryAndPlatform,
   getAccountsByCategoryCountryAndPlatform,
-  getEngagementRateBenchmark,
 } from "../../../../../lib/data";
 import {
   formatCurrency,
@@ -16,7 +15,7 @@ import {
   formatFollowers,
   countryCodeToFlag,
 } from "../../../../../lib/utils";
-import { platformLabel, type Platform } from "../../../../../lib/platform";
+import { platformLabel } from "../../../../../lib/platform";
 import {
   SSG_TOP_ACCOUNTS,
   MIN_ACCOUNTS_FOR_COUNTRY_RANKING,
@@ -26,7 +25,9 @@ import { countryToSlug } from "../../../../../lib/countries";
 import { locales } from "../../../../../i18n/config";
 import { Link } from "../../../../../i18n/navigation";
 import AccountAvatar from "../../../../../components/AccountAvatar";
-import MiniRanking from "../../../../../components/MiniRanking";
+import MetricCard from "../../../../../components/MetricCard";
+import EngagementRateBenchmark from "../../../../../components/EngagementRateBenchmark";
+import AccountRankingSection from "../../../../../components/AccountRankingSection";
 import ClaimFlow from "../../../../../components/ClaimFlow";
 import PlatformIcon from "../../../../../components/PlatformIcon";
 import SearchBar from "../../../../../components/SearchBar";
@@ -304,7 +305,7 @@ export default async function AccountPage({
           </div>
 
           {/* Engagement Rate with Benchmark */}
-          <EngagementRateBenchmarkCard
+          <EngagementRateBenchmark
             engRate={account.engRate}
             category={mappedCategory}
             platform={account.platform}
@@ -318,119 +319,53 @@ export default async function AccountPage({
       {/* Rankings Section */}
       <div className="mt-6">
         {/* Global Rankings */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-bold text-text uppercase tracking-wider">
-            {t("globalRankingsTitle", { count: globalTotal.toLocaleString() })}
-          </h2>
-          <Link href="/" className="text-xs text-primary hover:text-primary-dark transition-colors">
-            {t("viewRanking")}
-          </Link>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2">
-          <MiniRanking
-            above={tvNeighbors.above}
-            current={account}
-            below={tvNeighbors.below}
-            metric="totalValue"
-          />
-          <MiniRanking
-            above={vpfNeighbors.above}
-            current={account}
-            below={vpfNeighbors.below}
-            metric="vpf"
-          />
-        </div>
+        <AccountRankingSection
+          title={t("globalRankingsTitle", { count: globalTotal.toLocaleString() })}
+          linkHref="/"
+          linkLabel={t("viewRanking")}
+          tvNeighbors={tvNeighbors}
+          vpfNeighbors={vpfNeighbors}
+          account={account}
+          titleTag="h2"
+          titleClassName="text-sm font-bold text-text uppercase tracking-wider"
+        />
 
         {/* Country Rankings */}
         {showCountryRankings && countryVpf && countryTv && countrySlug && (
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
-                {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
-                {t("countryRankingsTitle", { country: account.country ?? "", count: countryAccounts.length.toLocaleString() })}
-              </h3>
-              <Link href={`/ranking/${countrySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
-                {t("viewRanking")}
-              </Link>
-            </div>
-            <div className="grid gap-6 sm:grid-cols-2">
-              <MiniRanking
-                above={countryTv.above}
-                current={account}
-                below={countryTv.below}
-                metric="totalValue"
-                startRank={countryTv.currentRank - countryTv.above.length}
-              />
-              <MiniRanking
-                above={countryVpf.above}
-                current={account}
-                below={countryVpf.below}
-                metric="vpf"
-                startRank={countryVpf.currentRank - countryVpf.above.length}
-              />
-            </div>
-          </div>
+          <AccountRankingSection
+            title={t("countryRankingsTitle", { country: account.country ?? "", count: countryAccounts.length.toLocaleString() })}
+            linkHref={`/ranking/${countrySlug}`}
+            linkLabel={t("viewRanking")}
+            tvNeighbors={countryTv}
+            vpfNeighbors={countryVpf}
+            account={account}
+            flag={account.countryCode ? countryCodeToFlag(account.countryCode) : null}
+          />
         )}
 
         {/* Category Rankings */}
         {showCategoryRankings && categoryVpf && categoryTv && (
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
-                {t("categoryRankingsTitle", { category: mappedCategory, count: categoryAccounts.length.toLocaleString() })}
-              </h3>
-              <Link href={`/ranking/topic/${categorySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
-                {t("viewRanking")}
-              </Link>
-            </div>
-            <div className="grid gap-6 sm:grid-cols-2">
-              <MiniRanking
-                above={categoryTv.above}
-                current={account}
-                below={categoryTv.below}
-                metric="totalValue"
-                startRank={categoryTv.currentRank - categoryTv.above.length}
-              />
-              <MiniRanking
-                above={categoryVpf.above}
-                current={account}
-                below={categoryVpf.below}
-                metric="vpf"
-                startRank={categoryVpf.currentRank - categoryVpf.above.length}
-              />
-            </div>
-          </div>
+          <AccountRankingSection
+            title={t("categoryRankingsTitle", { category: mappedCategory, count: categoryAccounts.length.toLocaleString() })}
+            linkHref={`/ranking/topic/${categorySlug}`}
+            linkLabel={t("viewRanking")}
+            tvNeighbors={categoryTv}
+            vpfNeighbors={categoryVpf}
+            account={account}
+          />
         )}
 
         {/* Category + Country Rankings */}
         {showCategoryCountryRankings && categoryCountryVpf && categoryCountryTv && countrySlug && (
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
-                {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
-                {t("categoryCountryRankingsTitle", { category: mappedCategory, country: account.country ?? "", count: categoryCountryAccounts.length.toLocaleString() })}
-              </h3>
-              <Link href={`/ranking/topic/${categorySlug}/${countrySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
-                {t("viewRanking")}
-              </Link>
-            </div>
-            <div className="grid gap-6 sm:grid-cols-2">
-              <MiniRanking
-                above={categoryCountryTv.above}
-                current={account}
-                below={categoryCountryTv.below}
-                metric="totalValue"
-                startRank={categoryCountryTv.currentRank - categoryCountryTv.above.length}
-              />
-              <MiniRanking
-                above={categoryCountryVpf.above}
-                current={account}
-                below={categoryCountryVpf.below}
-                metric="vpf"
-                startRank={categoryCountryVpf.currentRank - categoryCountryVpf.above.length}
-              />
-            </div>
-          </div>
+          <AccountRankingSection
+            title={t("categoryCountryRankingsTitle", { category: mappedCategory, country: account.country ?? "", count: categoryCountryAccounts.length.toLocaleString() })}
+            linkHref={`/ranking/topic/${categorySlug}/${countrySlug}`}
+            linkLabel={t("viewRanking")}
+            tvNeighbors={categoryCountryTv}
+            vpfNeighbors={categoryCountryVpf}
+            account={account}
+            flag={account.countryCode ? countryCodeToFlag(account.countryCode) : null}
+          />
         )}
       </div>
 
@@ -441,132 +376,6 @@ export default async function AccountPage({
         {account.platform === "instagram" && (
           <p>{t("instagramStoriesNote")}</p>
         )}
-      </div>
-    </div>
-  );
-}
-
-function MetricCard({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-lg bg-surface-alt px-4 py-3 text-center">
-      <p className="text-xs text-text-secondary">{label}</p>
-      <p className="mt-1 text-lg font-bold text-text">{value}</p>
-    </div>
-  );
-}
-
-function EngagementRateBenchmarkCard({
-  engRate,
-  category,
-  platform,
-  platformLabel: pLabel,
-  t,
-}: {
-  engRate: number;
-  category: string;
-  platform: Platform;
-  platformLabel: string;
-  t: (key: string, values?: Record<string, string | number>) => string;
-}) {
-  const benchmark = getEngagementRateBenchmark(category, platform, engRate);
-  const accountPct = (engRate * 100).toFixed(2);
-
-  if (!benchmark) {
-    // Not enough data — show simple card like before
-    return (
-      <div className="mt-3 rounded-lg bg-surface-alt px-4 py-3 text-center">
-        <p className="text-xs text-text-secondary">{t("engRateLabel")}</p>
-        <p className="mt-1 text-lg font-bold text-text">{accountPct}%</p>
-      </div>
-    );
-  }
-
-  const medianPct = (benchmark.median * 100).toFixed(2);
-  const position = Math.min(Math.max(benchmark.percentile, 2), 98);
-  const isTopHalf = benchmark.percentile >= 50;
-  const displayPercentile = Math.max(
-    1,
-    isTopHalf ? 100 - benchmark.percentile : benchmark.percentile
-  );
-
-  // 3 color tiers: top 25% green, bottom 25% red, middle amber
-  const tier =
-    benchmark.percentile >= 50 ? "green" : benchmark.percentile >= 25 ? "amber" : "red";
-  const barColor = { green: "bg-emerald-400", amber: "bg-amber-400", red: "bg-red-400" }[tier];
-  const dotColor = { green: "bg-emerald-500", amber: "bg-amber-500", red: "bg-red-500" }[tier];
-  const labelColor = { green: "text-emerald-400", amber: "text-amber-400", red: "text-red-400" }[tier];
-
-  return (
-    <div className="mt-3 rounded-lg bg-surface-alt px-4 py-4">
-      {/* Numbers row */}
-      <div className="flex items-center justify-between mb-4">
-        {/* Account's ER */}
-        <div className="text-center flex-1">
-          <p className="text-xs text-text-secondary">{t("engRateLabel")}</p>
-          <p className="mt-1 text-2xl font-bold text-text">{accountPct}%</p>
-        </div>
-
-        {/* Divider */}
-        <div className="w-px h-10 bg-border mx-4" />
-
-        {/* Category median */}
-        <div className="text-center flex-1">
-          <p className="text-xs text-text-secondary">
-            {t("engRateBenchmarkMedian", { category, platform: pLabel })}
-          </p>
-          <p className="mt-1 text-2xl font-bold text-text-secondary">
-            {medianPct}%
-          </p>
-        </div>
-
-      </div>
-
-      {/* Progress bar with floating label */}
-      <div className="relative h-2 rounded-full bg-border overflow-visible mt-9">
-        {/* Filled portion up to account position */}
-        <div
-          className={`absolute top-0 left-0 h-full rounded-full ${barColor}`}
-          style={{ width: `${position}%` }}
-        />
-
-        {/* Median marker (always at 50%) */}
-        <div
-          className="absolute top-1/2 -translate-y-1/2 w-0.5 h-4 bg-text-secondary"
-          style={{ left: "50%" }}
-          title={`Median: ${medianPct}%`}
-        />
-
-        {/* Account marker + floating label */}
-        <div
-          className="absolute"
-          style={{ left: `${position}%`, top: "50%", transform: "translate(-50%, -50%)" }}
-        >
-          {/* Floating label above */}
-          <span
-            className={`absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-semibold ${labelColor}`}
-          >
-            {isTopHalf
-              ? t("engRateBenchmarkPercentile", { percentile: displayPercentile })
-              : t("engRateBenchmarkBottom", { percentile: displayPercentile })}
-          </span>
-          {/* Dot */}
-          <div
-            className={`w-3 h-3 rounded-full border-2 border-surface ${dotColor}`}
-          />
-        </div>
-      </div>
-
-      {/* Labels under bar */}
-      <div className="flex justify-between mt-1.5">
-        <span className="text-[10px] text-text-muted">{t("engRateBenchmarkLow")}</span>
-        <span className="text-[10px] text-text-muted">{t("engRateBenchmarkMedianLabel")}</span>
-        <span className="text-[10px] text-text-muted">{t("engRateBenchmarkHigh")}</span>
       </div>
     </div>
   );

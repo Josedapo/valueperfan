@@ -1,6 +1,7 @@
 import { getAccountsData } from "./data";
 import { MIN_ACCOUNTS_PER_CATEGORY_COUNTRY } from "./config";
 import { countryToSlug } from "./countries";
+import { toSlug } from "./utils";
 export { mapCategory } from "./category-map";
 import { mapCategory } from "./category-map";
 
@@ -17,12 +18,7 @@ export interface CountryInfo {
 }
 
 export function categoryToSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+  return toSlug(name);
 }
 
 /**

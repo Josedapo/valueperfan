@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAccountsData } from "../../../../../../lib/data";
-import { slugToCountry, countryToSlug } from "../../../../../../lib/countries";
+import { slugToCountry } from "../../../../../../lib/countries";
 import { getCategories, slugToCategory, mapCategory, getCategoryCountries } from "../../../../../../lib/categories";
+import { buildRankingMetadata } from "../../../../../../lib/metadata";
 import { locales } from "../../../../../../i18n/config";
 import RankingTable from "../../../../../../components/RankingTable";
 
@@ -35,30 +36,12 @@ export async function generateMetadata({
 
   const translatedCategory = tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name;
   const translatedCountry = tCountries.has(countryInfo.name) ? tCountries(countryInfo.name) : countryInfo.name;
-  const title = t("categoryCountryMetaTitle", {
-    category: translatedCategory,
-    country: translatedCountry,
+  return buildRankingMetadata({
+    locale,
+    title: t("categoryCountryMetaTitle", { category: translatedCategory, country: translatedCountry }),
+    description: t("categoryCountryMetaDescription", { category: translatedCategory, country: translatedCountry }),
+    path: `/ranking/topic/${catSlug}/${countrySlug}`,
   });
-  const description = t("categoryCountryMetaDescription", {
-    category: translatedCategory,
-    country: translatedCountry,
-  });
-  const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}/ranking/topic/${catSlug}/${countrySlug}`;
-
-  return {
-    title,
-    description,
-    openGraph: { title, description, url, siteName: "ValuePerFan" },
-    twitter: { card: "summary" as const, title, description },
-    alternates: {
-      canonical: url,
-      languages: {
-        en: `https://valueperfan.com/ranking/topic/${catSlug}/${countrySlug}`,
-        es: `https://valueperfan.com/es/ranking/topic/${catSlug}/${countrySlug}`,
-        "pt-BR": `https://valueperfan.com/br/ranking/topic/${catSlug}/${countrySlug}`,
-      },
-    },
-  };
 }
 
 export default async function CategoryCountryRankingPage({

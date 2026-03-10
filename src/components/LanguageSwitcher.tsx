@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "../i18n/navigation";
 import type { Locale } from "../i18n/config";
 import { locales } from "../i18n/config";
+import { useClickOutside } from "../hooks/useClickOutside";
 
 const LOCALE_CONFIG: Record<
   string,
@@ -21,16 +22,7 @@ export default function LanguageSwitcher() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useClickOutside(ref, useCallback(() => setOpen(false), []));
 
   function handleChange(newLocale: Locale) {
     setOpen(false);

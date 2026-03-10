@@ -7,6 +7,7 @@ import Fuse from "fuse.js";
 import type { SearchEntry } from "../lib/types";
 import type { Platform } from "../lib/platform";
 import { SEARCH_RESULTS_LIMIT, SEARCH_DEBOUNCE_MS, SEARCH_MIN_CHARS } from "../lib/config";
+import { useClickOutside } from "../hooks/useClickOutside";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
 
@@ -35,18 +36,7 @@ export default function SearchBar() {
   }, []);
 
   // Close dropdown on click outside
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useClickOutside(containerRef, useCallback(() => setIsOpen(false), []));
 
   const handleSearch = useCallback(
     (value: string) => {

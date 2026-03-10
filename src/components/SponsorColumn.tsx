@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { CONTACT_EMAIL } from "../lib/config";
+import { CONTACT_EMAIL, SPONSORS, AVAILABLE_SPONSOR_SLOTS } from "../lib/config";
 
 export function SponsorCard({
   name,
@@ -56,7 +56,7 @@ export function AdvertiseSlot() {
         {t("advertise")}
       </p>
       <p className="text-xs text-text-muted mt-0.5">
-        {t("spotsLeft", { count: 18 })}
+        {t("spotsLeft", { count: AVAILABLE_SPONSOR_SLOTS })}
       </p>
     </a>
   );
@@ -64,23 +64,11 @@ export function AdvertiseSlot() {
 
 export function MobileSponsorBar() {
   const t = useTranslations("sponsor");
-  const sponsors = [
-    {
-      name: "Horizm",
-      url: "https://www.horizm.com",
-      logo: "/images/horizm-logo.png",
-    },
-    {
-      name: "Lume",
-      url: "https://getlumeapp.com",
-      logo: "/images/lume-logo.png",
-    },
-  ];
 
   return (
     <div className="xl:hidden bg-surface border-b border-border">
       <div className="flex items-center justify-center gap-3 px-4 py-2.5 overflow-x-auto text-xs">
-        {sponsors.map((s) => (
+        {SPONSORS.map((s) => (
           <a
             key={s.name}
             href={s.url}

@@ -137,36 +137,22 @@ export default function RankingTable({
         <div className="flex flex-wrap items-center gap-3">
           {/* Platform selector */}
           <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
-            <button
-              onClick={() => handlePlatformChange("instagram")}
-              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
-                platform === "instagram"
-                  ? "bg-primary text-primary-contrast"
-                  : "text-text-secondary hover:bg-surface-alt"
-              }`}
-            >
+            <ToggleButton active={platform === "instagram"} onClick={() => handlePlatformChange("instagram")}>
               <PlatformIcon
                 platform="instagram"
                 size={16}
                 className={platform === "instagram" ? "brightness-0 invert" : ""}
               />
               Instagram
-            </button>
-            <button
-              onClick={() => handlePlatformChange("tiktok")}
-              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
-                platform === "tiktok"
-                  ? "bg-primary text-primary-contrast"
-                  : "text-text-secondary hover:bg-surface-alt"
-              }`}
-            >
+            </ToggleButton>
+            <ToggleButton active={platform === "tiktok"} onClick={() => handlePlatformChange("tiktok")}>
               <PlatformIcon
                 platform="tiktok"
                 size={16}
                 className={platform === "tiktok" ? "brightness-0 invert" : ""}
               />
               TikTok
-            </button>
+            </ToggleButton>
           </div>
 
           {/* Category filter */}
@@ -204,26 +190,12 @@ export default function RankingTable({
 
         {/* Metric toggle */}
         <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
-          <button
-            onClick={() => handleMetricChange("totalValue")}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              metric === "totalValue"
-                ? "bg-primary text-primary-contrast"
-                : "text-text-secondary hover:bg-surface-alt"
-            }`}
-          >
+          <ToggleButton active={metric === "totalValue"} onClick={() => handleMetricChange("totalValue")}>
             {t("toggleTotalValue")}
-          </button>
-          <button
-            onClick={() => handleMetricChange("vpf")}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              metric === "vpf"
-                ? "bg-primary text-primary-contrast"
-                : "text-text-secondary hover:bg-surface-alt"
-            }`}
-          >
+          </ToggleButton>
+          <ToggleButton active={metric === "vpf"} onClick={() => handleMetricChange("vpf")}>
             {t("toggleVpf")}
-          </button>
+          </ToggleButton>
         </div>
       </div>
 
@@ -339,5 +311,28 @@ export default function RankingTable({
         </div>
       )}
     </div>
+  );
+}
+
+function ToggleButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
+        active
+          ? "bg-primary text-primary-contrast"
+          : "text-text-secondary hover:bg-surface-alt"
+      }`}
+    >
+      {children}
+    </button>
   );
 }

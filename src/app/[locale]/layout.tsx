@@ -10,6 +10,7 @@ import {
   MobileSponsorBar,
 } from "../../components/SponsorColumn";
 import { getAccountsData } from "../../lib/data";
+import { SPONSORS } from "../../lib/config";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -58,12 +59,7 @@ export default async function LocaleLayout({
           {/* Left sponsor column — desktop only */}
           <aside className="hidden xl:block">
             <div className="sticky top-4 pt-8 space-y-4">
-              <SponsorCard
-                name="Horizm"
-                description="Maximize your partnerships outcome"
-                url="https://www.horizm.com"
-                logo="/images/horizm-logo.png"
-              />
+              <SponsorCard {...SPONSORS[0]} />
               <AdvertiseSlot />
             </div>
           </aside>
@@ -74,12 +70,7 @@ export default async function LocaleLayout({
           {/* Right sponsor column — desktop only */}
           <aside className="hidden xl:block">
             <div className="sticky top-4 pt-8 space-y-4">
-              <SponsorCard
-                name="Lume"
-                description="Show your value. Know what your content is worth"
-                url="https://getlumeapp.com"
-                logo="/images/lume-logo.png"
-              />
+              <SponsorCard {...SPONSORS[1]} />
               <AdvertiseSlot />
             </div>
           </aside>

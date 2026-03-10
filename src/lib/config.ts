@@ -36,3 +36,21 @@ export const COOKIE_MAX_AGE = 365 * 24 * 60 * 60; // 1 year
 // SSG
 export const SSG_TOP_ACCOUNTS = 200;
 // Note: ISR revalidate (86400s) must be a literal in page files per Next.js requirements
+
+// Sponsors
+export const SPONSORS = [
+  {
+    name: "Horizm",
+    description: "Maximize your partnerships outcome",
+    url: "https://www.horizm.com",
+    logo: "/images/horizm-logo.png",
+  },
+  {
+    name: "Lume",
+    description: "Show your value. Know what your content is worth",
+    url: "https://getlumeapp.com",
+    logo: "/images/lume-logo.png",
+  },
+] as const;
+
+export const AVAILABLE_SPONSOR_SLOTS = 18;

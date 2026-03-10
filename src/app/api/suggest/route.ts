@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendSuggestionEmail } from "../../../lib/email";
+import { isValidEmail } from "../../../lib/utils";
 import type { Platform } from "../../../lib/platform";
 
 interface SuggestRequest {
@@ -22,8 +23,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "missing_fields" }, { status: 400 });
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  if (!isValidEmail(email)) {
     return NextResponse.json({ error: "invalid_email" }, { status: 400 });
   }
 

@@ -557,7 +557,7 @@ function EngagementRateBenchmarkCard({
           </span>
           {/* Dot */}
           <div
-            className={`w-3 h-3 rounded-full border-2 border-white ${dotColor}`}
+            className={`w-3 h-3 rounded-full border-2 border-surface ${dotColor}`}
           />
         </div>
       </div>

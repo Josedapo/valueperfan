@@ -142,7 +142,7 @@ export default function ClaimFlow({
         </p>
         <button
           onClick={() => setState("email_form")}
-          className="shrink-0 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-white hover:bg-primary-dark transition-colors"
+          className="shrink-0 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors"
         >
           {t("claimButton")}
         </button>
@@ -169,7 +169,7 @@ export default function ClaimFlow({
           <button
             type="submit"
             disabled={submitting}
-            className="shrink-0 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors disabled:opacity-50"
+            className="shrink-0 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors disabled:opacity-50"
           >
             {submitting ? t("sending") : t("sendVerification")}
           </button>
@@ -184,7 +184,7 @@ export default function ClaimFlow({
             {t("cancel")}
           </button>
         </form>
-        {error && <p className="text-xs text-red-600">{error}</p>}
+        {error && <p className="text-xs text-error">{error}</p>}
       </div>
     );
   }
@@ -228,11 +228,11 @@ export default function ClaimFlow({
         <button
           onClick={handleConfirmBio}
           disabled={submitting}
-          className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary-dark transition-colors disabled:opacity-50"
+          className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors disabled:opacity-50"
         >
           {submitting ? t("submitting") : t("bioAdded")}
         </button>
-        {error && <p className="text-xs text-red-600">{error}</p>}
+        {error && <p className="text-xs text-error">{error}</p>}
       </div>
     );
   }

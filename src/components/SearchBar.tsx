@@ -229,7 +229,7 @@ function SuggestForm({
         />
         <button
           type="submit"
-          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark transition-colors"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-contrast hover:bg-primary-dark transition-colors"
         >
           {t("suggestButton")}
         </button>

@@ -141,7 +141,7 @@ export default function RankingTable({
               onClick={() => handlePlatformChange("instagram")}
               className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
                 platform === "instagram"
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-primary-contrast"
                   : "text-text-secondary hover:bg-surface-alt"
               }`}
             >
@@ -156,7 +156,7 @@ export default function RankingTable({
               onClick={() => handlePlatformChange("tiktok")}
               className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
                 platform === "tiktok"
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-primary-contrast"
                   : "text-text-secondary hover:bg-surface-alt"
               }`}
             >
@@ -208,7 +208,7 @@ export default function RankingTable({
             onClick={() => handleMetricChange("totalValue")}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               metric === "totalValue"
-                ? "bg-primary text-white"
+                ? "bg-primary text-primary-contrast"
                 : "text-text-secondary hover:bg-surface-alt"
             }`}
           >
@@ -218,7 +218,7 @@ export default function RankingTable({
             onClick={() => handleMetricChange("vpf")}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               metric === "vpf"
-                ? "bg-primary text-white"
+                ? "bg-primary text-primary-contrast"
                 : "text-text-secondary hover:bg-surface-alt"
             }`}
           >

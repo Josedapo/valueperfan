@@ -43,7 +43,7 @@ export async function generateMetadata({
     category: translatedCategory,
     country: translatedCountry,
   });
-  const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}/ranking/category/${catSlug}/${countrySlug}`;
+  const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}/ranking/topic/${catSlug}/${countrySlug}`;
 
   return {
     title,
@@ -53,9 +53,9 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
       languages: {
-        en: `https://valueperfan.com/ranking/category/${catSlug}/${countrySlug}`,
-        es: `https://valueperfan.com/es/ranking/category/${catSlug}/${countrySlug}`,
-        "pt-BR": `https://valueperfan.com/br/ranking/category/${catSlug}/${countrySlug}`,
+        en: `https://valueperfan.com/ranking/topic/${catSlug}/${countrySlug}`,
+        es: `https://valueperfan.com/es/ranking/topic/${catSlug}/${countrySlug}`,
+        "pt-BR": `https://valueperfan.com/br/ranking/topic/${catSlug}/${countrySlug}`,
       },
     },
   };

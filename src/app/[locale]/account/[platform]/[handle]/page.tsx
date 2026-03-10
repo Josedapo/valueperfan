@@ -230,7 +230,7 @@ export default async function AccountPage({
             <div className="flex items-center gap-2 mt-0.5">
               <p className="text-text-secondary">@{account.handle}</p>
               <Link
-                href={`/ranking/category/${categorySlug}`}
+                href={`/ranking/topic/${categorySlug}`}
                 className="inline-flex items-center rounded-full bg-surface-alt border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary hover:border-primary hover:text-primary transition-colors"
               >
                 {mappedCategory}
@@ -379,7 +379,7 @@ export default async function AccountPage({
               <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
                 {t("categoryRankingsTitle", { category: mappedCategory, count: categoryAccounts.length.toLocaleString() })}
               </h3>
-              <Link href={`/ranking/category/${categorySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
+              <Link href={`/ranking/topic/${categorySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
                 {t("viewRanking")}
               </Link>
             </div>
@@ -410,7 +410,7 @@ export default async function AccountPage({
                 {account.countryCode && countryCodeToFlag(account.countryCode)}{" "}
                 {t("categoryCountryRankingsTitle", { category: mappedCategory, country: account.country ?? "", count: categoryCountryAccounts.length.toLocaleString() })}
               </h3>
-              <Link href={`/ranking/category/${categorySlug}/${countrySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
+              <Link href={`/ranking/topic/${categorySlug}/${countrySlug}`} className="text-xs text-primary hover:text-primary-dark transition-colors">
                 {t("viewRanking")}
               </Link>
             </div>

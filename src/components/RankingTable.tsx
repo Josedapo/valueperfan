@@ -46,7 +46,7 @@ export default function RankingTable({
   const tCountries = useTranslations("countries");
   const router = useRouter();
   const [platform, setPlatform] = useState<Platform>("instagram");
-  const [metric, setMetric] = useState<Metric>("vpf");
+  const [metric, setMetric] = useState<Metric>("totalValue");
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
@@ -78,9 +78,9 @@ export default function RankingTable({
     if (slug === "all" && currentCategorySlug === "all") {
       router.push("/");
     } else if (slug === "all" && currentCategorySlug !== "all") {
-      router.push(`/ranking/category/${currentCategorySlug}`);
+      router.push(`/ranking/topic/${currentCategorySlug}`);
     } else if (currentCategorySlug !== "all") {
-      router.push(`/ranking/category/${currentCategorySlug}/${slug}`);
+      router.push(`/ranking/topic/${currentCategorySlug}/${slug}`);
     } else {
       router.push(`/ranking/${slug}`);
     }
@@ -92,9 +92,9 @@ export default function RankingTable({
     } else if (slug === "all" && currentCountrySlug !== "all") {
       router.push(`/ranking/${currentCountrySlug}`);
     } else if (currentCountrySlug !== "all") {
-      router.push(`/ranking/category/${slug}/${currentCountrySlug}`);
+      router.push(`/ranking/topic/${slug}/${currentCountrySlug}`);
     } else {
-      router.push(`/ranking/category/${slug}`);
+      router.push(`/ranking/topic/${slug}`);
     }
   }
 
@@ -205,16 +205,6 @@ export default function RankingTable({
         {/* Metric toggle */}
         <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
           <button
-            onClick={() => handleMetricChange("vpf")}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              metric === "vpf"
-                ? "bg-primary text-white"
-                : "text-text-secondary hover:bg-surface-alt"
-            }`}
-          >
-            {t("toggleVpf")}
-          </button>
-          <button
             onClick={() => handleMetricChange("totalValue")}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               metric === "totalValue"
@@ -223,6 +213,16 @@ export default function RankingTable({
             }`}
           >
             {t("toggleTotalValue")}
+          </button>
+          <button
+            onClick={() => handleMetricChange("vpf")}
+            className={`px-4 py-2 text-sm font-medium transition-colors ${
+              metric === "vpf"
+                ? "bg-primary text-white"
+                : "text-text-secondary hover:bg-surface-alt"
+            }`}
+          >
+            {t("toggleVpf")}
           </button>
         </div>
       </div>

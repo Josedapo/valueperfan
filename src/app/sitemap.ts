@@ -42,7 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const categories = getCategories();
   const categoryUrls = categories.map(({ slug }) => ({
-    ...withAlternates(`/ranking/category/${slug}`),
+    ...withAlternates(`/ranking/topic/${slug}`),
     lastModified: new Date(data.meta.lastUpdated),
     changeFrequency: "weekly" as const,
     priority: 0.9,
@@ -50,7 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const categoryCountryUrls = categories.flatMap((cat) =>
     getCategoryCountries(cat.name).map((country) => ({
-      ...withAlternates(`/ranking/category/${cat.slug}/${country.slug}`),
+      ...withAlternates(`/ranking/topic/${cat.slug}/${country.slug}`),
       lastModified: new Date(data.meta.lastUpdated),
       changeFrequency: "weekly" as const,
       priority: 0.8,

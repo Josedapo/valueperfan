@@ -28,7 +28,7 @@ export async function generateMetadata({
   const translatedCategory = tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name;
   const title = t("categoryMetaTitle", { category: translatedCategory });
   const description = t("categoryMetaDescription", { category: translatedCategory });
-  const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}/ranking/category/${slug}`;
+  const url = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}/ranking/topic/${slug}`;
 
   return {
     title,
@@ -38,9 +38,9 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
       languages: {
-        en: `https://valueperfan.com/ranking/category/${slug}`,
-        es: `https://valueperfan.com/es/ranking/category/${slug}`,
-        "pt-BR": `https://valueperfan.com/br/ranking/category/${slug}`,
+        en: `https://valueperfan.com/ranking/topic/${slug}`,
+        es: `https://valueperfan.com/es/ranking/topic/${slug}`,
+        "pt-BR": `https://valueperfan.com/br/ranking/topic/${slug}`,
       },
     },
   };

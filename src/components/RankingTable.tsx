@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "../i18n/navigation";
 import type { Account } from "../lib/types";
@@ -31,6 +31,7 @@ export default function RankingTable({
   categoryName,
   countryName,
   showHeading = true,
+  initialPage = 1,
 }: {
   accounts: Account[];
   countries: CountryOption[];
@@ -40,6 +41,7 @@ export default function RankingTable({
   categoryName?: string;
   countryName?: string;
   showHeading?: boolean;
+  initialPage?: number;
 }) {
   const t = useTranslations("ranking");
   const tCategories = useTranslations("categories");
@@ -47,7 +49,20 @@ export default function RankingTable({
   const router = useRouter();
   const [platform, setPlatform] = useState<Platform>("instagram");
   const [metric, setMetric] = useState<Metric>("totalValue");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initialPage);
+
+  // Sync URL with page state
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (page > 1) {
+      url.searchParams.set("page", String(page));
+    } else {
+      url.searchParams.delete("page");
+    }
+    if (url.href !== window.location.href) {
+      window.history.replaceState(null, "", url.href);
+    }
+  }, [page]);
 
   const filtered = useMemo(() => {
     const result = accounts.filter((a) => a.platform === platform);
@@ -72,6 +87,12 @@ export default function RankingTable({
   function handleMetricChange(m: Metric) {
     setMetric(m);
     setPage(1);
+  }
+
+  function handlePageChange(newPage: number, e?: React.MouseEvent) {
+    if (e) e.preventDefault();
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function handleCountryChange(slug: string) {
@@ -290,23 +311,29 @@ export default function RankingTable({
             {t("accounts", { count: filtered.length })}
           </p>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed"
+            <a
+              href={page > 2 ? `?page=${page - 1}` : "?"}
+              onClick={(e) => handlePageChange(Math.max(1, page - 1), e)}
+              aria-disabled={page === 1}
+              className={`rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface ${
+                page === 1 ? "opacity-40 pointer-events-none" : ""
+              }`}
             >
               {t("previous")}
-            </button>
+            </a>
             <span className="text-sm text-text-secondary">
               {page} / {totalPages}
             </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed"
+            <a
+              href={`?page=${page + 1}`}
+              onClick={(e) => handlePageChange(Math.min(totalPages, page + 1), e)}
+              aria-disabled={page === totalPages}
+              className={`rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface ${
+                page === totalPages ? "opacity-40 pointer-events-none" : ""
+              }`}
             >
               {t("next")}
-            </button>
+            </a>
           </div>
         </div>
       )}

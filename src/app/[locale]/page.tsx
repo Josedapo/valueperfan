@@ -44,8 +44,41 @@ export default async function Home({
   const initialAccounts = initialFiltered.slice(0, ITEMS_PER_PAGE);
   const initialTotalCount = initialFiltered.length;
 
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "ValuePerFan",
+    url: "https://valueperfan.com",
+    logo: "https://valueperfan.com/favicon.svg",
+    description:
+      "Public economic valuations of social media accounts using Paid Media Equivalence (PME). Ranking creators by Value Per Fan — the democratic metric that normalizes economic value by follower count.",
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "ValuePerFan",
+    url: "https://valueperfan.com",
+    description:
+      "Discover the real economic value of any social media account. Free public rankings based on PME (Paid Media Equivalence) for Instagram and TikTok.",
+    inLanguage: ["en", "es", "pt-BR"],
+  };
+
   return (
     <div className="flex flex-col gap-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organizationJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteJsonLd),
+        }}
+      />
+
       {/* Block 1: Tagline */}
       <section className="text-center py-6">
         <h1 className="text-3xl sm:text-4xl font-bold text-text">

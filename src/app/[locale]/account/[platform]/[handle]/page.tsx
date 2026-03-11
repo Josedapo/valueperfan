@@ -185,11 +185,39 @@ export default async function AccountPage({
     },
   };
 
+  const baseUrl = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}`;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: t("rankings"),
+        item: `${baseUrl}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: pLabel,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: account.name,
+      },
+    ],
+  };
+
   return (
     <div className="max-w-3xl mx-auto">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       {/* Breadcrumb */}

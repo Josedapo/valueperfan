@@ -20,7 +20,17 @@
     "pmeDescription": "Every valuation on ValuePerFan represents what a brand would spend on paid media campaigns to achieve the same results that organic content delivers. Not a guess. Not a score. The real market value.",
     "vpfTitle": "Value Per 1K Fans",
     "vpfDescription": "Total value divided by every 1,000 followers. This simple metric reveals who generates the most value per follower — regardless of size. A creator with 10,000 engaged followers can rank above a celebrity with millions.",
-    "disclaimer": "All valuations are estimates based on public data and PME (Paid Media Equivalence) proprietary methodology."
+    "disclaimer": "All valuations are estimates based on public data and PME (Paid Media Equivalence) proprietary methodology.",
+    "dataFrom": "Data from {month}",
+    "howItWorksTitle": "How it works",
+    "howItWorksStep1Title": "Analyze content",
+    "howItWorksStep1": "We measure the organic reach and engagement of every post published in the last 30 days.",
+    "howItWorksStep2Title": "Calculate PME",
+    "howItWorksStep2": "Using Paid Media Equivalence, we estimate the real market value — what a brand would pay to achieve the same results through ads.",
+    "howItWorksStep3Title": "Rank by Value Per Fan",
+    "howItWorksStep3": "Dividing total value by followers reveals who generates the most value per fan — regardless of audience size.",
+    "whyVpfTitle": "Why Value Per Fan matters",
+    "whyVpfDescription": "Raw follower counts don't tell you who's valuable. A creator with 50K engaged fans can generate more real economic value than an account with millions of passive followers. Value Per Fan normalizes economic value by audience size, creating a democratic ranking where content quality matters more than fame."
   },
   "ranking": {
     "titleSuffix": "Value Ranking",
@@ -63,7 +73,8 @@
     "countryMetaTitle": "{country} — Social Media Economic Value Ranking",
     "countryMetaDescription": "See the real economic value of social media accounts in {country}. Rankings powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
     "countrySubtitle": "The real economic value of social media accounts in {country}. Powered by Paid Media Equivalence.",
-    "notFound": "Not Found"
+    "notFound": "Not Found",
+    "dataFrom": "Data from {month}"
   },
   "account": {
     "rankings": "Rankings",
@@ -100,7 +111,12 @@
     "metaTitle": "{name} (@{handle}) {platform} Value — {vpf}/1K fans",
     "metaDescription": "See the real economic value of {name}'s {platform} account. Value Per 1K Fans: {vpf}. Total Value: {totalValue}. Ranked #{rank} out of {total} accounts.",
     "jsonLdName": "{name} - {platform} Value Per Fan",
-    "jsonLdDescription": "Economic valuation of {name}'s {platform} account"
+    "jsonLdDescription": "Economic valuation of {name}'s {platform} account",
+    "dataFrom": "Data from {month}",
+    "aboutTitle": "About this account",
+    "aboutWho": "{name} is a {category} {platform} account with {followers} followers from {country}.",
+    "aboutValue": "With a total economic value of {totalValue} in the last 30 days and a Value Per Fan of {vpf}, {name} ranks #{rankVpf} globally by VPF among {platformTotal} {platform} accounts.",
+    "aboutContext": "The Value Per Fan metric normalizes economic value by follower count, meaning accounts that generate more value per follower rank higher regardless of audience size."
   },
   "claim": {
     "badgeTitle": "Embeddable Badge",

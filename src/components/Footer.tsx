@@ -1,13 +1,5 @@
 import { useTranslations } from "next-intl";
-
-function formatDataMonth(dataMonth: string, locale: string): string {
-  const [year, month] = dataMonth.split("-").map(Number);
-  const date = new Date(year, month - 1);
-  return date.toLocaleDateString(locale === "br" ? "pt-BR" : locale, {
-    month: "long",
-    year: "numeric",
-  });
-}
+import { formatDataMonth } from "../lib/utils";
 
 export default function Footer({ dataMonth }: { dataMonth: string }) {
   const t = useTranslations("footer");

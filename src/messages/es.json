@@ -20,7 +20,17 @@
     "pmeDescription": "Cada valoración en ValuePerFan representa lo que una marca gastaría en campañas de publicidad pagada para conseguir los mismos resultados que el contenido orgánico genera. No es una estimación. No es una puntuación. Es el valor real de mercado.",
     "vpfTitle": "Valor por cada 1K Fans",
     "vpfDescription": "El valor total dividido entre cada 1.000 seguidores. Esta métrica simple revela quién genera más valor por seguidor — independientemente del tamaño. Un creador con 10.000 seguidores comprometidos puede superar a una celebridad con millones.",
-    "disclaimer": "Todas las valoraciones son estimaciones basadas en datos públicos y la metodología propietaria PME (Paid Media Equivalence)."
+    "disclaimer": "Todas las valoraciones son estimaciones basadas en datos públicos y la metodología propietaria PME (Paid Media Equivalence).",
+    "dataFrom": "Datos de {month}",
+    "howItWorksTitle": "Cómo funciona",
+    "howItWorksStep1Title": "Analizar contenido",
+    "howItWorksStep1": "Medimos el alcance orgánico y el engagement de cada publicación de los últimos 30 días.",
+    "howItWorksStep2Title": "Calcular PME",
+    "howItWorksStep2": "Mediante Paid Media Equivalence, estimamos el valor real de mercado — lo que una marca pagaría por lograr los mismos resultados con publicidad.",
+    "howItWorksStep3Title": "Rankear por Value Per Fan",
+    "howItWorksStep3": "Dividir el valor total entre los seguidores revela quién genera más valor por fan — independientemente del tamaño de la audiencia.",
+    "whyVpfTitle": "Por qué importa el Value Per Fan",
+    "whyVpfDescription": "El número de seguidores no indica quién es valioso. Un creador con 50K fans comprometidos puede generar más valor económico real que una cuenta con millones de seguidores pasivos. Value Per Fan normaliza el valor económico por tamaño de audiencia, creando un ranking democrático donde la calidad del contenido importa más que la fama."
   },
   "ranking": {
     "titleSuffix": "Ranking de Valor",
@@ -63,7 +73,8 @@
     "countryMetaTitle": "{country} — Ranking de valor económico en Redes Sociales",
     "countryMetaDescription": "Descubre el valor económico real de las cuentas de redes sociales en {country}. Rankings basados en Paid Media Equivalence. No mide seguidores. No mide likes. Es dinero real.",
     "countrySubtitle": "El valor económico real de las cuentas de redes sociales en {country}. Basado en Paid Media Equivalence.",
-    "notFound": "No encontrado"
+    "notFound": "No encontrado",
+    "dataFrom": "Datos de {month}"
   },
   "account": {
     "rankings": "Rankings",
@@ -100,7 +111,12 @@
     "metaTitle": "{name} (@{handle}) Valor en {platform} — {vpf}/1K fans",
     "metaDescription": "Descubre el valor económico real de la cuenta de {platform} de {name}. Valor por 1K Fans: {vpf}. Valor Total: {totalValue}. Ranking #{rank} de {total} cuentas.",
     "jsonLdName": "{name} - Valor por Fan en {platform}",
-    "jsonLdDescription": "Valoración económica de la cuenta de {platform} de {name}"
+    "jsonLdDescription": "Valoración económica de la cuenta de {platform} de {name}",
+    "dataFrom": "Datos de {month}",
+    "aboutTitle": "Sobre esta cuenta",
+    "aboutWho": "{name} es una cuenta de {platform} de {category} con {followers} seguidores de {country}.",
+    "aboutValue": "Con un valor económico total de {totalValue} en los últimos 30 días y un Value Per Fan de {vpf}, {name} ocupa el puesto #{rankVpf} a nivel global por VPF entre {platformTotal} cuentas de {platform}.",
+    "aboutContext": "La métrica Value Per Fan normaliza el valor económico por número de seguidores, lo que significa que las cuentas que generan más valor por seguidor se posicionan mejor independientemente del tamaño de su audiencia."
   },
   "claim": {
     "badgeTitle": "Badge para tu web",

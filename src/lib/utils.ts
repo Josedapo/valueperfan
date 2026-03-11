@@ -47,6 +47,15 @@ export function countryCodeToFlag(code: string): string {
   ).join("");
 }
 
+export function formatDataMonth(dataMonth: string, locale: string): string {
+  const [year, month] = dataMonth.split("-").map(Number);
+  const date = new Date(year, month - 1);
+  return date.toLocaleDateString(locale === "br" ? "pt-BR" : locale, {
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export function formatFollowers(value: number): string {
   if (value >= 1_000_000) {
     return `${(value / 1_000_000).toFixed(1)}M`;

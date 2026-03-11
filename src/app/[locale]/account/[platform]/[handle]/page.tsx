@@ -13,6 +13,7 @@ import {
   formatCurrency,
   formatVPF,
   formatFollowers,
+  formatDataMonth,
   countryCodeToFlag,
 } from "../../../../../lib/utils";
 import { platformLabel } from "../../../../../lib/platform";
@@ -95,6 +96,7 @@ export async function generateMetadata({
         en: `https://valueperfan.com${basePath}`,
         es: `https://valueperfan.com/es${basePath}`,
         "pt-BR": `https://valueperfan.com/br${basePath}`,
+        "x-default": `https://valueperfan.com${basePath}`,
       },
     },
   };
@@ -114,6 +116,10 @@ export default async function AccountPage({
   }
 
   const t = await getTranslations("account");
+  const tCategories = await getTranslations("categories");
+  const tCountries = await getTranslations("countries");
+  const data = getAccountsData();
+  const formattedDataMonth = formatDataMonth(data.meta.dataMonth, locale);
   const vpfNeighbors = getNeighbors(account, 3, "vpf");
   const tvNeighbors = getNeighbors(account, 3, "totalValue");
   const pLabel = platformLabel(account.platform);
@@ -340,8 +346,40 @@ export default async function AccountPage({
             platformLabel={pLabel}
             t={t}
           />
+          <p className="text-xs text-text-muted text-right mt-3">
+            {t("dataFrom", { month: formattedDataMonth })}
+          </p>
         </div>
 
+      </div>
+
+      {/* About this account */}
+      <div className="mt-6 rounded-lg border border-border bg-surface p-5">
+        <h2 className="text-sm font-bold text-text uppercase tracking-wider mb-3">
+          {t("aboutTitle")}
+        </h2>
+        <div className="text-sm text-text-secondary leading-relaxed space-y-2">
+          <p>
+            {t("aboutWho", {
+              name: account.name,
+              category: tCategories.has(mappedCategory) ? tCategories(mappedCategory) : mappedCategory,
+              platform: pLabel,
+              followers: formatFollowers(account.followers),
+              country: account.country ? (tCountries.has(account.country) ? tCountries(account.country) : account.country) : "Global",
+            })}
+          </p>
+          <p>
+            {t("aboutValue", {
+              name: account.name,
+              totalValue: formatCurrency(account.totalValue),
+              vpf: formatVPF(account.valuePerFan),
+              rankVpf: account.rank.vpf,
+              platformTotal: globalTotal.toLocaleString(),
+              platform: pLabel,
+            })}
+          </p>
+          <p>{t("aboutContext")}</p>
+        </div>
       </div>
 
       {/* Rankings Section */}

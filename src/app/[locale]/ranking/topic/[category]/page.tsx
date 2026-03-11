@@ -4,6 +4,7 @@ import { getAccountsData } from "../../../../../lib/data";
 import { getCategories, slugToCategory, mapCategory, getCategoryCountries } from "../../../../../lib/categories";
 import { buildRankingMetadata } from "../../../../../lib/metadata";
 import { ITEMS_PER_PAGE } from "../../../../../lib/config";
+import { formatDataMonth } from "../../../../../lib/utils";
 import { locales } from "../../../../../i18n/config";
 import RankingTable from "../../../../../components/RankingTable";
 
@@ -74,13 +75,35 @@ export default async function CategoryRankingPage({
 
   const categories = getCategories().map((c) => ({ name: c.name, slug: c.slug }));
 
-  const instagramCount = categoryAccounts.filter(
-    (a) => a.platform === "instagram"
-  ).length;
+  const instagramSorted = categoryAccounts
+    .filter((a) => a.platform === "instagram")
+    .sort((a, b) => a.rank.totalValue - b.rank.totalValue);
+  const instagramCount = instagramSorted.length;
   const totalPages = Math.ceil(instagramCount / ITEMS_PER_PAGE);
+
+  const t = await getTranslations("ranking");
+  const formattedDataMonth = formatDataMonth(data.meta.dataMonth, locale);
+
+  const localePath = locale === "en" ? "" : `/${locale}`;
+  const itemListJsonLd = page === 1 ? {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: instagramSorted.slice(0, ITEMS_PER_PAGE).map((a, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: a.name,
+      url: `https://valueperfan.com${localePath}/account/${a.platform}/${a.slug}`,
+    })),
+  } : null;
 
   return (
     <div className="flex flex-col gap-8 pt-6">
+      {itemListJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        />
+      )}
       {page > 1 && (
         <link rel="prev" href={page === 2 ? `/ranking/topic/${slug}` : `/ranking/topic/${slug}?page=${page - 1}`} />
       )}
@@ -95,6 +118,9 @@ export default async function CategoryRankingPage({
         categoryName={categoryInfo.name}
         initialPage={page}
       />
+      <p className="text-xs text-text-muted text-right">
+        {t("dataFrom", { month: formattedDataMonth })}
+      </p>
     </div>
   );
 }

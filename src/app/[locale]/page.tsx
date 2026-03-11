@@ -1,9 +1,29 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAccountsData } from "../../lib/data";
 import { getCountries } from "../../lib/countries";
 import { getCategories } from "../../lib/categories";
-import RankingTable from "../../components/RankingTable";
-import SearchBar from "../../components/SearchBar";
+import { buildRankingMetadata } from "../../lib/metadata";
+import { ITEMS_PER_PAGE } from "../../lib/config";
+import HomepageRankingTable from "../../components/HomepageRankingTable";
+import LazySearchBar from "../../components/LazySearchBar";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "metadata" });
+
+  return buildRankingMetadata({
+    locale,
+    title: t("title"),
+    description: t("description"),
+    path: "/",
+  });
+}
 
 export default async function Home({
   params,
@@ -16,6 +36,13 @@ export default async function Home({
   const data = getAccountsData();
   const countries = getCountries().map((c) => ({ name: c.name, slug: c.slug }));
   const categories = getCategories().map((c) => ({ name: c.name, slug: c.slug }));
+
+  // Pre-filter initial page: Instagram sorted by totalValue rank
+  const initialFiltered = data.accounts
+    .filter((a) => a.platform === "instagram")
+    .sort((a, b) => a.rank.totalValue - b.rank.totalValue);
+  const initialAccounts = initialFiltered.slice(0, ITEMS_PER_PAGE);
+  const initialTotalCount = initialFiltered.length;
 
   return (
     <div className="flex flex-col gap-8">
@@ -41,11 +68,18 @@ export default async function Home({
 
       {/* Block 2: Search */}
       <section className="max-w-xl mx-auto w-full">
-        <SearchBar />
+        <LazySearchBar />
       </section>
 
       {/* Block 3: Ranking */}
-      <RankingTable accounts={data.accounts} countries={countries} categories={categories} showHeading={false} />
+      <Suspense>
+        <HomepageRankingTable
+          initialAccounts={initialAccounts}
+          initialTotalCount={initialTotalCount}
+          countries={countries}
+          categories={categories}
+        />
+      </Suspense>
 
       {/* Block 4: PME + VPF Explainer */}
       <section className="w-full grid gap-6 sm:grid-cols-2">

@@ -18,10 +18,15 @@ export default function SearchBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [fuse, setFuse] = useState<Fuse<SearchEntry> | null>(null);
   const [showSuggest, setShowSuggest] = useState(false);
+  const [indexLoading, setIndexLoading] = useState(false);
+  const indexLoadedRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Load search index on mount
-  useEffect(() => {
+  // Load search index on first focus (not on mount)
+  const loadIndex = useCallback(() => {
+    if (indexLoadedRef.current || indexLoading) return;
+    setIndexLoading(true);
+    indexLoadedRef.current = true;
     fetch("/api/search-index")
       .then((res) => res.json())
       .then((data: SearchEntry[]) => {
@@ -32,8 +37,9 @@ export default function SearchBar() {
           minMatchCharLength: 2,
         });
         setFuse(fuseInstance);
+        setIndexLoading(false);
       });
-  }, []);
+  }, [indexLoading]);
 
   // Close dropdown on click outside
   useClickOutside(containerRef, useCallback(() => setIsOpen(false), []));
@@ -73,6 +79,7 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => {
+            loadIndex();
             if (results.length > 0 || showSuggest) setIsOpen(true);
           }}
           placeholder={t("placeholder")}

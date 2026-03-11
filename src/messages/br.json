@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "ValuePerFan — O valor real dos seguidores nas redes sociais",
-    "description": "Value Per Fan mede o valor econômico real que cada seguidor gera. Avaliações objetivas baseadas em Paid Media Equivalence. Não seguidores. Não curtidas. Dinheiro real.",
+    "description": "Value Per Fan mede o valor econômico real que cada seguidor gera. Avaliações objetivas baseadas em Paid Media Equivalence. Dinheiro real.",
     "titleTemplate": "%s | ValuePerFan"
   },
   "header": {
@@ -36,12 +36,12 @@
     "titleSuffix": "Ranking de Valor",
     "subtitle": "O valor econômico real de {category} nas redes sociais. Baseado em Paid Media Equivalence.",
     "metaTitle": "Ranking de Valor nas Redes Sociais de {category}",
-    "metaDescription": "Veja o valor econômico real de {category} nas redes sociais. Rankings baseados em Paid Media Equivalence. Não seguidores. Não curtidas. Dinheiro real.",
+    "metaDescription": "Veja o valor econômico real de {category} nas redes sociais. Rankings baseados em Paid Media Equivalence. Dinheiro real.",
     "allCountries": "Todos os países",
     "allCategories": "Todas as temáticas",
     "categoryTitle": "{category} — O <highlight>valor real</highlight> dos seguidores nas redes sociais",
     "categoryMetaTitle": "{category} — Ranking de valor econômico nas Redes Sociais",
-    "categoryMetaDescription": "Veja o valor econômico real de {category} nas redes sociais. Rankings baseados em Paid Media Equivalence. Não seguidores. Não curtidas. Dinheiro real.",
+    "categoryMetaDescription": "Veja o valor econômico real de {category} nas redes sociais. Rankings baseados em Paid Media Equivalence. Dinheiro real.",
     "categorySubtitle": "O valor econômico real de {category} nas redes sociais. Baseado em Paid Media Equivalence.",
     "categoryCountryTitle": "{category} em {country} — O <highlight>valor real</highlight> dos seguidores nas redes sociais",
     "categoryCountryMetaTitle": "{category} em {country} — Ranking de valor econômico nas Redes Sociais",
@@ -71,7 +71,7 @@
     "next": "Próximo",
     "countryTitle": "{country} — O <highlight>valor real</highlight> dos seguidores nas redes sociais",
     "countryMetaTitle": "{country} — Ranking de valor econômico nas Redes Sociais",
-    "countryMetaDescription": "Veja o valor econômico real das contas de redes sociais em {country}. Rankings baseados em Paid Media Equivalence. Não seguidores. Não curtidas. Dinheiro real.",
+    "countryMetaDescription": "Veja o valor econômico real das contas de redes sociais em {country}. Rankings baseados em Paid Media Equivalence. Dinheiro real.",
     "countrySubtitle": "O valor econômico real das contas de redes sociais em {country}. Baseado em Paid Media Equivalence.",
     "notFound": "Não encontrado",
     "dataFrom": "Dados de {month}"

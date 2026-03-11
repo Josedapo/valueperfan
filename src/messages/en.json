@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "ValuePerFan — The real value of social media followers",
-    "description": "Value Per Fan measures the real economic value each follower generates. Objective valuations powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
+    "description": "Value Per Fan measures the real economic value each follower generates. Objective valuations powered by Paid Media Equivalence. Real money.",
     "titleTemplate": "%s | ValuePerFan"
   },
   "header": {
@@ -36,12 +36,12 @@
     "titleSuffix": "Value Ranking",
     "subtitle": "The real economic value of {category} on social media. Powered by Paid Media Equivalence.",
     "metaTitle": "{category} Social Media Value Ranking",
-    "metaDescription": "See the real economic value of {category} on social media. Rankings powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
+    "metaDescription": "See the real economic value of {category} on social media. Rankings powered by Paid Media Equivalence. Real money.",
     "allCountries": "All Countries",
     "allCategories": "All Topics",
     "categoryTitle": "{category} — <highlight>Real value</highlight> of social media followers",
     "categoryMetaTitle": "{category} — Social Media Economic Value Ranking",
-    "categoryMetaDescription": "See the real economic value of {category} on social media. Rankings powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
+    "categoryMetaDescription": "See the real economic value of {category} on social media. Rankings powered by Paid Media Equivalence. Real money.",
     "categorySubtitle": "The real economic value of {category} on social media. Powered by Paid Media Equivalence.",
     "categoryCountryTitle": "{category} in {country} — <highlight>Real value</highlight> of social media followers",
     "categoryCountryMetaTitle": "{category} in {country} — Social Media Economic Value Ranking",
@@ -71,7 +71,7 @@
     "next": "Next",
     "countryTitle": "{country} — <highlight>Real value</highlight> of social media followers",
     "countryMetaTitle": "{country} — Social Media Economic Value Ranking",
-    "countryMetaDescription": "See the real economic value of social media accounts in {country}. Rankings powered by Paid Media Equivalence. Not followers. Not likes. Real money.",
+    "countryMetaDescription": "See the real economic value of social media accounts in {country}. Rankings powered by Paid Media Equivalence. Real money.",
     "countrySubtitle": "The real economic value of social media accounts in {country}. Powered by Paid Media Equivalence.",
     "notFound": "Not Found",
     "dataFrom": "Data from {month}"

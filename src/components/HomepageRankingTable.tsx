@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { Link, useRouter } from "../i18n/navigation";
 import type { Account } from "../lib/types";
 import type { Platform, Metric } from "../lib/platform";
@@ -36,8 +37,12 @@ export default function HomepageRankingTable({
   const tCategories = useTranslations("categories");
   const tCountries = useTranslations("countries");
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [platform, setPlatform] = useState<Platform>("instagram");
+  const urlPlatform = searchParams.get("platform") as Platform | null;
+  const [platform, setPlatform] = useState<Platform>(
+    urlPlatform === "tiktok" ? "tiktok" : "instagram"
+  );
   const [metric, setMetric] = useState<Metric>("totalValue");
   const [page, setPage] = useState(1);
   const [accounts, setAccounts] = useState<Account[]>(initialAccounts);
@@ -56,6 +61,14 @@ export default function HomepageRankingTable({
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // If URL has ?platform=tiktok, fetch TikTok data on mount (SSG default is Instagram)
+  useEffect(() => {
+    if (urlPlatform === "tiktok") {
+      fetchPage("tiktok", metric, 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handlePlatformChange(p: Platform) {

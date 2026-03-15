@@ -205,7 +205,13 @@ export default async function AccountPage({
       {
         "@type": "ListItem",
         position: 2,
-        name: `${pLabel} — ${account.name}`,
+        name: pLabel,
+        item: `${baseUrl}/?platform=${account.platform}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: account.name,
       },
     ],
   };
@@ -227,7 +233,9 @@ export default async function AccountPage({
           {t("rankings")}
         </Link>
         <span className="mx-2">/</span>
-        <span className="capitalize">{pLabel}</span>
+        <Link href={`/?platform=${account.platform}`} className="capitalize hover:text-primary transition-colors">
+          {pLabel}
+        </Link>
         <span className="mx-2">/</span>
         <span className="text-text">{account.name}</span>
       </nav>

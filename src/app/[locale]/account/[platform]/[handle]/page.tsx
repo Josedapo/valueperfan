@@ -205,12 +205,7 @@ export default async function AccountPage({
       {
         "@type": "ListItem",
         position: 2,
-        name: pLabel,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: account.name,
+        name: `${pLabel} — ${account.name}`,
       },
     ],
   };

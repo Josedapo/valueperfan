@@ -239,5 +239,10 @@
     "en": "EN",
     "es": "ES",
     "br": "BR"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or has been removed.",
+    "backHome": "Back to homepage"
   }
 }

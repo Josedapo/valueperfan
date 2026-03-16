@@ -239,5 +239,10 @@
     "en": "EN",
     "es": "ES",
     "br": "BR"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o ha sido eliminada.",
+    "backHome": "Volver al inicio"
   }
 }

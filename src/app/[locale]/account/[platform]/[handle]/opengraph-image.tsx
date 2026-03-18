@@ -1,8 +1,10 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { getAccount, getAccountsByPlatform } from "../../../../../lib/data";
 import { formatCurrency, formatVPF, formatFollowers } from "../../../../../lib/utils";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const alt = "ValuePerFan Account Valuation";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -41,6 +43,10 @@ export default async function Image({
   const pLabel = platform === "instagram" ? "Instagram" : "TikTok";
   const globalTotal = getAccountsByPlatform(account.platform).length;
 
+  const logoPath = join(process.cwd(), "public/images/brand/vpf-imago-white.png");
+  const logoData = await readFile(logoPath);
+  const logoSrc = `data:image/png;base64,${logoData.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -67,14 +73,15 @@ export default async function Image({
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "8px",
+              gap: "10px",
               fontSize: "24px",
               fontWeight: "bold",
             }}
           >
-            <span style={{ color: "#22c55e" }}>Value</span>
-            <span style={{ color: "#ffffff" }}>Per</span>
-            <span style={{ color: "#22c55e" }}>Fan</span>
+            <img src={logoSrc} width={32} height={32} alt="" />
+            <span style={{ color: "#ffffff" }}>value </span>
+            <span style={{ color: "#22c55e" }}>per</span>
+            <span style={{ color: "#ffffff" }}> fan</span>
           </div>
           <span
             style={{

@@ -13,15 +13,29 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <Image
-              src="/images/icon.svg"
+              src="/images/brand/vpf-imago-color.png"
               alt=""
-              width={24}
-              height={24}
-              className="h-6 w-6"
+              width={28}
+              height={28}
+              className="h-7 w-7 dark:hidden"
             />
-            <span className="text-xl font-bold text-primary">
-              Value<span className="text-text">Per</span>Fan
-            </span>
+            <Image
+              src="/images/brand/vpf-imago-white.png"
+              alt=""
+              width={28}
+              height={28}
+              className="h-7 w-7 hidden dark:block"
+            />
+            <div className="flex flex-col leading-tight">
+              <span className="text-xl font-bold text-text">
+                value <span className="text-primary">per</span> fan
+              </span>
+              <span className="text-[10px] text-text-secondary tracking-wide">
+                {t.rich("tagline", {
+                  accent: (chunks) => <span className="font-bold text-primary">{chunks}</span>,
+                })}
+              </span>
+            </div>
           </Link>
 
           <nav className="hidden sm:flex items-center gap-5">

@@ -61,7 +61,7 @@ export default async function Home({
     "@type": "Organization",
     name: "ValuePerFan",
     url: "https://valueperfan.com",
-    logo: "https://valueperfan.com/favicon.svg",
+    logo: "https://valueperfan.com/images/brand/vpf-imago-color.png",
     description:
       "Calculate the real value of any social media account. Free economic valuations powered by Paid Media Equivalence (PME) for Instagram and TikTok. Rankings by Value Per Fan — the democratic metric.",
   };
@@ -143,6 +143,7 @@ export default async function Home({
             highlight: (chunks) => (
               <span className="text-primary">{chunks}</span>
             ),
+            br: () => <br />,
           })}
         </h1>
         <p className="mt-3 text-lg text-text-secondary max-w-2xl mx-auto">
@@ -152,6 +153,7 @@ export default async function Home({
                 {chunks}
               </span>
             ),
+            br: () => <br />,
           })}
         </p>
       </section>

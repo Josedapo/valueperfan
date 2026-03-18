@@ -32,6 +32,7 @@ export default function RankingTable({
   countryName,
   showHeading = true,
   initialPage = 1,
+  introText,
 }: {
   accounts: Account[];
   countries: CountryOption[];
@@ -42,6 +43,7 @@ export default function RankingTable({
   countryName?: string;
   showHeading?: boolean;
   initialPage?: number;
+  introText?: string;
 }) {
   const t = useTranslations("ranking");
   const tCategories = useTranslations("categories");
@@ -50,6 +52,8 @@ export default function RankingTable({
   const [platform, setPlatform] = useState<Platform>("instagram");
   const [metric, setMetric] = useState<Metric>("totalValue");
   const [page, setPage] = useState(initialPage);
+
+  // Countries and categories arrive pre-sorted from server components
 
   // Sync URL with page state
   useEffect(() => {
@@ -147,6 +151,11 @@ export default function RankingTable({
               ),
             })}
           </h1>
+          {introText && (
+            <p className="mt-3 text-lg text-text-secondary max-w-2xl mx-auto text-center mb-6">
+              {introText}
+            </p>
+          )}
           <div className="max-w-xl mx-auto w-full mb-6">
             <SearchBar />
           </div>

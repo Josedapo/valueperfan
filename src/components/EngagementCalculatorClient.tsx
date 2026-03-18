@@ -1,0 +1,476 @@
+"use client";
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "../i18n/navigation";
+import Fuse from "fuse.js";
+import type { SearchEntry } from "../lib/types";
+import type { Platform } from "../lib/platform";
+import { SEARCH_RESULTS_LIMIT, SEARCH_DEBOUNCE_MS, SEARCH_MIN_CHARS } from "../lib/config";
+import { useClickOutside } from "../hooks/useClickOutside";
+import AccountAvatar from "./AccountAvatar";
+import PlatformIcon from "./PlatformIcon";
+
+interface BenchmarkData {
+  median: number;
+  medianFormatted: string;
+  percentile: number;
+  count: number;
+}
+
+interface AccountResult {
+  handle: string;
+  name: string;
+  platform: Platform;
+  slug: string;
+  avatarUrl: string;
+  followers: number;
+  followersFormatted: string;
+  engRate: number;
+  engRateFormatted: string;
+  category: string;
+  country: string | null;
+  benchmark: BenchmarkData | null;
+}
+
+export default function EngagementCalculatorClient({
+  platformFilter,
+}: {
+  platformFilter?: "instagram" | "tiktok";
+}) {
+  const t = useTranslations("tools");
+  const tSearch = useTranslations("search");
+
+  // Autocomplete state
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<SearchEntry[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [fuse, setFuse] = useState<Fuse<SearchEntry> | null>(null);
+  const [showSuggest, setShowSuggest] = useState(false);
+  const [indexLoading, setIndexLoading] = useState(false);
+  const indexLoadedRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Result state
+  const [result, setResult] = useState<AccountResult | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Load search index on first focus
+  const loadIndex = useCallback(() => {
+    if (indexLoadedRef.current || indexLoading) return;
+    setIndexLoading(true);
+    indexLoadedRef.current = true;
+    fetch("/api/search-index")
+      .then((res) => res.json())
+      .then((data: SearchEntry[]) => {
+        const fuseInstance = new Fuse(data, {
+          keys: ["name", "handle"],
+          threshold: 0.3,
+          includeScore: true,
+          minMatchCharLength: 2,
+        });
+        setFuse(fuseInstance);
+        setIndexLoading(false);
+      });
+  }, [indexLoading]);
+
+  useClickOutside(containerRef, useCallback(() => setIsOpen(false), []));
+
+  const handleSearch = useCallback(
+    (value: string) => {
+      if (!fuse || value.length < SEARCH_MIN_CHARS) {
+        setSuggestions([]);
+        setIsOpen(false);
+        setShowSuggest(false);
+        return;
+      }
+
+      const searchResults = fuse.search(value, { limit: SEARCH_RESULTS_LIMIT });
+      let items = searchResults.map((r) => r.item);
+      if (platformFilter) {
+        items = items.filter((e) => e.platform === platformFilter);
+      }
+      setSuggestions(items);
+      setIsOpen(true);
+      setShowSuggest(items.length === 0 && value.length >= 3);
+    },
+    [fuse, platformFilter]
+  );
+
+  // Debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleSearch(query);
+    }, SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [query, handleSearch]);
+
+  async function handleSelect(entry: SearchEntry) {
+    setIsOpen(false);
+    setQuery(entry.name);
+    setLoading(true);
+
+    try {
+      const res = await fetch(
+        `/api/account-lookup?handle=${encodeURIComponent(entry.handle)}`
+      );
+      if (res.ok) {
+        const data: AccountResult[] = await res.json();
+        const match = platformFilter
+          ? data.find((a) => a.platform === platformFilter)
+          : data.find((a) => a.platform === entry.platform);
+        setResult(match ?? data[0] ?? null);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleReset() {
+    setQuery("");
+    setResult(null);
+    setSuggestions([]);
+    setIsOpen(false);
+    setShowSuggest(false);
+  }
+
+  return (
+    <div className="mt-8">
+      {/* Autocomplete input */}
+      {!result && (
+        <div ref={containerRef} className="relative">
+          <div className="relative">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => {
+                loadIndex();
+                if (suggestions.length > 0 || showSuggest) setIsOpen(true);
+              }}
+              placeholder={t("inputPlaceholder")}
+              className="w-full rounded-lg border border-border bg-surface px-4 py-3 pl-10 text-base sm:text-sm placeholder-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+
+          {isOpen && (
+            <div className="absolute z-50 mt-1 w-full rounded-lg border border-border bg-surface shadow-lg">
+              {suggestions.length > 0 ? (
+                <ul>
+                  {suggestions.map((entry) => (
+                    <li key={`${entry.platform}-${entry.handle}`}>
+                      <button
+                        type="button"
+                        onClick={() => handleSelect(entry)}
+                        className="flex w-full items-center gap-3 px-4 py-2.5 hover:bg-surface-alt transition-colors text-left"
+                      >
+                        <AccountAvatar
+                          src={entry.avatarUrl}
+                          name={entry.name}
+                          size={32}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-sm font-medium truncate">
+                              {entry.name}
+                            </p>
+                            <span className="shrink-0 rounded-full bg-surface-alt border border-border px-2 py-0.5 text-[10px] text-text-muted">
+                              {entry.category}
+                            </span>
+                          </div>
+                          <p className="text-xs text-text-muted">
+                            @{entry.handle}
+                          </p>
+                        </div>
+                        <PlatformIcon platform={entry.platform} size={18} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : showSuggest ? (
+                <SuggestForm
+                  query={query}
+                  platformFilter={platformFilter}
+                  onClose={() => {
+                    setIsOpen(false);
+                    setShowSuggest(false);
+                  }}
+                />
+              ) : null}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Loading */}
+      {loading && (
+        <div className="mt-6 text-center text-sm text-text-muted">
+          {t("searching")}
+        </div>
+      )}
+
+      {/* Result */}
+      {result && !loading && (
+        <div className="mt-6 space-y-4">
+          <div className="rounded-lg border border-border bg-surface p-6">
+            <p className="text-xs text-text-muted mb-3">
+              {t("resultsOn", {
+                platform:
+                  result.platform === "instagram" ? "Instagram" : "TikTok",
+              })}
+            </p>
+
+            <div className="flex items-center gap-3 mb-5">
+              <AccountAvatar
+                src={result.avatarUrl}
+                name={result.name}
+                size={48}
+              />
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-text">
+                    {result.name}
+                  </h3>
+                  <PlatformIcon platform={result.platform} size={18} />
+                </div>
+                <p className="text-sm text-text-secondary">
+                  @{result.handle}
+                </p>
+              </div>
+            </div>
+
+            {/* Engagement rate + benchmark */}
+            <EngagementResultCard result={result} />
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="rounded-lg bg-surface-alt px-3 py-2 text-center">
+                <p className="text-xs text-text-secondary">
+                  {t("followersLabel")}
+                </p>
+                <p className="mt-0.5 text-sm font-bold text-text">
+                  {result.followersFormatted}
+                </p>
+              </div>
+              <div className="rounded-lg bg-surface-alt px-3 py-2 text-center">
+                <p className="text-xs text-text-secondary">
+                  {t("categoryLabel")}
+                </p>
+                <p className="mt-0.5 text-sm font-bold text-text">
+                  {result.category}
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href={`/account/${result.platform}/${result.slug}`}
+              className="inline-block text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+            >
+              {t("viewFullProfile")}
+            </Link>
+          </div>
+
+          <button
+            onClick={handleReset}
+            className="text-sm text-text-muted hover:text-text transition-colors"
+          >
+            {t("tryAnother")}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EngagementResultCard({ result }: { result: AccountResult }) {
+  const t = useTranslations("account");
+  const pLabel = result.platform === "instagram" ? "Instagram" : "TikTok";
+  const benchmark = result.benchmark;
+
+  if (!benchmark) {
+    return (
+      <div className="rounded-lg bg-primary-light px-4 py-5 text-center mb-4">
+        <p className="text-xs text-text-secondary">
+          {t("engRateLabel")} ({t("performanceSectionTitle").replace(/.*\(/, "(")?.replace(")", "")} )
+        </p>
+        <p className="mt-1 text-3xl font-bold text-primary">
+          {result.engRateFormatted}
+        </p>
+      </div>
+    );
+  }
+
+  const position = Math.min(Math.max(benchmark.percentile, 2), 98);
+  const isTopHalf = benchmark.percentile >= 50;
+  const displayPercentile = Math.max(
+    1,
+    isTopHalf ? 100 - benchmark.percentile : benchmark.percentile
+  );
+
+  const tier =
+    benchmark.percentile >= 50 ? "green" : benchmark.percentile >= 25 ? "amber" : "red";
+  const barColor = { green: "bg-emerald-400", amber: "bg-amber-400", red: "bg-red-400" }[tier];
+  const dotColor = { green: "bg-emerald-500", amber: "bg-amber-500", red: "bg-red-500" }[tier];
+  const labelColor = { green: "text-emerald-400", amber: "text-amber-400", red: "text-red-400" }[tier];
+
+  return (
+    <div className="rounded-lg bg-surface-alt px-4 py-4 mb-4">
+      {/* Numbers row */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-center flex-1">
+          <p className="text-xs text-text-secondary">
+            {t("engRateLabel")}
+          </p>
+          <p className="text-[10px] text-text-muted">{t("performanceSectionTitle").match(/\(([^)]+)\)/)?.[1]}</p>
+          <p className="mt-1 text-2xl font-bold text-text">
+            {result.engRateFormatted}
+          </p>
+        </div>
+
+        <div className="w-px h-10 bg-border mx-4" />
+
+        <div className="text-center flex-1">
+          <p className="text-xs text-text-secondary">
+            {t("engRateBenchmarkMedian", { category: result.category, platform: pLabel })}
+          </p>
+          <p className="mt-1 text-2xl font-bold text-text-secondary">
+            {benchmark.medianFormatted}
+          </p>
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="relative h-2 rounded-full bg-border overflow-visible mt-9">
+        <div
+          className={`absolute top-0 left-0 h-full rounded-full ${barColor}`}
+          style={{ width: `${position}%` }}
+        />
+
+        <div
+          className="absolute top-1/2 -translate-y-1/2 w-0.5 h-4 bg-text-secondary"
+          style={{ left: "50%" }}
+          title={`Median: ${benchmark.medianFormatted}`}
+        />
+
+        <div
+          className="absolute"
+          style={{ left: `${position}%`, top: "50%", transform: "translate(-50%, -50%)" }}
+        >
+          <span
+            className={`absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-semibold ${labelColor}`}
+          >
+            {isTopHalf
+              ? t("engRateBenchmarkPercentile", { percentile: displayPercentile })
+              : t("engRateBenchmarkBottom", { percentile: displayPercentile })}
+          </span>
+          <div
+            className={`w-3 h-3 rounded-full border-2 border-surface ${dotColor}`}
+          />
+        </div>
+      </div>
+
+      {/* Labels under bar */}
+      <div className="flex justify-between mt-1.5">
+        <span className="text-[10px] text-text-muted">{t("engRateBenchmarkLow")}</span>
+        <span className="text-[10px] text-text-muted">{t("engRateBenchmarkMedianLabel")}</span>
+        <span className="text-[10px] text-text-muted">{t("engRateBenchmarkHigh")}</span>
+      </div>
+    </div>
+  );
+}
+
+function SuggestForm({
+  query,
+  platformFilter,
+  onClose,
+}: {
+  query: string;
+  platformFilter?: "instagram" | "tiktok";
+  onClose: () => void;
+}) {
+  const t = useTranslations("search");
+  const [platform, setPlatform] = useState<Platform>(platformFilter || "instagram");
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    await fetch("/api/suggest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ handle: query, platform, email }),
+    });
+    setSubmitted(true);
+  }
+
+  if (submitted) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-sm font-medium text-primary">{t("thankYou")}</p>
+        <p className="mt-1 text-xs text-text-secondary">
+          {t("notifyWhenAvailable")}
+        </p>
+        <button
+          onClick={onClose}
+          className="mt-2 text-xs text-text-muted hover:text-text"
+        >
+          {t("close")}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4">
+      <p className="text-sm font-medium text-text">{t("cantFind")}</p>
+      <p className="mt-1 text-xs text-text-secondary">{t("suggestPrompt")}</p>
+      <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-2">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={query}
+            readOnly
+            className="flex-1 rounded border border-border bg-surface-alt px-3 py-1.5 text-sm"
+          />
+          {!platformFilter && (
+            <select
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value as Platform)}
+              className="rounded border border-border bg-surface px-2 py-1.5 text-sm"
+            >
+              <option value="instagram">Instagram</option>
+              <option value="tiktok">TikTok</option>
+            </select>
+          )}
+        </div>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("emailOptional")}
+          className="rounded border border-border px-3 py-1.5 text-sm placeholder-text-muted"
+        />
+        <button
+          type="submit"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-contrast hover:bg-primary-dark transition-colors"
+        >
+          {t("suggestButton")}
+        </button>
+      </form>
+    </div>
+  );
+}

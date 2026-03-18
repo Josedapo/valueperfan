@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "../i18n/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
+import MobileMenu from "./MobileMenu";
 
 export default function Header() {
   const t = useTranslations("header");
@@ -38,7 +39,7 @@ export default function Header() {
             </div>
           </Link>
 
-          <nav className="hidden sm:flex items-center gap-5">
+          <nav className="hidden lg:flex items-center gap-5">
             <Link
               href="/"
               className="text-sm text-text-secondary hover:text-primary transition-colors"
@@ -71,7 +72,21 @@ export default function Header() {
             </Link>
           </nav>
 
-          <LanguageSwitcher />
+          <div className="hidden lg:block">
+            <LanguageSwitcher />
+          </div>
+
+          <MobileMenu
+            navItems={[
+              { href: "/", label: tNav("rankings") },
+              { href: "/tools/social-media-value-calculator", label: tNav("calculators") },
+              { href: "/methodology", label: tNav("methodology") },
+              { href: "/about", label: tNav("about") },
+              { href: "/contact", label: tNav("contact") },
+            ]}
+            menuLabel={t("openMenu")}
+            closeLabel={t("closeMenu")}
+          />
         </div>
       </div>
     </header>

@@ -16,7 +16,7 @@ const LOCALE_CONFIG: Record<
   br: { flag: "🇧🇷", label: "Português", short: "BR" },
 };
 
-export default function LanguageSwitcher() {
+export default function LanguageSwitcher({ dropUp = false }: { dropUp?: boolean }) {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -54,7 +54,7 @@ export default function LanguageSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-1 w-40 rounded-lg border border-border bg-surface shadow-lg z-50 overflow-hidden">
+        <div className={`absolute right-0 w-40 rounded-lg border border-border bg-surface shadow-lg z-50 overflow-hidden ${dropUp ? "bottom-full mb-1" : "mt-1"}`}>
           {locales.map((code) => {
             const config = LOCALE_CONFIG[code];
             const isActive = code === locale;

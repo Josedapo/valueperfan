@@ -5,7 +5,9 @@
     "titleTemplate": "%s | ValuePerFan"
   },
   "header": {
-    "tagline": "The <accent>real value</accent> of social media followers"
+    "tagline": "The <accent>real value</accent> of social media followers",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "footer": {
     "_locale": "en",

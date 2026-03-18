@@ -109,9 +109,9 @@ export default function HomepageRankingTable({
   return (
     <div>
       {/* Controls */}
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Platform selector */}
+      <div className="mb-4 space-y-3">
+        {/* Row 1: Platform + Metric */}
+        <div className="flex items-center justify-between gap-3">
           <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
             <ToggleButton active={platform === "instagram"} onClick={() => handlePlatformChange("instagram")}>
               <PlatformIcon
@@ -131,12 +131,23 @@ export default function HomepageRankingTable({
             </ToggleButton>
           </div>
 
-          {/* Category filter */}
+          <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
+            <ToggleButton active={metric === "totalValue"} onClick={() => handleMetricChange("totalValue")}>
+              {t("toggleTotalValue")}
+            </ToggleButton>
+            <ToggleButton active={metric === "vpf"} onClick={() => handleMetricChange("vpf")}>
+              {t("toggleVpf")}
+            </ToggleButton>
+          </div>
+        </div>
+
+        {/* Row 2: Category + Country filters */}
+        <div className="flex items-center gap-3">
           {categories && categories.length > 0 && (
             <select
               value="all"
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="flex-1 sm:flex-none rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="all">{t("allCategories")}</option>
               {categories.map((c) => (
@@ -147,12 +158,11 @@ export default function HomepageRankingTable({
             </select>
           )}
 
-          {/* Country filter */}
           {countries.length > 0 && (
             <select
               value="all"
               onChange={(e) => handleCountryChange(e.target.value)}
-              className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="flex-1 sm:flex-none rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="all">{t("allCountries")}</option>
               {countries.map((c) => (
@@ -162,16 +172,6 @@ export default function HomepageRankingTable({
               ))}
             </select>
           )}
-        </div>
-
-        {/* Metric toggle */}
-        <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
-          <ToggleButton active={metric === "totalValue"} onClick={() => handleMetricChange("totalValue")}>
-            {t("toggleTotalValue")}
-          </ToggleButton>
-          <ToggleButton active={metric === "vpf"} onClick={() => handleMetricChange("vpf")}>
-            {t("toggleVpf")}
-          </ToggleButton>
         </div>
       </div>
 
@@ -265,25 +265,18 @@ export default function HomepageRankingTable({
           <p className="text-sm text-text-muted">
             {t("accounts", { count: totalCount })}
           </p>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handlePageChange(Math.max(1, page - 1))}
-              disabled={page === 1 || loading}
-              className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {t("previous")}
-            </button>
-            <span className="text-sm text-text-secondary">
-              {page} / {totalPages}
-            </span>
-            <button
-              onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
-              disabled={page === totalPages || loading}
-              className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {t("next")}
-            </button>
-          </div>
+          <select
+            value={page}
+            onChange={(e) => handlePageChange(Number(e.target.value))}
+            disabled={loading}
+            className="rounded-lg border border-border bg-surface px-2 py-1.5 text-sm text-text-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          >
+            {Array.from({ length: totalPages }, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1} / {totalPages}
+              </option>
+            ))}
+          </select>
         </div>
       )}
     </div>

@@ -256,32 +256,32 @@ export default function ValueCalculatorClient({
             <p className="text-xs text-text-muted mb-2">
               {t("dataFromLabel", { month: dataMonth })}
             </p>
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+              <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
                 <p className="text-xs text-text-secondary">
                   {t("avgValuePerPost")}
                 </p>
-                <p className="mt-1 text-2xl font-bold text-primary">
+                <p className="mt-1 text-xl sm:text-2xl font-bold text-primary">
                   {result.avgPerPostFormatted}
                 </p>
               </div>
-              <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
+              <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
                 <p className="text-xs text-text-secondary">
                   {t("totalValueLabel")}
                 </p>
-                <p className="mt-1 text-2xl font-bold text-primary">
+                <p className="mt-1 text-xl sm:text-2xl font-bold text-primary">
                   {result.totalValueFormatted}
                 </p>
               </div>
-              <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
+              <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
                 <p className="text-xs text-text-secondary">{t("vpfLabel")}</p>
-                <p className="mt-1 text-2xl font-bold text-primary">
+                <p className="mt-1 text-xl sm:text-2xl font-bold text-primary">
                   {result.vpfFormatted}
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-3 mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
               <div className="rounded-lg bg-surface-alt px-3 py-2 text-center">
                 <p className="text-xs text-text-secondary">
                   {t("postsLabel")}

@@ -100,6 +100,35 @@ export default async function MethodologyPage({
         </p>
       </div>
 
+      {/* Trusted by */}
+      <div className="mt-6 rounded-lg border border-border bg-surface p-6">
+        <h2 className="text-sm font-bold text-primary uppercase tracking-wider">
+          {t("trustedTitle")}
+        </h2>
+        <p className="mt-2 text-sm text-text-secondary leading-relaxed">
+          {t.rich("trustedText", {
+            link: (chunks) => (
+              <a
+                href="https://www.horizm.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-primary hover:text-primary-dark transition-colors"
+              >
+                {chunks}
+              </a>
+            ),
+          })}
+        </p>
+        <a
+          href="https://www.horizm.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-block text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+        >
+          {t("trustedCta")}
+        </a>
+      </div>
+
       {/* Limitations */}
       <div className="mt-6 rounded-lg border border-border bg-surface p-6">
         <h2 className="text-sm font-bold text-primary uppercase tracking-wider mb-3">

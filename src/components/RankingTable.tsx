@@ -321,31 +321,22 @@ export default function RankingTable({
           <p className="text-sm text-text-muted">
             {t("accounts", { count: filtered.length })}
           </p>
-          <div className="flex items-center gap-2">
-            <a
-              href={page > 2 ? `?page=${page - 1}` : "?"}
-              onClick={(e) => handlePageChange(Math.max(1, page - 1), e)}
-              aria-disabled={page === 1}
-              className={`rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface ${
-                page === 1 ? "opacity-40 pointer-events-none" : ""
-              }`}
-            >
-              {t("previous")}
-            </a>
-            <span className="text-sm text-text-secondary">
-              {page} / {totalPages}
-            </span>
-            <a
-              href={`?page=${page + 1}`}
-              onClick={(e) => handlePageChange(Math.min(totalPages, page + 1), e)}
-              aria-disabled={page === totalPages}
-              className={`rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface ${
-                page === totalPages ? "opacity-40 pointer-events-none" : ""
-              }`}
-            >
-              {t("next")}
-            </a>
-          </div>
+          <select
+            value={page}
+            onChange={(e) => {
+              const pg = Number(e.target.value);
+              setPage(pg);
+              window.history.replaceState(null, "", pg > 1 ? `?page=${pg}` : "?");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="rounded-lg border border-border bg-surface px-2 py-1.5 text-sm text-text-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          >
+            {Array.from({ length: totalPages }, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1} / {totalPages}
+              </option>
+            ))}
+          </select>
         </div>
       )}
     </div>

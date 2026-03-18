@@ -260,25 +260,25 @@ export default async function AccountPage({
             size={80}
           />
           <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0">
-                <h1 className="text-2xl font-bold text-text truncate">
-                  {account.name}
-                  {account.countryCode && (
-                    <span className="ml-2" title={account.country ?? undefined}>
-                      {countryCodeToFlag(account.countryCode)}
-                    </span>
-                  )}
-                </h1>
-                <PlatformIcon platform={account.platform} size={22} />
+            <div className="flex items-center gap-2 min-w-0">
+              <h1 className="text-2xl font-bold text-text truncate">
+                {account.name}
+                {account.countryCode && (
+                  <span className="ml-2" title={account.country ?? undefined}>
+                    {countryCodeToFlag(account.countryCode)}
+                  </span>
+                )}
+              </h1>
+              <PlatformIcon platform={account.platform} size={22} />
+              <div className="hidden sm:block shrink-0 ml-auto">
+                <ClaimFlow
+                  platform={account.platform}
+                  handle={account.handle}
+                  slug={account.slug}
+                  name={account.name}
+                  compact
+                />
               </div>
-              <ClaimFlow
-                platform={account.platform}
-                handle={account.handle}
-                slug={account.slug}
-                name={account.name}
-                compact
-              />
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <p className="text-text-secondary">@{account.handle}</p>
@@ -289,16 +289,27 @@ export default async function AccountPage({
                 {mappedCategory}
               </Link>
             </div>
-            {account.profileUrl && (
-              <a
-                href={account.profileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-1 inline-block text-sm text-primary hover:text-primary-dark transition-colors"
-              >
-                {t("viewOn", { platform: pLabel })}
-              </a>
-            )}
+            <div className="flex items-center gap-3 mt-1">
+              {account.profileUrl && (
+                <a
+                  href={account.profileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary hover:text-primary-dark transition-colors"
+                >
+                  {t("viewOn", { platform: pLabel })}
+                </a>
+              )}
+              <div className="sm:hidden">
+                <ClaimFlow
+                  platform={account.platform}
+                  handle={account.handle}
+                  slug={account.slug}
+                  name={account.name}
+                  compact
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -336,7 +347,7 @@ export default async function AccountPage({
         {/* Average Value per Post — key metric for creators */}
         {account.posts > 0 && (
           <div className="rounded-lg border-2 border-primary bg-primary-light px-4 py-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
               <div>
                 <p className="text-xs font-medium text-text-secondary">
                   {t("avgValuePerPost")}
@@ -345,7 +356,7 @@ export default async function AccountPage({
                   {t("avgValuePerPostHint")}
                 </p>
               </div>
-              <p className="text-2xl font-bold text-primary">
+              <p className="text-xl sm:text-2xl font-bold text-primary">
                 {formatCurrencyFull(account.totalValue / account.posts)}
               </p>
             </div>
@@ -353,20 +364,20 @@ export default async function AccountPage({
         )}
 
         {/* Value — highlighted */}
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
             <p className="text-xs text-text-secondary">
               {t("totalValueLabel")}
             </p>
-            <p className="mt-1 text-2xl font-bold text-primary">
+            <p className="mt-1 text-lg sm:text-2xl font-bold text-primary">
               {formatCurrencyFull(account.totalValue)}
             </p>
           </div>
-          <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
+          <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
             <p className="text-xs text-text-secondary">
               {t("valuePerFan")}
             </p>
-            <p className="mt-1 text-2xl font-bold text-primary">
+            <p className="mt-1 text-lg sm:text-2xl font-bold text-primary">
               {formatCurrencyFull(account.valuePerFan * 1000)}
             </p>
           </div>
@@ -379,12 +390,12 @@ export default async function AccountPage({
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <MetricCard
-              label={t("followersLabel")}
-              value={formatFollowers(account.followers)}
-            />
-            <MetricCard
               label={t("postsLabel")}
               value={account.posts.toLocaleString()}
+            />
+            <MetricCard
+              label={t("followersLabel")}
+              value={formatFollowers(account.followers)}
             />
             <MetricCard
               label={t("impressionsLabel")}

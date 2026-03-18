@@ -2,6 +2,7 @@ import accountsData from "../data/accounts.json";
 import type { Account, AccountsData } from "./types";
 import type { Platform, Metric } from "./platform";
 import { mapCategory } from "./category-map";
+import { toSlug } from "./utils";
 
 let cached: AccountsData | null = null;
 
@@ -10,11 +11,11 @@ export function getAccountsData(): AccountsData {
   const data = accountsData as AccountsData;
   cached = {
     ...data,
-    accounts: data.accounts.map((a) =>
-      a.country === null
-        ? { ...a, country: "Global", countryCode: "XX" }
-        : a
-    ),
+    accounts: data.accounts.map((a) => ({
+      ...a,
+      slug: toSlug(a.handle),
+      ...(a.country === null ? { country: "Global", countryCode: "XX" } : {}),
+    })),
   };
   return cached;
 }

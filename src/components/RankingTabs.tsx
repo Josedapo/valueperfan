@@ -32,12 +32,12 @@ export default function RankingTabs({ tabs }: { tabs: RankingTab[] }) {
   return (
     <div>
       {/* Tab buttons */}
-      <div className="flex gap-2 flex-wrap mb-4">
+      <div className="flex gap-2 mb-4 overflow-x-auto -mx-4 px-4 scrollbar-none">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-colors ${
               tab.id === active.id
                 ? "bg-primary text-primary-contrast"
                 : "bg-surface-alt text-text-secondary hover:text-primary hover:bg-primary-light"

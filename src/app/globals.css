@@ -24,6 +24,14 @@ body {
   overflow-x: hidden;
 }
 
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --color-primary: #34d399;

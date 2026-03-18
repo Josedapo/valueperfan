@@ -170,6 +170,7 @@ export default async function Home({
           initialTotalCount={initialTotalCount}
           countries={countries}
           categories={categories}
+          dataMonth={formattedDataMonth}
         />
       </Suspense>
       <p className="text-xs text-text-muted text-right">
@@ -183,7 +184,9 @@ export default async function Home({
             {t("pmeTitle")}
           </h2>
           <p className="mt-2 text-sm text-text-secondary leading-relaxed">
-            {t("pmeDescription")}
+            {t.rich("pmeDescription", {
+              bold: (chunks) => <strong className="font-semibold text-text">{chunks}</strong>,
+            })}
           </p>
         </div>
         <div className="rounded-lg border border-border bg-surface p-5">
@@ -191,7 +194,9 @@ export default async function Home({
             {t("vpfTitle")}
           </h2>
           <p className="mt-2 text-sm text-text-secondary leading-relaxed">
-            {t("vpfDescription")}
+            {t.rich("vpfDescription", {
+              bold: (chunks) => <strong className="font-semibold text-text">{chunks}</strong>,
+            })}
           </p>
         </div>
       </section>

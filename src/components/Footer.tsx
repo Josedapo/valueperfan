@@ -6,6 +6,10 @@ export default function Footer({ dataMonth }: { dataMonth: string }) {
   const t = useTranslations("footer");
   const locale = t("_locale");
   const formattedMonth = formatDataMonth(dataMonth, locale);
+  // Published month = month after data month
+  const [year, month] = dataMonth.split("-").map(Number);
+  const publishedDate = month === 12 ? `${year + 1}-01` : `${year}-${String(month + 1).padStart(2, "0")}`;
+  const formattedPublished = formatDataMonth(publishedDate, locale);
 
   return (
     <footer className="border-t border-border bg-surface py-8 mt-12">
@@ -30,7 +34,7 @@ export default function Footer({ dataMonth }: { dataMonth: string }) {
               {t("description")}
             </p>
             <p className="mt-1 text-xs text-text-muted">
-              {t("dataUpdated", { month: formattedMonth })}
+              {t("dataFrom", { month: formattedMonth, published: formattedPublished })}
             </p>
           </div>
           <p className="text-xs text-text-muted shrink-0">{t("copyright")}</p>

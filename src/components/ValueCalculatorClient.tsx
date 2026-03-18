@@ -19,6 +19,8 @@ interface AccountResult {
   avatarUrl: string;
   followers: number;
   followersFormatted: string;
+  posts: number;
+  avgPerPostFormatted: string;
   totalValue: number;
   totalValueFormatted: string;
   valuePerFan: number;
@@ -32,8 +34,10 @@ interface AccountResult {
 
 export default function ValueCalculatorClient({
   platformFilter,
+  dataMonth,
 }: {
   platformFilter?: "instagram" | "tiktok";
+  dataMonth: string;
 }) {
   const t = useTranslations("tools");
   const tSearch = useTranslations("search");
@@ -104,7 +108,7 @@ export default function ValueCalculatorClient({
 
   async function handleSelect(entry: SearchEntry) {
     setIsOpen(false);
-    setQuery(entry.name);
+    setQuery("");
     setLoading(true);
 
     try {
@@ -136,7 +140,6 @@ export default function ValueCalculatorClient({
   return (
     <div className="mt-8">
       {/* Autocomplete input */}
-      {!result && (
         <div ref={containerRef} className="relative">
           <div className="relative">
             <input
@@ -212,7 +215,6 @@ export default function ValueCalculatorClient({
             </div>
           )}
         </div>
-      )}
 
       {/* Loading */}
       {loading && (
@@ -251,7 +253,18 @@ export default function ValueCalculatorClient({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <p className="text-xs text-text-muted mb-2">
+              {t("dataFromLabel", { month: dataMonth })}
+            </p>
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
+                <p className="text-xs text-text-secondary">
+                  {t("avgValuePerPost")}
+                </p>
+                <p className="mt-1 text-2xl font-bold text-primary">
+                  {result.avgPerPostFormatted}
+                </p>
+              </div>
               <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
                 <p className="text-xs text-text-secondary">
                   {t("totalValueLabel")}
@@ -268,7 +281,15 @@ export default function ValueCalculatorClient({
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="grid grid-cols-4 gap-3 mb-4">
+              <div className="rounded-lg bg-surface-alt px-3 py-2 text-center">
+                <p className="text-xs text-text-secondary">
+                  {t("postsLabel")}
+                </p>
+                <p className="mt-0.5 text-sm font-bold text-text">
+                  {(result.posts ?? 0).toLocaleString()}
+                </p>
+              </div>
               <div className="rounded-lg bg-surface-alt px-3 py-2 text-center">
                 <p className="text-xs text-text-secondary">{t("rankLabel")}</p>
                 <p className="mt-0.5 text-sm font-bold text-text">
@@ -300,13 +321,6 @@ export default function ValueCalculatorClient({
               {t("viewFullProfile")}
             </Link>
           </div>
-
-          <button
-            onClick={handleReset}
-            className="text-sm text-text-muted hover:text-text transition-colors"
-          >
-            {t("tryAnother")}
-          </button>
         </div>
       )}
     </div>

@@ -3,6 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { buildRankingMetadata } from "../../../../lib/metadata";
 import EngagementCalculatorClient from "../../../../components/EngagementCalculatorClient";
 import CalculatorNav from "../../../../components/CalculatorNav";
+import { getAccountsData } from "../../../../lib/data";
+import { formatDataMonth } from "../../../../lib/utils";
 
 export async function generateMetadata({
   params,
@@ -32,6 +34,7 @@ export default async function InstagramEngagementRateCalculatorPage({
   setRequestLocale(locale);
   const t = await getTranslations("tools.instagramEngagementRateCalculator");
   const tTools = await getTranslations("tools");
+  const formattedDataMonth = formatDataMonth(getAccountsData().meta.dataMonth, locale);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -44,7 +47,7 @@ export default async function InstagramEngagementRateCalculatorPage({
 
       <CalculatorNav activeType="engagement" activePlatform="instagram" />
 
-      <EngagementCalculatorClient platformFilter="instagram" />
+      <EngagementCalculatorClient platformFilter="instagram" dataMonth={formattedDataMonth} />
 
       {/* Educational content */}
       <div className="mt-10 rounded-lg border border-border bg-surface p-6">

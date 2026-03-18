@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "../i18n/navigation";
+import NavLink from "./NavLink";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MobileMenu from "./MobileMenu";
 
@@ -40,36 +41,11 @@ export default function Header() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-5">
-            <Link
-              href="/"
-              className="text-sm text-text-secondary hover:text-primary transition-colors"
-            >
-              {tNav("rankings")}
-            </Link>
-            <Link
-              href="/tools/social-media-value-calculator"
-              className="text-sm text-text-secondary hover:text-primary transition-colors"
-            >
-              {tNav("calculators")}
-            </Link>
-            <Link
-              href="/methodology"
-              className="text-sm text-text-secondary hover:text-primary transition-colors"
-            >
-              {tNav("methodology")}
-            </Link>
-            <Link
-              href="/about"
-              className="text-sm text-text-secondary hover:text-primary transition-colors"
-            >
-              {tNav("about")}
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm text-text-secondary hover:text-primary transition-colors"
-            >
-              {tNav("contact")}
-            </Link>
+            <NavLink href="/">{tNav("rankings")}</NavLink>
+            <NavLink href="/tools/social-media-value-calculator">{tNav("calculators")}</NavLink>
+            <NavLink href="/methodology">{tNav("methodology")}</NavLink>
+            <NavLink href="/about">{tNav("about")}</NavLink>
+            <NavLink href="/contact">{tNav("contact")}</NavLink>
           </nav>
 
           <div className="hidden lg:block">

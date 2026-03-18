@@ -10,7 +10,7 @@ ValuePerFan is built on the technology behind Horizm (horizm.com), the AI-powere
 
 ## Key Concepts
 - **Paid Media Equivalence (PME):** Calculates the earned media value of organic social media content — what a brand would need to spend in paid advertising (Instagram Ads, TikTok Ads) to achieve the same impressions, reach, and engagement.
-- **Total Value:** The total PME-based economic value an account generates in the last 30 days, expressed in USD.
+- **Total Value:** The total PME-based economic value an account generates during the analyzed month, expressed in USD.
 - **Value Per Fan:** Total Value divided by number of followers (displayed per 1,000 followers). This is the democratic ranking metric — a creator with 50K engaged fans can rank above a celebrity with millions of passive followers.
 
 ## Coverage
@@ -55,7 +55,7 @@ All pages available in 3 languages via URL prefix:
 - Portuguese (Brazil): \`/br/\`
 
 ## Data
-All valuations are calculated using the Paid Media Equivalence algorithm. Rankings are updated periodically based on the most recent 30 days of content performance. Accounts can be sorted by Total Value or Value Per Fan, and filtered by platform, country, and category.
+All valuations are calculated using the Paid Media Equivalence algorithm. Rankings are updated at the end of each month, reflecting the previous month's content performance. Accounts can be sorted by Total Value or Value Per Fan, and filtered by platform, country, and category.
 
 ## Contact
 Website: https://valueperfan.com

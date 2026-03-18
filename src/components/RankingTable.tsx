@@ -33,6 +33,7 @@ export default function RankingTable({
   showHeading = true,
   initialPage = 1,
   introText,
+  dataMonth,
 }: {
   accounts: Account[];
   countries: CountryOption[];
@@ -44,6 +45,7 @@ export default function RankingTable({
   showHeading?: boolean;
   initialPage?: number;
   introText?: string;
+  dataMonth: string;
 }) {
   const t = useTranslations("ranking");
   const tCategories = useTranslations("categories");
@@ -249,7 +251,7 @@ export default function RankingTable({
                   <>
                     {t("columnTotalValue")}
                     <span className="block text-[10px] font-normal italic text-text-muted normal-case tracking-normal">
-                      {t("last30days")}
+                      {t("dataMonth", { month: dataMonth })}
                     </span>
                   </>
                 )}

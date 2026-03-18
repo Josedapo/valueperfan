@@ -3,6 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { buildRankingMetadata } from "../../../../lib/metadata";
 import ValueCalculatorClient from "../../../../components/ValueCalculatorClient";
 import CalculatorNav from "../../../../components/CalculatorNav";
+import { getAccountsData } from "../../../../lib/data";
+import { formatDataMonth } from "../../../../lib/utils";
 
 export async function generateMetadata({
   params,
@@ -32,6 +34,7 @@ export default async function TiktokAccountValueCalculatorPage({
   setRequestLocale(locale);
   const t = await getTranslations("tools.tiktokAccountValueCalculator");
   const tTools = await getTranslations("tools");
+  const formattedDataMonth = formatDataMonth(getAccountsData().meta.dataMonth, locale);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -44,7 +47,7 @@ export default async function TiktokAccountValueCalculatorPage({
 
       <CalculatorNav activeType="value" activePlatform="tiktok" />
 
-      <ValueCalculatorClient platformFilter="tiktok" />
+      <ValueCalculatorClient platformFilter="tiktok" dataMonth={formattedDataMonth} />
 
       {/* Educational content */}
       <div className="mt-10 rounded-lg border border-border bg-surface p-6">

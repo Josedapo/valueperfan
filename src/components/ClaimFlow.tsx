@@ -9,6 +9,7 @@ interface ClaimFlowProps {
   handle: string;
   slug: string;
   name: string;
+  compact?: boolean;
 }
 
 type FlowState =
@@ -26,6 +27,7 @@ export default function ClaimFlow({
   handle,
   slug,
   name,
+  compact = false,
 }: ClaimFlowProps) {
   const t = useTranslations("claim");
   const [state, setState] = useState<FlowState>("loading");
@@ -135,6 +137,16 @@ export default function ClaimFlow({
 
   // Unclaimed — single inline CTA
   if (state === "unclaimed") {
+    if (compact) {
+      return (
+        <button
+          onClick={() => setState("email_form")}
+          className="shrink-0 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors"
+        >
+          {t("claimButton")}
+        </button>
+      );
+    }
     return (
       <div className="flex items-center justify-between rounded-lg border border-primary/20 bg-primary-light/50 px-4 py-2.5">
         <p className="text-sm text-primary-dark">

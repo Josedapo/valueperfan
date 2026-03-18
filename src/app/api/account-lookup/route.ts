@@ -31,6 +31,8 @@ export async function GET(request: Request) {
       avatarUrl: a.avatarUrl,
       followers: a.followers,
       followersFormatted: formatFollowers(a.followers),
+      posts: a.posts,
+      avgPerPostFormatted: a.posts > 0 ? formatCurrency(a.totalValue / a.posts) : "$0",
       totalValue: a.totalValue,
       totalValueFormatted: formatCurrency(a.totalValue),
       valuePerFan: a.valuePerFan,

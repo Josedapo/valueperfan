@@ -26,6 +26,11 @@ export function formatCurrency(value: number): string {
   return `$${usd.toFixed(0)}`;
 }
 
+export function formatCurrencyFull(value: number): string {
+  const usd = value * EUR_TO_USD;
+  return `$${Math.round(usd).toLocaleString("en-US")}`;
+}
+
 export function formatVPF(value: number): string {
   const usd = value * EUR_TO_USD * 1000;
   if (usd >= 1_000_000) {

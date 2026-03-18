@@ -26,6 +26,7 @@ interface AccountResult {
   avatarUrl: string;
   followers: number;
   followersFormatted: string;
+  posts: number;
   engRate: number;
   engRateFormatted: string;
   category: string;
@@ -35,8 +36,10 @@ interface AccountResult {
 
 export default function EngagementCalculatorClient({
   platformFilter,
+  dataMonth,
 }: {
   platformFilter?: "instagram" | "tiktok";
+  dataMonth: string;
 }) {
   const t = useTranslations("tools");
   const tSearch = useTranslations("search");
@@ -107,7 +110,7 @@ export default function EngagementCalculatorClient({
 
   async function handleSelect(entry: SearchEntry) {
     setIsOpen(false);
-    setQuery(entry.name);
+    setQuery("");
     setLoading(true);
 
     try {
@@ -139,7 +142,6 @@ export default function EngagementCalculatorClient({
   return (
     <div className="mt-8">
       {/* Autocomplete input */}
-      {!result && (
         <div ref={containerRef} className="relative">
           <div className="relative">
             <input
@@ -215,7 +217,6 @@ export default function EngagementCalculatorClient({
             </div>
           )}
         </div>
-      )}
 
       {/* Loading */}
       {loading && (
@@ -254,10 +255,22 @@ export default function EngagementCalculatorClient({
               </div>
             </div>
 
-            {/* Engagement rate + benchmark */}
-            <EngagementResultCard result={result} />
+            <p className="text-xs text-text-muted mb-2">
+              {t("dataFromLabel", { month: dataMonth })}
+            </p>
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            {/* Engagement rate + benchmark */}
+            <EngagementResultCard result={result} dataMonth={dataMonth} />
+
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="rounded-lg bg-surface-alt px-3 py-2 text-center">
+                <p className="text-xs text-text-secondary">
+                  {t("postsLabel")}
+                </p>
+                <p className="mt-0.5 text-sm font-bold text-text">
+                  {(result.posts ?? 0).toLocaleString()}
+                </p>
+              </div>
               <div className="rounded-lg bg-surface-alt px-3 py-2 text-center">
                 <p className="text-xs text-text-secondary">
                   {t("followersLabel")}
@@ -283,20 +296,13 @@ export default function EngagementCalculatorClient({
               {t("viewFullProfile")}
             </Link>
           </div>
-
-          <button
-            onClick={handleReset}
-            className="text-sm text-text-muted hover:text-text transition-colors"
-          >
-            {t("tryAnother")}
-          </button>
         </div>
       )}
     </div>
   );
 }
 
-function EngagementResultCard({ result }: { result: AccountResult }) {
+function EngagementResultCard({ result, dataMonth }: { result: AccountResult; dataMonth: string }) {
   const t = useTranslations("account");
   const pLabel = result.platform === "instagram" ? "Instagram" : "TikTok";
   const benchmark = result.benchmark;
@@ -305,7 +311,7 @@ function EngagementResultCard({ result }: { result: AccountResult }) {
     return (
       <div className="rounded-lg bg-primary-light px-4 py-5 text-center mb-4">
         <p className="text-xs text-text-secondary">
-          {t("engRateLabel")} ({t("performanceSectionTitle").replace(/.*\(/, "(")?.replace(")", "")} )
+          {t("engRateLabel")} ({t("performanceSectionTitle", { month: dataMonth }).replace(/.*\(/, "(")?.replace(")", "")} )
         </p>
         <p className="mt-1 text-3xl font-bold text-primary">
           {result.engRateFormatted}
@@ -335,7 +341,7 @@ function EngagementResultCard({ result }: { result: AccountResult }) {
           <p className="text-xs text-text-secondary">
             {t("engRateLabel")}
           </p>
-          <p className="text-[10px] text-text-muted">{t("performanceSectionTitle").match(/\(([^)]+)\)/)?.[1]}</p>
+          <p className="text-[10px] text-text-muted">{t("performanceSectionTitle", { month: dataMonth }).match(/\(([^)]+)\)/)?.[1]}</p>
           <p className="mt-1 text-2xl font-bold text-text">
             {result.engRateFormatted}
           </p>

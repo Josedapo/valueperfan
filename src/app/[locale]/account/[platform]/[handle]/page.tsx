@@ -11,6 +11,7 @@ import {
 } from "../../../../../lib/data";
 import {
   formatCurrency,
+  formatCurrencyFull,
   formatVPF,
   formatFollowers,
   formatDataMonth,
@@ -29,7 +30,7 @@ import Breadcrumbs from "../../../../../components/Breadcrumbs";
 import AccountAvatar from "../../../../../components/AccountAvatar";
 import MetricCard from "../../../../../components/MetricCard";
 import EngagementRateBenchmark from "../../../../../components/EngagementRateBenchmark";
-import AccountRankingSection from "../../../../../components/AccountRankingSection";
+import RankingTabs from "../../../../../components/RankingTabs";
 import ClaimFlow from "../../../../../components/ClaimFlow";
 import PlatformIcon from "../../../../../components/PlatformIcon";
 import SearchBar from "../../../../../components/SearchBar";
@@ -259,16 +260,25 @@ export default async function AccountPage({
             size={80}
           />
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-text truncate">
-                {account.name}
-                {account.countryCode && (
-                  <span className="ml-2" title={account.country ?? undefined}>
-                    {countryCodeToFlag(account.countryCode)}
-                  </span>
-                )}
-              </h1>
-              <PlatformIcon platform={account.platform} size={22} />
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <h1 className="text-2xl font-bold text-text truncate">
+                  {account.name}
+                  {account.countryCode && (
+                    <span className="ml-2" title={account.country ?? undefined}>
+                      {countryCodeToFlag(account.countryCode)}
+                    </span>
+                  )}
+                </h1>
+                <PlatformIcon platform={account.platform} size={22} />
+              </div>
+              <ClaimFlow
+                platform={account.platform}
+                handle={account.handle}
+                slug={account.slug}
+                name={account.name}
+                compact
+              />
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <p className="text-text-secondary">@{account.handle}</p>
@@ -292,24 +302,64 @@ export default async function AccountPage({
           </div>
         </div>
 
-        {/* Claim CTA — inline */}
-        <div className="mt-4">
-          <ClaimFlow
-            platform={account.platform}
-            handle={account.handle}
-            slug={account.slug}
-            name={account.name}
-          />
+        {/* About this account */}
+        <div className="mt-4 text-sm text-text-secondary leading-relaxed space-y-2">
+          <p>
+            {t.rich("aboutWho", {
+              bold: (chunks) => <strong className="font-semibold text-text">{chunks}</strong>,
+              name: account.name,
+              category: tCategories.has(mappedCategory) ? tCategories(mappedCategory) : mappedCategory,
+              platform: pLabel,
+              followers: formatFollowers(account.followers),
+              country: account.country ? (tCountries.has(account.country) ? tCountries(account.country) : account.country) : "Global",
+            })}
+          </p>
+          <p>
+            {t.rich("aboutValue", {
+              bold: (chunks) => <strong className="font-semibold text-text">{chunks}</strong>,
+              name: account.name,
+              totalValue: formatCurrency(account.totalValue),
+              vpf: formatVPF(account.valuePerFan),
+              avgPerPost: account.posts > 0 ? formatCurrency(account.totalValue / account.posts) : "$0",
+              rankVpf: account.rank.vpf,
+              platformTotal: globalTotal.toLocaleString(),
+              platform: pLabel,
+            })}
+          </p>
         </div>
 
+        {/* Data period + metrics */}
+        <p className="mt-6 mb-2 text-xs font-medium text-text-secondary uppercase tracking-wider">
+          {t("dataFromLabel", { month: formattedDataMonth })}
+        </p>
+
+        {/* Average Value per Post — key metric for creators */}
+        {account.posts > 0 && (
+          <div className="rounded-lg border-2 border-primary bg-primary-light px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-text-secondary">
+                  {t("avgValuePerPost")}
+                </p>
+                <p className="text-xs text-text-muted mt-0.5">
+                  {t("avgValuePerPostHint")}
+                </p>
+              </div>
+              <p className="text-2xl font-bold text-primary">
+                {formatCurrencyFull(account.totalValue / account.posts)}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Value — highlighted */}
-        <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="mt-4 grid grid-cols-2 gap-3">
           <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
             <p className="text-xs text-text-secondary">
               {t("totalValueLabel")}
             </p>
             <p className="mt-1 text-2xl font-bold text-primary">
-              {formatCurrency(account.totalValue)}
+              {formatCurrencyFull(account.totalValue)}
             </p>
           </div>
           <div className="rounded-lg bg-primary-light px-4 py-4 text-center">
@@ -317,7 +367,7 @@ export default async function AccountPage({
               {t("valuePerFan")}
             </p>
             <p className="mt-1 text-2xl font-bold text-primary">
-              {formatVPF(account.valuePerFan)}
+              {formatCurrencyFull(account.valuePerFan * 1000)}
             </p>
           </div>
         </div>
@@ -361,86 +411,61 @@ export default async function AccountPage({
 
       </div>
 
-      {/* About this account */}
-      <div className="mt-6 rounded-lg border border-border bg-surface p-5">
-        <h2 className="text-sm font-bold text-text uppercase tracking-wider mb-3">
-          {t("aboutTitle")}
-        </h2>
-        <div className="text-sm text-text-secondary leading-relaxed space-y-2">
-          <p>
-            {t("aboutWho", {
-              name: account.name,
-              category: tCategories.has(mappedCategory) ? tCategories(mappedCategory) : mappedCategory,
-              platform: pLabel,
-              followers: formatFollowers(account.followers),
-              country: account.country ? (tCountries.has(account.country) ? tCountries(account.country) : account.country) : "Global",
-            })}
-          </p>
-          <p>
-            {t("aboutValue", {
-              name: account.name,
-              totalValue: formatCurrency(account.totalValue),
-              vpf: formatVPF(account.valuePerFan),
-              rankVpf: account.rank.vpf,
-              platformTotal: globalTotal.toLocaleString(),
-              platform: pLabel,
-            })}
-          </p>
-          <p>{t("aboutContext")}</p>
-        </div>
-      </div>
-
       {/* Rankings Section */}
       <div className="mt-6">
-        {/* Global Rankings */}
-        <AccountRankingSection
-          title={t("globalRankingsTitle", { count: globalTotal.toLocaleString() })}
-          linkHref="/"
-          linkLabel={t("viewRanking")}
-          tvNeighbors={tvNeighbors}
-          vpfNeighbors={vpfNeighbors}
-          account={account}
-          titleTag="h2"
-          titleClassName="text-sm font-bold text-text uppercase tracking-wider"
+        <h2 className="text-sm font-bold text-text uppercase tracking-wider mb-4">
+          {t("rankingsSectionTitle")}
+        </h2>
+        <RankingTabs
+          tabs={[
+            {
+              id: "global",
+              label: t("globalTabLabel"),
+              title: t("globalRankingsTitle", { count: globalTotal.toLocaleString() }),
+              linkHref: "/",
+              linkLabel: t("viewRanking"),
+              tvNeighbors: tvNeighbors,
+              vpfNeighbors: vpfNeighbors,
+              account: account,
+            },
+            ...(showCountryRankings && countryVpf && countryTv && countrySlug
+              ? [{
+                  id: "country",
+                  label: t("countryTabLabel", { country: account.country ?? "" }),
+                  title: t("countryRankingsTitle", { country: account.country ?? "", count: countryAccounts.length.toLocaleString() }),
+                  linkHref: `/ranking/${countrySlug}`,
+                  linkLabel: t("viewRanking"),
+                  tvNeighbors: countryTv,
+                  vpfNeighbors: countryVpf,
+                  account: account,
+                }]
+              : []),
+            ...(showCategoryRankings && categoryVpf && categoryTv
+              ? [{
+                  id: "category",
+                  label: t("categoryTabLabel", { category: mappedCategory }),
+                  title: t("categoryRankingsTitle", { category: mappedCategory, count: categoryAccounts.length.toLocaleString() }),
+                  linkHref: `/ranking/topic/${categorySlug}`,
+                  linkLabel: t("viewRanking"),
+                  tvNeighbors: categoryTv,
+                  vpfNeighbors: categoryVpf,
+                  account: account,
+                }]
+              : []),
+            ...(showCategoryCountryRankings && categoryCountryVpf && categoryCountryTv && countrySlug
+              ? [{
+                  id: "category-country",
+                  label: t("categoryCountryTabLabel", { category: mappedCategory, country: account.country ?? "" }),
+                  title: t("categoryCountryRankingsTitle", { category: mappedCategory, country: account.country ?? "", count: categoryCountryAccounts.length.toLocaleString() }),
+                  linkHref: `/ranking/topic/${categorySlug}/${countrySlug}`,
+                  linkLabel: t("viewRanking"),
+                  tvNeighbors: categoryCountryTv,
+                  vpfNeighbors: categoryCountryVpf,
+                  account: account,
+                }]
+              : []),
+          ]}
         />
-
-        {/* Country Rankings */}
-        {showCountryRankings && countryVpf && countryTv && countrySlug && (
-          <AccountRankingSection
-            title={t("countryRankingsTitle", { country: account.country ?? "", count: countryAccounts.length.toLocaleString() })}
-            linkHref={`/ranking/${countrySlug}`}
-            linkLabel={t("viewRanking")}
-            tvNeighbors={countryTv}
-            vpfNeighbors={countryVpf}
-            account={account}
-            flag={account.countryCode ? countryCodeToFlag(account.countryCode) : null}
-          />
-        )}
-
-        {/* Category Rankings */}
-        {showCategoryRankings && categoryVpf && categoryTv && (
-          <AccountRankingSection
-            title={t("categoryRankingsTitle", { category: mappedCategory, count: categoryAccounts.length.toLocaleString() })}
-            linkHref={`/ranking/topic/${categorySlug}`}
-            linkLabel={t("viewRanking")}
-            tvNeighbors={categoryTv}
-            vpfNeighbors={categoryVpf}
-            account={account}
-          />
-        )}
-
-        {/* Category + Country Rankings */}
-        {showCategoryCountryRankings && categoryCountryVpf && categoryCountryTv && countrySlug && (
-          <AccountRankingSection
-            title={t("categoryCountryRankingsTitle", { category: mappedCategory, country: account.country ?? "", count: categoryCountryAccounts.length.toLocaleString() })}
-            linkHref={`/ranking/topic/${categorySlug}/${countrySlug}`}
-            linkLabel={t("viewRanking")}
-            tvNeighbors={categoryCountryTv}
-            vpfNeighbors={categoryCountryVpf}
-            account={account}
-            flag={account.countryCode ? countryCodeToFlag(account.countryCode) : null}
-          />
-        )}
       </div>
 
       {/* FAQ */}
@@ -453,6 +478,7 @@ export default async function AccountPage({
 
       {/* PME Context */}
       <div className="mt-6 text-xs text-text-secondary leading-relaxed space-y-1.5">
+        <p>{t("aboutContext")}</p>
         <p>{t("pmeContext1")}</p>
         <p>{t("pmeContext2")}</p>
         {account.platform === "instagram" && (

@@ -27,11 +27,13 @@ export default function HomepageRankingTable({
   initialTotalCount,
   countries,
   categories,
+  dataMonth,
 }: {
   initialAccounts: Account[];
   initialTotalCount: number;
   countries: CountryOption[];
   categories: CategoryOption[];
+  dataMonth: string;
 }) {
   const t = useTranslations("ranking");
   const tCategories = useTranslations("categories");
@@ -193,7 +195,7 @@ export default function HomepageRankingTable({
                   <>
                     {t("columnTotalValue")}
                     <span className="block text-[10px] font-normal italic text-text-muted normal-case tracking-normal">
-                      {t("last30days")}
+                      {t("dataMonth", { month: dataMonth })}
                     </span>
                   </>
                 )}

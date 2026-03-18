@@ -135,6 +135,7 @@ export default async function CategoryRankingPage({
         categoryName={categoryInfo.name}
         initialPage={page}
         introText={t("categoryIntro", { category: tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name, count: categoryAccounts.length.toLocaleString() })}
+        dataMonth={formattedDataMonth}
       />
       <p className="text-xs text-text-muted text-right">
         {t("dataFrom", { month: formattedDataMonth, published: formattedPublished })}

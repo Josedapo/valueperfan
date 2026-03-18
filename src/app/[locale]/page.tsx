@@ -9,6 +9,7 @@ import { ITEMS_PER_PAGE } from "../../lib/config";
 import { formatDataMonth } from "../../lib/utils";
 import HomepageRankingTable from "../../components/HomepageRankingTable";
 import LazySearchBar from "../../components/LazySearchBar";
+import FaqSection from "../../components/FaqSection";
 
 export async function generateMetadata({
   params,
@@ -34,9 +35,19 @@ export default async function Home({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("home");
+  const tCountries = await getTranslations("countries");
+  const tCategories = await getTranslations("categories");
   const data = getAccountsData();
-  const countries = getCountries().map((c) => ({ name: c.name, slug: c.slug }));
-  const categories = getCategories().map((c) => ({ name: c.name, slug: c.slug }));
+  const countries = getCountries()
+    .map((c) => ({ name: c.name, slug: c.slug }))
+    .sort((a, b) => {
+      if (a.name === "Global") return 1;
+      if (b.name === "Global") return -1;
+      return tCountries(a.name).localeCompare(tCountries(b.name), locale);
+    });
+  const categories = getCategories()
+    .map((c) => ({ name: c.name, slug: c.slug }))
+    .sort((a, b) => tCategories(a.name).localeCompare(tCategories(b.name), locale));
 
   // Pre-filter initial page: Instagram sorted by totalValue rank
   const initialFiltered = data.accounts
@@ -52,11 +63,12 @@ export default async function Home({
     url: "https://valueperfan.com",
     logo: "https://valueperfan.com/favicon.svg",
     description:
-      "Public economic valuations of social media accounts using Paid Media Equivalence (PME). Ranking creators by Value Per Fan — the democratic metric that normalizes economic value by follower count.",
+      "Calculate the real value of any social media account. Free economic valuations powered by Paid Media Equivalence (PME) for Instagram and TikTok. Rankings by Value Per Fan — the democratic metric.",
   };
 
   const localePath = locale === "en" ? "" : `/${locale}`;
   const formattedDataMonth = formatDataMonth(data.meta.dataMonth, locale);
+  const formattedPublished = formatDataMonth("2026-03", locale);
 
   const itemListJsonLd = {
     "@context": "https://schema.org",
@@ -69,13 +81,31 @@ export default async function Home({
     })),
   };
 
+  const faqItems = Array.from({ length: 6 }, (_, i) => ({
+    question: t(`faq${i + 1}Q`),
+    answer: t(`faq${i + 1}A`),
+  }));
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+
   const websiteJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "ValuePerFan",
     url: "https://valueperfan.com",
     description:
-      "Discover the real economic value of any social media account. Free public rankings based on PME (Paid Media Equivalence) for Instagram and TikTok.",
+      "Free social media value calculator. Calculate the real economic value of any Instagram or TikTok account using Paid Media Equivalence (PME).",
     inLanguage: ["en", "es", "pt-BR"],
   };
 
@@ -97,6 +127,12 @@ export default async function Home({
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(itemListJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd),
         }}
       />
 
@@ -135,7 +171,7 @@ export default async function Home({
         />
       </Suspense>
       <p className="text-xs text-text-muted text-right">
-        {t("dataFrom", { month: formattedDataMonth })}
+        {t("dataFrom", { month: formattedDataMonth, published: formattedPublished })}
       </p>
 
       {/* Block 4: PME + VPF Explainer */}
@@ -190,6 +226,16 @@ export default async function Home({
           <p className="mt-2 text-sm text-text-secondary leading-relaxed">
             {t("whyVpfDescription")}
           </p>
+        </div>
+      </section>
+
+      {/* Block 7: FAQ */}
+      <section className="w-full">
+        <div className="rounded-lg border border-border bg-surface p-6">
+          <h2 className="text-sm font-bold text-primary uppercase tracking-wider mb-2">
+            {t("faqTitle")}
+          </h2>
+          <FaqSection items={faqItems} />
         </div>
       </section>
 

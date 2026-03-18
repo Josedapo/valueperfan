@@ -7,6 +7,7 @@ import { buildRankingMetadata } from "../../../../../../lib/metadata";
 import { ITEMS_PER_PAGE } from "../../../../../../lib/config";
 import { formatDataMonth } from "../../../../../../lib/utils";
 import { locales } from "../../../../../../i18n/config";
+import Breadcrumbs from "../../../../../../components/Breadcrumbs";
 import RankingTable from "../../../../../../components/RankingTable";
 
 export async function generateStaticParams() {
@@ -83,12 +84,22 @@ export default async function CategoryCountryRankingPage({
       a.country === countryInfo.name
   );
 
-  const categoryCountries = getCategoryCountries(categoryInfo.name).map((c) => ({
-    name: c.name,
-    slug: c.slug,
-  }));
+  const t = await getTranslations("ranking");
+  const tNav = await getTranslations("nav");
+  const tCategories = await getTranslations("categories");
+  const tCountries = await getTranslations("countries");
 
-  const categories = getCategories().map((c) => ({ name: c.name, slug: c.slug }));
+  const categoryCountries = getCategoryCountries(categoryInfo.name)
+    .map((c) => ({ name: c.name, slug: c.slug }))
+    .sort((a, b) => {
+      if (a.name === "Global") return 1;
+      if (b.name === "Global") return -1;
+      return tCountries(a.name).localeCompare(tCountries(b.name), locale);
+    });
+
+  const categories = getCategories()
+    .map((c) => ({ name: c.name, slug: c.slug }))
+    .sort((a, b) => tCategories(a.name).localeCompare(tCategories(b.name), locale));
 
   const instagramSorted = filtered
     .filter((a) => a.platform === "instagram")
@@ -96,9 +107,8 @@ export default async function CategoryCountryRankingPage({
   const instagramCount = instagramSorted.length;
   const totalPages = Math.ceil(instagramCount / ITEMS_PER_PAGE);
   const basePath = `/ranking/topic/${catSlug}/${countrySlug}`;
-
-  const t = await getTranslations("ranking");
   const formattedDataMonth = formatDataMonth(data.meta.dataMonth, locale);
+  const formattedPublished = formatDataMonth("2026-03", locale);
 
   const localePath = locale === "en" ? "" : `/${locale}`;
   const itemListJsonLd = page === 1 ? {
@@ -112,8 +122,17 @@ export default async function CategoryCountryRankingPage({
     })),
   } : null;
 
+  const translatedCategory = tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name;
+  const translatedCountry = tCountries.has(countryInfo.name) ? tCountries(countryInfo.name) : countryInfo.name;
+  const breadcrumbItems = [
+    { label: tNav("rankings"), href: "/" },
+    { label: translatedCategory, href: `/ranking/topic/${catSlug}` },
+    { label: translatedCountry },
+  ];
+
   return (
     <div className="flex flex-col gap-8 pt-6">
+      <Breadcrumbs items={breadcrumbItems} locale={locale} />
       {itemListJsonLd && (
         <script
           type="application/ld+json"
@@ -135,9 +154,10 @@ export default async function CategoryCountryRankingPage({
         categoryName={categoryInfo.name}
         countryName={countryInfo.name}
         initialPage={page}
+        introText={t("categoryCountryIntro", { category: tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name, country: tCountries.has(countryInfo.name) ? tCountries(countryInfo.name) : countryInfo.name, count: filtered.length.toLocaleString() })}
       />
       <p className="text-xs text-text-muted text-right">
-        {t("dataFrom", { month: formattedDataMonth })}
+        {t("dataFrom", { month: formattedDataMonth, published: formattedPublished })}
       </p>
     </div>
   );

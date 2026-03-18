@@ -6,6 +6,7 @@ import { buildRankingMetadata } from "../../../../../lib/metadata";
 import { ITEMS_PER_PAGE } from "../../../../../lib/config";
 import { formatDataMonth } from "../../../../../lib/utils";
 import { locales } from "../../../../../i18n/config";
+import Breadcrumbs from "../../../../../components/Breadcrumbs";
 import RankingTable from "../../../../../components/RankingTable";
 
 export async function generateStaticParams() {
@@ -67,22 +68,31 @@ export default async function CategoryRankingPage({
     (a) => mapCategory(a.category) === categoryInfo.name
   );
 
-  // Countries that have accounts in this category
-  const categoryCountries = getCategoryCountries(categoryInfo.name).map((c) => ({
-    name: c.name,
-    slug: c.slug,
-  }));
+  const t = await getTranslations("ranking");
+  const tNav = await getTranslations("nav");
+  const tCategories = await getTranslations("categories");
+  const tCountries = await getTranslations("countries");
 
-  const categories = getCategories().map((c) => ({ name: c.name, slug: c.slug }));
+  // Countries that have accounts in this category
+  const categoryCountries = getCategoryCountries(categoryInfo.name)
+    .map((c) => ({ name: c.name, slug: c.slug }))
+    .sort((a, b) => {
+      if (a.name === "Global") return 1;
+      if (b.name === "Global") return -1;
+      return tCountries(a.name).localeCompare(tCountries(b.name), locale);
+    });
+
+  const categories = getCategories()
+    .map((c) => ({ name: c.name, slug: c.slug }))
+    .sort((a, b) => tCategories(a.name).localeCompare(tCategories(b.name), locale));
 
   const instagramSorted = categoryAccounts
     .filter((a) => a.platform === "instagram")
     .sort((a, b) => a.rank.totalValue - b.rank.totalValue);
   const instagramCount = instagramSorted.length;
   const totalPages = Math.ceil(instagramCount / ITEMS_PER_PAGE);
-
-  const t = await getTranslations("ranking");
   const formattedDataMonth = formatDataMonth(data.meta.dataMonth, locale);
+  const formattedPublished = formatDataMonth("2026-03", locale);
 
   const localePath = locale === "en" ? "" : `/${locale}`;
   const itemListJsonLd = page === 1 ? {
@@ -96,8 +106,15 @@ export default async function CategoryRankingPage({
     })),
   } : null;
 
+  const translatedCategory = tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name;
+  const breadcrumbItems = [
+    { label: tNav("rankings"), href: "/" },
+    { label: translatedCategory },
+  ];
+
   return (
     <div className="flex flex-col gap-8 pt-6">
+      <Breadcrumbs items={breadcrumbItems} locale={locale} />
       {itemListJsonLd && (
         <script
           type="application/ld+json"
@@ -117,9 +134,10 @@ export default async function CategoryRankingPage({
         currentCategorySlug={slug}
         categoryName={categoryInfo.name}
         initialPage={page}
+        introText={t("categoryIntro", { category: tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name, count: categoryAccounts.length.toLocaleString() })}
       />
       <p className="text-xs text-text-muted text-right">
-        {t("dataFrom", { month: formattedDataMonth })}
+        {t("dataFrom", { month: formattedDataMonth, published: formattedPublished })}
       </p>
     </div>
   );

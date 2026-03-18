@@ -25,6 +25,7 @@ import { mapCategory, categoryToSlug } from "../../../../../lib/categories";
 import { countryToSlug } from "../../../../../lib/countries";
 import { locales } from "../../../../../i18n/config";
 import { Link } from "../../../../../i18n/navigation";
+import Breadcrumbs from "../../../../../components/Breadcrumbs";
 import AccountAvatar from "../../../../../components/AccountAvatar";
 import MetricCard from "../../../../../components/MetricCard";
 import EngagementRateBenchmark from "../../../../../components/EngagementRateBenchmark";
@@ -32,6 +33,7 @@ import AccountRankingSection from "../../../../../components/AccountRankingSecti
 import ClaimFlow from "../../../../../components/ClaimFlow";
 import PlatformIcon from "../../../../../components/PlatformIcon";
 import SearchBar from "../../../../../components/SearchBar";
+import FaqSection from "../../../../../components/FaqSection";
 
 // Pre-render top accounts (by VPF rank) per locale for fast initial load + SEO.
 // Remaining accounts are generated on-demand via ISR.
@@ -66,6 +68,7 @@ export async function generateMetadata({
     name: account.name,
     handle: account.handle,
     platform: pLabel,
+    totalValue: formatCurrency(account.totalValue),
     vpf: formatVPF(account.valuePerFan),
   });
   const description = t("metaDescription", {
@@ -89,7 +92,7 @@ export async function generateMetadata({
       siteName: "ValuePerFan",
       type: "profile",
     },
-    twitter: { card: "summary", title, description },
+    twitter: { card: "summary_large_image", title, description },
     alternates: {
       canonical: url,
       languages: {
@@ -120,6 +123,7 @@ export default async function AccountPage({
   const tCountries = await getTranslations("countries");
   const data = getAccountsData();
   const formattedDataMonth = formatDataMonth(data.meta.dataMonth, locale);
+  const formattedPublished = formatDataMonth("2026-03", locale);
   const vpfNeighbors = getNeighbors(account, 3, "vpf");
   const tvNeighbors = getNeighbors(account, 3, "totalValue");
   const pLabel = platformLabel(account.platform);
@@ -191,29 +195,41 @@ export default async function AccountPage({
     },
   };
 
-  const baseUrl = `https://valueperfan.com${locale === "en" ? "" : `/${locale}`}`;
-  const breadcrumbJsonLd = {
+  const breadcrumbItems = [
+    { label: t("rankings"), href: "/" },
+    { label: pLabel, href: `/?platform=${account.platform}` },
+    { label: account.name },
+  ];
+
+  const faqValues = {
+    name: account.name,
+    platform: pLabel,
+    totalValue: formatCurrency(account.totalValue),
+    vpf: formatVPF(account.valuePerFan),
+    rankVpf: account.rank.vpf,
+    rankTv: account.rank.totalValue,
+    platformTotal: globalTotal.toLocaleString(),
+    category: mappedCategory,
+    categoryCount: categoryAccounts.length.toLocaleString(),
+  };
+
+  const faqItems = [
+    { question: t("faq1Q", faqValues), answer: t("faq1A", faqValues) },
+    { question: t("faq2Q", faqValues), answer: t("faq2A", faqValues) },
+    { question: t("faq3Q", faqValues), answer: t("faq3A", faqValues) },
+  ];
+
+  const faqJsonLd = {
     "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: t("rankings"),
-        item: `${baseUrl}/`,
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
       },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: pLabel,
-        item: `${baseUrl}/?platform=${account.platform}`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: account.name,
-      },
-    ],
+    })),
   };
 
   return (
@@ -222,23 +238,12 @@ export default async function AccountPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <Breadcrumbs items={breadcrumbItems} locale={locale} />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      {/* Breadcrumb */}
-      <nav className="mb-6 text-sm text-text-muted">
-        <Link href="/" className="hover:text-primary transition-colors">
-          {t("rankings")}
-        </Link>
-        <span className="mx-2">/</span>
-        <Link href={`/?platform=${account.platform}`} className="capitalize hover:text-primary transition-colors">
-          {pLabel}
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-text">{account.name}</span>
-      </nav>
 
       {/* Search */}
       <section className="max-w-xl mx-auto w-full mb-6">
@@ -350,7 +355,7 @@ export default async function AccountPage({
             t={t}
           />
           <p className="text-xs text-text-muted text-right mt-3">
-            {t("dataFrom", { month: formattedDataMonth })}
+            {t("dataFrom", { month: formattedDataMonth, published: formattedPublished })}
           </p>
         </div>
 
@@ -436,6 +441,14 @@ export default async function AccountPage({
             flag={account.countryCode ? countryCodeToFlag(account.countryCode) : null}
           />
         )}
+      </div>
+
+      {/* FAQ */}
+      <div className="mt-6 rounded-lg border border-border bg-surface p-6">
+        <h2 className="text-sm font-bold text-primary uppercase tracking-wider mb-2">
+          {t("faqTitle")}
+        </h2>
+        <FaqSection items={faqItems} />
       </div>
 
       {/* PME Context */}

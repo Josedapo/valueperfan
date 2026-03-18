@@ -349,14 +349,14 @@ export default async function AccountPage({
           <div className="rounded-lg border-2 border-primary bg-primary-light px-4 py-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
               <div>
-                <p className="text-xs font-medium text-text-secondary">
+                <p className="text-xs font-medium text-text-secondary dark:text-emerald-200">
                   {t("avgValuePerPost")}
                 </p>
-                <p className="text-xs text-text-muted mt-0.5">
+                <p className="text-xs text-text-muted dark:text-emerald-300/70 mt-0.5">
                   {t("avgValuePerPostHint")}
                 </p>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-primary">
+              <p className="text-xl sm:text-2xl font-bold text-primary dark:text-emerald-300">
                 {formatCurrencyFull(account.totalValue / account.posts)}
               </p>
             </div>
@@ -366,18 +366,18 @@ export default async function AccountPage({
         {/* Value — highlighted */}
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
-            <p className="text-xs text-text-secondary">
+            <p className="text-xs text-text-secondary dark:text-emerald-200">
               {t("totalValueLabel")}
             </p>
-            <p className="mt-1 text-lg sm:text-2xl font-bold text-primary">
+            <p className="mt-1 text-lg sm:text-2xl font-bold text-primary dark:text-emerald-300">
               {formatCurrencyFull(account.totalValue)}
             </p>
           </div>
           <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
-            <p className="text-xs text-text-secondary">
+            <p className="text-xs text-text-secondary dark:text-emerald-200">
               {t("valuePerFan")}
             </p>
-            <p className="mt-1 text-lg sm:text-2xl font-bold text-primary">
+            <p className="mt-1 text-lg sm:text-2xl font-bold text-primary dark:text-emerald-300">
               {formatCurrencyFull(account.valuePerFan * 1000)}
             </p>
           </div>

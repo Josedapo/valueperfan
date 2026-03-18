@@ -65,7 +65,7 @@
     "categoryCountryMetaDescription": "Descubre el valor económico real de {category} en {country} en redes sociales. Rankings basados en Paid Media Equivalence.",
     "categoryCountrySubtitle": "El valor económico real de {category} en {country} en redes sociales. Basado en Paid Media Equivalence.",
     "categoryCountryIntro": "Descubre las cuentas de {category} más valiosas en {country}, ordenadas por valor económico usando Paid Media Equivalence (PME). Este ranking cubre {count} cuentas de Instagram y TikTok de {country}, midiendo quién genera más earned media value.",
-    "toggleVpf": "Por Fan",
+    "toggleVpf": "/Fan",
     "toggleTotalValue": "General",
     "columnVpf": "Por 1K Fans",
     "columnTotalValue": "General",

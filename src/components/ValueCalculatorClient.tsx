@@ -258,24 +258,24 @@ export default function ValueCalculatorClient({
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
               <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
-                <p className="text-xs text-text-secondary">
+                <p className="text-xs text-text-secondary dark:text-emerald-200">
                   {t("avgValuePerPost")}
                 </p>
-                <p className="mt-1 text-xl sm:text-2xl font-bold text-primary">
+                <p className="mt-1 text-xl sm:text-2xl font-bold text-primary dark:text-emerald-300">
                   {result.avgPerPostFormatted}
                 </p>
               </div>
               <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
-                <p className="text-xs text-text-secondary">
+                <p className="text-xs text-text-secondary dark:text-emerald-200">
                   {t("totalValueLabel")}
                 </p>
-                <p className="mt-1 text-xl sm:text-2xl font-bold text-primary">
+                <p className="mt-1 text-xl sm:text-2xl font-bold text-primary dark:text-emerald-300">
                   {result.totalValueFormatted}
                 </p>
               </div>
               <div className="rounded-lg bg-primary-light px-4 py-3 text-center">
-                <p className="text-xs text-text-secondary">{t("vpfLabel")}</p>
-                <p className="mt-1 text-xl sm:text-2xl font-bold text-primary">
+                <p className="text-xs text-text-secondary dark:text-emerald-200">{t("vpfLabel")}</p>
+                <p className="mt-1 text-xl sm:text-2xl font-bold text-primary dark:text-emerald-300">
                   {result.vpfFormatted}
                 </p>
               </div>

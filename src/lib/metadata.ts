@@ -24,7 +24,9 @@ export function buildRankingMetadata({
   const suffix = params.size > 0 ? `?${params.toString()}` : "";
 
   const localePath = locale === "en" ? "" : `/${locale}`;
-  const url = `https://valueperfan.com${localePath}${path}${suffix}`;
+  // Normalize "/" to "" for locale paths to avoid trailing slash redirects (308)
+  const normalizedPath = path === "/" ? "" : path;
+  const url = `https://valueperfan.com${localePath}${normalizedPath}${suffix}`;
 
   let displayTitle = title;
   if (platform === "tiktok") displayTitle = `${displayTitle} — TikTok`;
@@ -39,9 +41,9 @@ export function buildRankingMetadata({
     alternates: {
       canonical: url,
       languages: {
-        en: `https://valueperfan.com${path}${suffix}`,
-        es: `https://valueperfan.com/es${path}${suffix}`,
-        "pt-BR": `https://valueperfan.com/br${path}${suffix}`,
+        en: `https://valueperfan.com${normalizedPath || "/"}${suffix}`,
+        es: `https://valueperfan.com/es${normalizedPath}${suffix}`,
+        "pt-BR": `https://valueperfan.com/br${normalizedPath}${suffix}`,
       },
     },
   };

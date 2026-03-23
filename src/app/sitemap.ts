@@ -5,9 +5,11 @@ import { getCategories, getCategoryCountries } from "../lib/categories";
 import { BASE_URL } from "../lib/config";
 
 function localizedUrl(path: string, locale: string): string {
+  // Normalize "/" to "" for non-default locales to avoid trailing slash redirects (308)
+  const normalizedPath = path === "/" && locale !== "en" ? "" : path;
   return locale === "en"
-    ? `${BASE_URL}${path}`
-    : `${BASE_URL}/${locale}${path}`;
+    ? `${BASE_URL}${normalizedPath}`
+    : `${BASE_URL}/${locale}${normalizedPath}`;
 }
 
 function withAlternates(path: string) {

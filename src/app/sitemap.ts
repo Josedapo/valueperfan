@@ -85,6 +85,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ])
   );
 
+  const staticUrls = ["/about", "/contact", "/methodology"].map((path) => ({
+    ...withAlternates(path),
+    lastModified: lastMod,
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  }));
+
+  const toolUrls = [
+    "/tools/social-media-value-calculator",
+    "/tools/earned-media-value-calculator",
+    "/tools/instagram-account-value-calculator",
+    "/tools/tiktok-account-value-calculator",
+    "/tools/instagram-engagement-rate-calculator",
+    "/tools/tiktok-engagement-rate-calculator",
+  ].map((path) => ({
+    ...withAlternates(path),
+    lastModified: lastMod,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
   return [
     {
       ...withAlternates("/"),
@@ -92,6 +113,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority: 1.0,
     },
+    ...staticUrls,
+    ...toolUrls,
     ...countryUrls,
     ...categoryUrls,
     ...categoryCountryUrls,

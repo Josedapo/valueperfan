@@ -111,26 +111,28 @@ export default function RankingTable({
   }
 
   function handleCountryChange(slug: string) {
+    const ps = platform === "tiktok" ? "?platform=tiktok" : "";
     if (slug === "all" && currentCategorySlug === "all") {
       router.push("/");
     } else if (slug === "all" && currentCategorySlug !== "all") {
-      router.push(`/ranking/topic/${currentCategorySlug}`);
+      router.push(`/ranking/topic/${currentCategorySlug}${ps}`);
     } else if (currentCategorySlug !== "all") {
-      router.push(`/ranking/topic/${currentCategorySlug}/${slug}`);
+      router.push(`/ranking/topic/${currentCategorySlug}/${slug}${ps}`);
     } else {
-      router.push(`/ranking/${slug}`);
+      router.push(`/ranking/${slug}${ps}`);
     }
   }
 
   function handleCategoryChange(slug: string) {
+    const ps = platform === "tiktok" ? "?platform=tiktok" : "";
     if (slug === "all" && currentCountrySlug === "all") {
       router.push("/");
     } else if (slug === "all" && currentCountrySlug !== "all") {
-      router.push(`/ranking/${currentCountrySlug}`);
+      router.push(`/ranking/${currentCountrySlug}${ps}`);
     } else if (currentCountrySlug !== "all") {
-      router.push(`/ranking/topic/${slug}/${currentCountrySlug}`);
+      router.push(`/ranking/topic/${slug}/${currentCountrySlug}${ps}`);
     } else {
-      router.push(`/ranking/topic/${slug}`);
+      router.push(`/ranking/topic/${slug}${ps}`);
     }
   }
 

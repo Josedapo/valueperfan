@@ -69,7 +69,7 @@ export default async function CategoryRankingPage({
   const platform: Platform = platformParam === "tiktok" ? "tiktok" : "instagram";
   const data = getAccountsData();
   const categoryAccounts = data.accounts.filter(
-    (a) => mapCategory(a.category) === categoryInfo.name
+    (a) => mapCategory(a.category) === categoryInfo.name && a.platform === platform
   );
 
   const t = await getTranslations("ranking");

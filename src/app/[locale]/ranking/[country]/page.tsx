@@ -70,7 +70,7 @@ export default async function CountryRankingPage({
   const platform: Platform = platformParam === "tiktok" ? "tiktok" : "instagram";
   const data = getAccountsData();
   const countryAccounts = data.accounts.filter(
-    (a) => a.country === countryInfo.name
+    (a) => a.country === countryInfo.name && a.platform === platform
   );
   const t = await getTranslations("ranking");
   const tNav = await getTranslations("nav");

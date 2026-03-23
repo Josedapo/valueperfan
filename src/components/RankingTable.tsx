@@ -55,20 +55,15 @@ export default function RankingTable({
   const tCountries = useTranslations("countries");
   const router = useRouter();
   const pathname = usePathname();
-  const [platform, setPlatform] = useState<Platform>(initialPlatform);
+  const platform = initialPlatform;
   const [metric, setMetric] = useState<Metric>("totalValue");
   const [page, setPage] = useState(initialPage);
 
   // Countries and categories arrive pre-sorted from server components
 
-  // Sync URL with page and platform state
+  // Sync URL with page state
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (platform === "tiktok") {
-      url.searchParams.set("platform", "tiktok");
-    } else {
-      url.searchParams.delete("platform");
-    }
     if (page > 1) {
       url.searchParams.set("page", String(page));
     } else {
@@ -77,27 +72,20 @@ export default function RankingTable({
     if (url.href !== window.location.href) {
       window.history.replaceState(null, "", url.href);
     }
-  }, [page, platform]);
+  }, [page]);
 
   const filtered = useMemo(() => {
-    const result = accounts.filter((a) => a.platform === platform);
-    const sorted = [...result].sort((a, b) => {
+    return [...accounts].sort((a, b) => {
       if (metric === "vpf") return a.rank.vpf - b.rank.vpf;
       return a.rank.totalValue - b.rank.totalValue;
     });
-    return sorted;
-  }, [accounts, platform, metric]);
+  }, [accounts, metric]);
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = filtered.slice(
     (page - 1) * ITEMS_PER_PAGE,
     page * ITEMS_PER_PAGE
   );
-
-  function handlePlatformChange(p: Platform) {
-    setPlatform(p);
-    setPage(1);
-  }
 
   function handleMetricChange(m: Metric) {
     setMetric(m);
@@ -194,7 +182,6 @@ export default function RankingTable({
           <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
             <a
               href={platformHref("instagram")}
-              onClick={(e) => { e.preventDefault(); handlePlatformChange("instagram"); }}
               className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
                 platform === "instagram"
                   ? "bg-primary text-primary-contrast"
@@ -210,7 +197,6 @@ export default function RankingTable({
             </a>
             <a
               href={platformHref("tiktok")}
-              onClick={(e) => { e.preventDefault(); handlePlatformChange("tiktok"); }}
               className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
                 platform === "tiktok"
                   ? "bg-primary text-primary-contrast"

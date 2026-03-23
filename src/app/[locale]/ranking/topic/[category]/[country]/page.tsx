@@ -85,7 +85,8 @@ export default async function CategoryCountryRankingPage({
   const filtered = data.accounts.filter(
     (a) =>
       mapCategory(a.category) === categoryInfo.name &&
-      a.country === countryInfo.name
+      a.country === countryInfo.name &&
+      a.platform === platform
   );
 
   const t = await getTranslations("ranking");

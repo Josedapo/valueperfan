@@ -36,7 +36,14 @@ export function buildRankingMetadata({
   return {
     title: displayTitle,
     description,
-    openGraph: { title: displayTitle, description, url, siteName: "ValuePerFan" },
+    openGraph: {
+      title: displayTitle,
+      description,
+      url,
+      siteName: "ValuePerFan",
+      type: "website",
+      images: [{ url: "https://valueperfan.com/images/brand/vpf-positive-color.png" }],
+    },
     twitter: { card: "summary" as const, title: displayTitle, description },
     alternates: {
       canonical: url,

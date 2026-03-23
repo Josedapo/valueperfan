@@ -65,13 +65,14 @@ export async function generateMetadata({
   if (!account) return { title: t("notFound") };
 
   const pLabel = platformLabel(account.platform);
-  const title = t("metaTitle", {
+  let title = t("metaTitle", {
     name: account.name,
     handle: account.handle,
     platform: pLabel,
     totalValue: formatCurrency(account.totalValue),
     vpf: formatVPF(account.valuePerFan),
   });
+  if (title.length > 60) title = `${title.slice(0, 57)}…`;
   const description = t("metaDescription", {
     name: account.name,
     platform: pLabel,

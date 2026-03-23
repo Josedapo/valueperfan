@@ -29,6 +29,7 @@ export function buildRankingMetadata({
   let displayTitle = title;
   if (platform === "tiktok") displayTitle = `${displayTitle} — TikTok`;
   if (page > 1) displayTitle = `${displayTitle} — Page ${page}`;
+  if (displayTitle.length > 60) displayTitle = `${displayTitle.slice(0, 57)}…`;
 
   return {
     title: displayTitle,

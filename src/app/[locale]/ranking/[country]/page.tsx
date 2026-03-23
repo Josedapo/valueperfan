@@ -5,6 +5,7 @@ import { getCountries, slugToCountry } from "../../../../lib/countries";
 import { getCategories } from "../../../../lib/categories";
 import { buildRankingMetadata } from "../../../../lib/metadata";
 import { ITEMS_PER_PAGE } from "../../../../lib/config";
+import type { Platform } from "../../../../lib/platform";
 import { formatDataMonth } from "../../../../lib/utils";
 import { locales } from "../../../../i18n/config";
 import Breadcrumbs from "../../../../components/Breadcrumbs";
@@ -22,10 +23,10 @@ export async function generateMetadata({
   searchParams,
 }: {
   params: Promise<{ locale: string; country: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; platform?: string }>;
 }) {
   const { locale, country: slug } = await params;
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, platform: platformParam } = await searchParams;
   const countryInfo = slugToCountry(slug);
   const t = await getTranslations({ locale, namespace: "ranking" });
   const tCountries = await getTranslations({ locale, namespace: "countries" });
@@ -33,11 +34,12 @@ export async function generateMetadata({
   if (!countryInfo) return { title: t("notFound") };
 
   const page = Math.max(1, parseInt(pageParam || "1", 10)) || 1;
+  const platform: Platform = platformParam === "tiktok" ? "tiktok" : "instagram";
   const data = getAccountsData();
-  const instagramCount = data.accounts.filter(
-    (a) => a.platform === "instagram" && a.country === countryInfo.name
+  const platformCount = data.accounts.filter(
+    (a) => a.platform === platform && a.country === countryInfo.name
   ).length;
-  const totalPages = Math.ceil(instagramCount / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(platformCount / ITEMS_PER_PAGE);
 
   const translatedCountry = tCountries.has(countryInfo.name) ? tCountries(countryInfo.name) : countryInfo.name;
   return buildRankingMetadata({
@@ -47,6 +49,7 @@ export async function generateMetadata({
     path: `/ranking/${slug}`,
     page,
     totalPages,
+    platform,
   });
 }
 
@@ -55,15 +58,16 @@ export default async function CountryRankingPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; country: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; platform?: string }>;
 }) {
   const { locale, country: slug } = await params;
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, platform: platformParam } = await searchParams;
   setRequestLocale(locale);
   const countryInfo = slugToCountry(slug);
   if (!countryInfo) notFound();
 
   const page = Math.max(1, parseInt(pageParam || "1", 10)) || 1;
+  const platform: Platform = platformParam === "tiktok" ? "tiktok" : "instagram";
   const data = getAccountsData();
   const countryAccounts = data.accounts.filter(
     (a) => a.country === countryInfo.name
@@ -83,11 +87,10 @@ export default async function CountryRankingPage({
     .map((c) => ({ name: c.name, slug: c.slug }))
     .sort((a, b) => tCategories(a.name).localeCompare(tCategories(b.name), locale));
 
-  const instagramSorted = countryAccounts
-    .filter((a) => a.platform === "instagram")
+  const platformSorted = countryAccounts
+    .filter((a) => a.platform === platform)
     .sort((a, b) => a.rank.totalValue - b.rank.totalValue);
-  const instagramCount = instagramSorted.length;
-  const totalPages = Math.ceil(instagramCount / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(platformSorted.length / ITEMS_PER_PAGE);
   const formattedDataMonth = formatDataMonth(data.meta.dataMonth, locale);
   const formattedPublished = formatDataMonth("2026-03", locale);
 
@@ -95,13 +98,22 @@ export default async function CountryRankingPage({
   const itemListJsonLd = page === 1 ? {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    itemListElement: instagramSorted.slice(0, ITEMS_PER_PAGE).map((a, i) => ({
+    itemListElement: platformSorted.slice(0, ITEMS_PER_PAGE).map((a, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: a.name,
       url: `https://valueperfan.com${localePath}/account/${a.platform}/${a.slug}`,
     })),
   } : null;
+
+  const basePath = `/ranking/${slug}`;
+  function paginationHref(pg: number): string {
+    const p = new URLSearchParams();
+    if (platform === "tiktok") p.set("platform", "tiktok");
+    if (pg > 1) p.set("page", String(pg));
+    const qs = p.toString();
+    return qs ? `${basePath}?${qs}` : basePath;
+  }
 
   const translatedCountry = tCountries.has(countryInfo.name) ? tCountries(countryInfo.name) : countryInfo.name;
   const breadcrumbItems = [
@@ -119,10 +131,10 @@ export default async function CountryRankingPage({
         />
       )}
       {page > 1 && (
-        <link rel="prev" href={page === 2 ? `/ranking/${slug}` : `/ranking/${slug}?page=${page - 1}`} />
+        <link rel="prev" href={paginationHref(page - 1)} />
       )}
       {page < totalPages && (
-        <link rel="next" href={`/ranking/${slug}?page=${page + 1}`} />
+        <link rel="next" href={paginationHref(page + 1)} />
       )}
       <RankingTable
         accounts={countryAccounts}
@@ -131,6 +143,7 @@ export default async function CountryRankingPage({
         categories={categories}
         countryName={countryInfo.name}
         initialPage={page}
+        initialPlatform={platform}
         introText={t("countryIntro", { country: tCountries.has(countryInfo.name) ? tCountries(countryInfo.name) : countryInfo.name, count: countryAccounts.length.toLocaleString() })}
         dataMonth={formattedDataMonth}
       />

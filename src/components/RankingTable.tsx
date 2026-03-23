@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import { Link, useRouter } from "../i18n/navigation";
 import type { Account } from "../lib/types";
 import type { Platform, Metric } from "../lib/platform";
@@ -32,6 +33,7 @@ export default function RankingTable({
   countryName,
   showHeading = true,
   initialPage = 1,
+  initialPlatform = "instagram",
   introText,
   dataMonth,
 }: {
@@ -44,6 +46,7 @@ export default function RankingTable({
   countryName?: string;
   showHeading?: boolean;
   initialPage?: number;
+  initialPlatform?: Platform;
   introText?: string;
   dataMonth: string;
 }) {
@@ -51,15 +54,21 @@ export default function RankingTable({
   const tCategories = useTranslations("categories");
   const tCountries = useTranslations("countries");
   const router = useRouter();
-  const [platform, setPlatform] = useState<Platform>("instagram");
+  const pathname = usePathname();
+  const [platform, setPlatform] = useState<Platform>(initialPlatform);
   const [metric, setMetric] = useState<Metric>("totalValue");
   const [page, setPage] = useState(initialPage);
 
   // Countries and categories arrive pre-sorted from server components
 
-  // Sync URL with page state
+  // Sync URL with page and platform state
   useEffect(() => {
     const url = new URL(window.location.href);
+    if (platform === "tiktok") {
+      url.searchParams.set("platform", "tiktok");
+    } else {
+      url.searchParams.delete("platform");
+    }
     if (page > 1) {
       url.searchParams.set("page", String(page));
     } else {
@@ -68,7 +77,7 @@ export default function RankingTable({
     if (url.href !== window.location.href) {
       window.history.replaceState(null, "", url.href);
     }
-  }, [page]);
+  }, [page, platform]);
 
   const filtered = useMemo(() => {
     const result = accounts.filter((a) => a.platform === platform);
@@ -125,6 +134,18 @@ export default function RankingTable({
     }
   }
 
+  function pageHref(p: number): string {
+    const params = new URLSearchParams();
+    if (platform === "tiktok") params.set("platform", "tiktok");
+    if (p > 1) params.set("page", String(p));
+    const qs = params.toString();
+    return qs ? `${pathname}?${qs}` : pathname;
+  }
+
+  function platformHref(p: Platform): string {
+    return p === "tiktok" ? `${pathname}?platform=tiktok` : pathname;
+  }
+
   // Determine which dynamic title key to use
   function getDynamicTitleKey(): string {
     if (categoryName && countryName) {
@@ -167,24 +188,40 @@ export default function RankingTable({
       {/* Controls */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-3">
-          {/* Platform selector */}
+          {/* Platform selector (crawlable links) */}
           <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
-            <ToggleButton active={platform === "instagram"} onClick={() => handlePlatformChange("instagram")}>
+            <a
+              href={platformHref("instagram")}
+              onClick={(e) => { e.preventDefault(); handlePlatformChange("instagram"); }}
+              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
+                platform === "instagram"
+                  ? "bg-primary text-primary-contrast"
+                  : "text-text-secondary hover:bg-surface-alt"
+              }`}
+            >
               <PlatformIcon
                 platform="instagram"
                 size={16}
                 className={platform === "instagram" ? "brightness-0 invert" : ""}
               />
               Instagram
-            </ToggleButton>
-            <ToggleButton active={platform === "tiktok"} onClick={() => handlePlatformChange("tiktok")}>
+            </a>
+            <a
+              href={platformHref("tiktok")}
+              onClick={(e) => { e.preventDefault(); handlePlatformChange("tiktok"); }}
+              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
+                platform === "tiktok"
+                  ? "bg-primary text-primary-contrast"
+                  : "text-text-secondary hover:bg-surface-alt"
+              }`}
+            >
               <PlatformIcon
                 platform="tiktok"
                 size={16}
                 className={platform === "tiktok" ? "brightness-0 invert" : ""}
               />
               TikTok
-            </ToggleButton>
+            </a>
           </div>
 
           {/* Category filter */}
@@ -317,30 +354,69 @@ export default function RankingTable({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between">
+        <nav aria-label="Pagination" className="mt-4 flex items-center justify-between">
           <p className="text-sm text-text-muted">
             {t("accounts", { count: filtered.length })}
           </p>
-          <select
-            value={page}
-            onChange={(e) => {
-              const pg = Number(e.target.value);
-              setPage(pg);
-              window.history.replaceState(null, "", pg > 1 ? `?page=${pg}` : "?");
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="rounded-lg border border-border bg-surface px-2 py-1.5 text-sm text-text-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          >
-            {Array.from({ length: totalPages }, (_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {i + 1} / {totalPages}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="flex items-center gap-1">
+            {page > 1 ? (
+              <a
+                href={pageHref(page - 1)}
+                onClick={(e) => handlePageChange(page - 1, e)}
+                className="rounded px-2 py-1.5 text-sm text-text-secondary hover:bg-surface-alt hover:text-primary transition-colors"
+                aria-label="Previous page"
+              >
+                ‹
+              </a>
+            ) : (
+              <span className="rounded px-2 py-1.5 text-sm text-text-muted" aria-hidden="true">‹</span>
+            )}
+            {getVisiblePages(page, totalPages).map((p, i) =>
+              p === "..." ? (
+                <span key={`ellipsis-${i}`} className="px-1 text-sm text-text-muted">…</span>
+              ) : p === page ? (
+                <span
+                  key={p}
+                  className="rounded px-2 py-1.5 text-sm font-medium bg-primary text-primary-contrast"
+                  aria-current="page"
+                >
+                  {p}
+                </span>
+              ) : (
+                <a
+                  key={p}
+                  href={pageHref(p as number)}
+                  onClick={(e) => handlePageChange(p as number, e)}
+                  className="rounded px-2 py-1.5 text-sm text-text-secondary hover:bg-surface-alt hover:text-primary transition-colors"
+                >
+                  {p}
+                </a>
+              )
+            )}
+            {page < totalPages ? (
+              <a
+                href={pageHref(page + 1)}
+                onClick={(e) => handlePageChange(page + 1, e)}
+                className="rounded px-2 py-1.5 text-sm text-text-secondary hover:bg-surface-alt hover:text-primary transition-colors"
+                aria-label="Next page"
+              >
+                ›
+              </a>
+            ) : (
+              <span className="rounded px-2 py-1.5 text-sm text-text-muted" aria-hidden="true">›</span>
+            )}
+          </div>
+        </nav>
       )}
     </div>
   );
+}
+
+function getVisiblePages(current: number, total: number): (number | "...")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  if (current <= 3) return [1, 2, 3, 4, "...", total];
+  if (current >= total - 2) return [1, "...", total - 3, total - 2, total - 1, total];
+  return [1, "...", current - 1, current, current + 1, "...", total];
 }
 
 function ToggleButton({

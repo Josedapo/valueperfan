@@ -4,6 +4,7 @@ import { getAccountsData } from "../../../../../lib/data";
 import { getCategories, slugToCategory, mapCategory, getCategoryCountries } from "../../../../../lib/categories";
 import { buildRankingMetadata } from "../../../../../lib/metadata";
 import { ITEMS_PER_PAGE } from "../../../../../lib/config";
+import type { Platform } from "../../../../../lib/platform";
 import { formatDataMonth } from "../../../../../lib/utils";
 import { locales } from "../../../../../i18n/config";
 import Breadcrumbs from "../../../../../components/Breadcrumbs";
@@ -21,10 +22,10 @@ export async function generateMetadata({
   searchParams,
 }: {
   params: Promise<{ locale: string; category: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; platform?: string }>;
 }) {
   const { locale, category: slug } = await params;
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, platform: platformParam } = await searchParams;
   const categoryInfo = slugToCategory(slug);
   const t = await getTranslations({ locale, namespace: "ranking" });
   const tCategories = await getTranslations({ locale, namespace: "categories" });
@@ -32,11 +33,12 @@ export async function generateMetadata({
   if (!categoryInfo) return { title: t("notFound") };
 
   const page = Math.max(1, parseInt(pageParam || "1", 10)) || 1;
+  const platform: Platform = platformParam === "tiktok" ? "tiktok" : "instagram";
   const data = getAccountsData();
-  const instagramCount = data.accounts.filter(
-    (a) => a.platform === "instagram" && mapCategory(a.category) === categoryInfo.name
+  const platformCount = data.accounts.filter(
+    (a) => a.platform === platform && mapCategory(a.category) === categoryInfo.name
   ).length;
-  const totalPages = Math.ceil(instagramCount / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(platformCount / ITEMS_PER_PAGE);
 
   const translatedCategory = tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name;
   return buildRankingMetadata({
@@ -46,6 +48,7 @@ export async function generateMetadata({
     path: `/ranking/topic/${slug}`,
     page,
     totalPages,
+    platform,
   });
 }
 
@@ -54,15 +57,16 @@ export default async function CategoryRankingPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; category: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; platform?: string }>;
 }) {
   const { locale, category: slug } = await params;
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, platform: platformParam } = await searchParams;
   setRequestLocale(locale);
   const categoryInfo = slugToCategory(slug);
   if (!categoryInfo) notFound();
 
   const page = Math.max(1, parseInt(pageParam || "1", 10)) || 1;
+  const platform: Platform = platformParam === "tiktok" ? "tiktok" : "instagram";
   const data = getAccountsData();
   const categoryAccounts = data.accounts.filter(
     (a) => mapCategory(a.category) === categoryInfo.name
@@ -86,11 +90,10 @@ export default async function CategoryRankingPage({
     .map((c) => ({ name: c.name, slug: c.slug }))
     .sort((a, b) => tCategories(a.name).localeCompare(tCategories(b.name), locale));
 
-  const instagramSorted = categoryAccounts
-    .filter((a) => a.platform === "instagram")
+  const platformSorted = categoryAccounts
+    .filter((a) => a.platform === platform)
     .sort((a, b) => a.rank.totalValue - b.rank.totalValue);
-  const instagramCount = instagramSorted.length;
-  const totalPages = Math.ceil(instagramCount / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(platformSorted.length / ITEMS_PER_PAGE);
   const formattedDataMonth = formatDataMonth(data.meta.dataMonth, locale);
   const formattedPublished = formatDataMonth("2026-03", locale);
 
@@ -98,13 +101,22 @@ export default async function CategoryRankingPage({
   const itemListJsonLd = page === 1 ? {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    itemListElement: instagramSorted.slice(0, ITEMS_PER_PAGE).map((a, i) => ({
+    itemListElement: platformSorted.slice(0, ITEMS_PER_PAGE).map((a, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: a.name,
       url: `https://valueperfan.com${localePath}/account/${a.platform}/${a.slug}`,
     })),
   } : null;
+
+  const basePath = `/ranking/topic/${slug}`;
+  function paginationHref(pg: number): string {
+    const p = new URLSearchParams();
+    if (platform === "tiktok") p.set("platform", "tiktok");
+    if (pg > 1) p.set("page", String(pg));
+    const qs = p.toString();
+    return qs ? `${basePath}?${qs}` : basePath;
+  }
 
   const translatedCategory = tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name;
   const breadcrumbItems = [
@@ -122,10 +134,10 @@ export default async function CategoryRankingPage({
         />
       )}
       {page > 1 && (
-        <link rel="prev" href={page === 2 ? `/ranking/topic/${slug}` : `/ranking/topic/${slug}?page=${page - 1}`} />
+        <link rel="prev" href={paginationHref(page - 1)} />
       )}
       {page < totalPages && (
-        <link rel="next" href={`/ranking/topic/${slug}?page=${page + 1}`} />
+        <link rel="next" href={paginationHref(page + 1)} />
       )}
       <RankingTable
         accounts={categoryAccounts}
@@ -134,6 +146,7 @@ export default async function CategoryRankingPage({
         currentCategorySlug={slug}
         categoryName={categoryInfo.name}
         initialPage={page}
+        initialPlatform={platform}
         introText={t("categoryIntro", { category: tCategories.has(categoryInfo.name) ? tCategories(categoryInfo.name) : categoryInfo.name, count: categoryAccounts.length.toLocaleString() })}
         dataMonth={formattedDataMonth}
       />

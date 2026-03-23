@@ -88,6 +88,7 @@ export default function HomepageRankingTable({
   function handlePageChange(pg: number) {
     setPage(pg);
     fetchPage(platform, metric, pg);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function handleCountryChange(slug: string) {
@@ -261,26 +262,69 @@ export default function HomepageRankingTable({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between">
+        <nav aria-label="Pagination" className="mt-4 flex items-center justify-between">
           <p className="text-sm text-text-muted">
             {t("accounts", { count: totalCount })}
           </p>
-          <select
-            value={page}
-            onChange={(e) => handlePageChange(Number(e.target.value))}
-            disabled={loading}
-            className="rounded-lg border border-border bg-surface px-2 py-1.5 text-sm text-text-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          >
-            {Array.from({ length: totalPages }, (_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {i + 1} / {totalPages}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className={`flex items-center gap-1${loading ? " opacity-60" : ""}`}>
+            {page > 1 ? (
+              <button
+                onClick={() => handlePageChange(page - 1)}
+                disabled={loading}
+                className="rounded px-2 py-1.5 text-sm text-text-secondary hover:bg-surface-alt hover:text-primary transition-colors"
+                aria-label="Previous page"
+              >
+                ‹
+              </button>
+            ) : (
+              <span className="rounded px-2 py-1.5 text-sm text-text-muted" aria-hidden="true">‹</span>
+            )}
+            {getVisiblePages(page, totalPages).map((p, i) =>
+              p === "..." ? (
+                <span key={`ellipsis-${i}`} className="px-1 text-sm text-text-muted">…</span>
+              ) : p === page ? (
+                <span
+                  key={p}
+                  className="rounded px-2 py-1.5 text-sm font-medium bg-primary text-primary-contrast"
+                  aria-current="page"
+                >
+                  {p}
+                </span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => handlePageChange(p as number)}
+                  disabled={loading}
+                  className="rounded px-2 py-1.5 text-sm text-text-secondary hover:bg-surface-alt hover:text-primary transition-colors"
+                >
+                  {p}
+                </button>
+              )
+            )}
+            {page < totalPages ? (
+              <button
+                onClick={() => handlePageChange(page + 1)}
+                disabled={loading}
+                className="rounded px-2 py-1.5 text-sm text-text-secondary hover:bg-surface-alt hover:text-primary transition-colors"
+                aria-label="Next page"
+              >
+                ›
+              </button>
+            ) : (
+              <span className="rounded px-2 py-1.5 text-sm text-text-muted" aria-hidden="true">›</span>
+            )}
+          </div>
+        </nav>
       )}
     </div>
   );
+}
+
+function getVisiblePages(current: number, total: number): (number | "...")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  if (current <= 3) return [1, 2, 3, 4, "...", total];
+  if (current >= total - 2) return [1, "...", total - 3, total - 2, total - 1, total];
+  return [1, "...", current - 1, current, current + 1, "...", total];
 }
 
 function ToggleButton({

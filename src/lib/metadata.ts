@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { Platform } from "./platform";
 
 export function buildRankingMetadata({
   locale,
@@ -7,6 +8,7 @@ export function buildRankingMetadata({
   path,
   page = 1,
   totalPages,
+  platform = "instagram",
 }: {
   locale: string;
   title: string;
@@ -14,11 +16,19 @@ export function buildRankingMetadata({
   path: string;
   page?: number;
   totalPages?: number;
+  platform?: Platform;
 }): Metadata {
-  const suffix = page > 1 ? `?page=${page}` : "";
+  const params = new URLSearchParams();
+  if (platform === "tiktok") params.set("platform", "tiktok");
+  if (page > 1) params.set("page", String(page));
+  const suffix = params.size > 0 ? `?${params.toString()}` : "";
+
   const localePath = locale === "en" ? "" : `/${locale}`;
   const url = `https://valueperfan.com${localePath}${path}${suffix}`;
-  const displayTitle = page > 1 ? `${title} — Page ${page}` : title;
+
+  let displayTitle = title;
+  if (platform === "tiktok") displayTitle = `${displayTitle} — TikTok`;
+  if (page > 1) displayTitle = `${displayTitle} — Page ${page}`;
 
   return {
     title: displayTitle,

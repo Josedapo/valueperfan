@@ -92,27 +92,29 @@ export default function HomepageRankingTable({
   }
 
   function handleCountryChange(slug: string) {
+    const platformSuffix = platform === "tiktok" ? "?platform=tiktok" : "";
     if (slug === "all") {
       router.push("/");
     } else {
-      router.push(`/ranking/${slug}`);
+      router.push(`/ranking/${slug}${platformSuffix}`);
     }
   }
 
   function handleCategoryChange(slug: string) {
+    const platformSuffix = platform === "tiktok" ? "?platform=tiktok" : "";
     if (slug === "all") {
       router.push("/");
     } else {
-      router.push(`/ranking/topic/${slug}`);
+      router.push(`/ranking/topic/${slug}${platformSuffix}`);
     }
   }
 
   return (
     <div>
       {/* Controls */}
-      <div className="mb-4 space-y-3">
-        {/* Row 1: Platform + Metric */}
-        <div className="flex items-center justify-between gap-3">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Platform selector */}
           <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
             <ToggleButton active={platform === "instagram"} onClick={() => handlePlatformChange("instagram")}>
               <PlatformIcon
@@ -132,23 +134,12 @@ export default function HomepageRankingTable({
             </ToggleButton>
           </div>
 
-          <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
-            <ToggleButton active={metric === "totalValue"} onClick={() => handleMetricChange("totalValue")}>
-              {t("toggleTotalValue")}
-            </ToggleButton>
-            <ToggleButton active={metric === "vpf"} onClick={() => handleMetricChange("vpf")}>
-              {t("toggleVpf")}
-            </ToggleButton>
-          </div>
-        </div>
-
-        {/* Row 2: Category + Country filters */}
-        <div className="flex items-center gap-3">
+          {/* Category filter */}
           {categories && categories.length > 0 && (
             <select
               value="all"
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="flex-1 sm:flex-none rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="all">{t("allCategories")}</option>
               {categories.map((c) => (
@@ -159,11 +150,12 @@ export default function HomepageRankingTable({
             </select>
           )}
 
+          {/* Country filter */}
           {countries.length > 0 && (
             <select
               value="all"
               onChange={(e) => handleCountryChange(e.target.value)}
-              className="flex-1 sm:flex-none rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="all">{t("allCountries")}</option>
               {countries.map((c) => (
@@ -173,6 +165,16 @@ export default function HomepageRankingTable({
               ))}
             </select>
           )}
+        </div>
+
+        {/* Metric toggle */}
+        <div className="flex rounded-lg border border-border bg-surface overflow-hidden">
+          <ToggleButton active={metric === "totalValue"} onClick={() => handleMetricChange("totalValue")}>
+            {t("toggleTotalValue")}
+          </ToggleButton>
+          <ToggleButton active={metric === "vpf"} onClick={() => handleMetricChange("vpf")}>
+            {t("toggleVpf")}
+          </ToggleButton>
         </div>
       </div>
 

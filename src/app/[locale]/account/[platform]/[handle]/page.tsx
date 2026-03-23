@@ -100,7 +100,6 @@ export async function generateMetadata({
         en: `https://valueperfan.com${basePath}`,
         es: `https://valueperfan.com/es${basePath}`,
         "pt-BR": `https://valueperfan.com/br${basePath}`,
-        "x-default": `https://valueperfan.com${basePath}`,
       },
     },
   };

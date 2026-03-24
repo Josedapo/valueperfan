@@ -99,7 +99,6 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
       languages: {
-        "x-default": `https://valueperfan.com${basePath}`,
         en: `https://valueperfan.com${basePath}`,
         es: `https://valueperfan.com/es${basePath}`,
         "pt-BR": `https://valueperfan.com/br${basePath}`,

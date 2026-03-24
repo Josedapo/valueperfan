@@ -14,7 +14,7 @@ function localizedUrl(path: string, locale: string): string {
     : `${BASE_URL}/${locale}${normalizedPath}`;
 }
 
-// Generate one sitemap entry per locale, each with full hreflang alternates + x-default.
+// Generate one sitemap entry per locale, each with full hreflang alternates.
 // This ensures every locale URL has its own <url> entry (not just as an alternate reference).
 function localizedEntries(
   path: string,
@@ -32,7 +32,6 @@ function localizedEntries(
   }
 ): MetadataRoute.Sitemap {
   const languages: Record<string, string> = {
-    "x-default": localizedUrl(path, "en"),
     en: localizedUrl(path, "en"),
     es: localizedUrl(path, "es"),
     "pt-BR": localizedUrl(path, "br"),

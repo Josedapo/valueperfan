@@ -42,7 +42,10 @@ export default function ClaimFlow({
 
   const pLabel = platformLabel(platform);
   const isModalOpen =
-    state === "email_form" || state === "email_sent" || state === "pending_bio";
+    state === "email_form" ||
+    state === "email_sent" ||
+    state === "pending_bio" ||
+    state === "pending_review";
 
   const handleClose = useCallback(() => {
     setState("unclaimed");
@@ -345,25 +348,28 @@ export default function ClaimFlow({
                   {error && <p className="text-xs text-error">{error}</p>}
                 </>
               )}
+
+              {state === "pending_review" && (
+                <>
+                  <p className="text-sm text-text font-semibold">
+                    {t("pendingReviewTitle")}
+                  </p>
+                  <p className="text-sm text-text-secondary">
+                    {t("pendingReviewMessage", { platform: pLabel })}
+                  </p>
+                  <button
+                    onClick={handleClose}
+                    className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-text hover:bg-surface-alt transition-colors"
+                  >
+                    {t("close")}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
       </>,
       document.body
-    );
-  }
-
-  // Pending review — inline badge
-  if (state === "pending_review") {
-    return (
-      <div className="rounded-lg border border-primary/20 bg-primary-light/50 p-4 space-y-1">
-        <p className="text-sm text-primary-dark font-semibold">
-          {t("pendingReviewTitle")}
-        </p>
-        <p className="text-xs text-primary-dark">
-          {t("pendingReviewMessage", { platform: pLabel })}
-        </p>
-      </div>
     );
   }
 

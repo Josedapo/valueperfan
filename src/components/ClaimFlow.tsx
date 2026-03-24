@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import { platformLabel, type Platform } from "../lib/platform";
 
@@ -9,7 +10,6 @@ interface ClaimFlowProps {
   handle: string;
   slug: string;
   name: string;
-  compact?: boolean;
 }
 
 type FlowState =
@@ -27,7 +27,6 @@ export default function ClaimFlow({
   handle,
   slug,
   name,
-  compact = false,
 }: ClaimFlowProps) {
   const t = useTranslations("claim");
   const [state, setState] = useState<FlowState>("loading");
@@ -37,7 +36,19 @@ export default function ClaimFlow({
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const triggerButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   const pLabel = platformLabel(platform);
+  const isModalOpen =
+    state === "email_form" || state === "email_sent" || state === "pending_bio";
+
+  const handleClose = useCallback(() => {
+    setState("unclaimed");
+    setError("");
+    triggerButtonRef.current?.focus();
+  }, []);
 
   const checkStatus = useCallback(async () => {
     try {
@@ -66,6 +77,61 @@ export default function ClaimFlow({
   useEffect(() => {
     checkStatus();
   }, [checkStatus]);
+
+  // Body scroll lock
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
+
+  // Focus management: move focus to close button on open
+  useEffect(() => {
+    if (isModalOpen) {
+      closeButtonRef.current?.focus();
+    }
+  }, [isModalOpen]);
+
+  // Escape key and focus trap
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!isModalOpen) return;
+
+      if (e.key === "Escape") {
+        handleClose();
+        return;
+      }
+
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, input, a[href], [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    },
+    [isModalOpen, handleClose]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
   async function handleSubmitEmail(e: React.FormEvent) {
     e.preventDefault();
@@ -135,121 +201,159 @@ export default function ClaimFlow({
   // Loading — hidden
   if (state === "loading") return null;
 
-  // Unclaimed — single inline CTA
+  // Unclaimed — inline button (opens modal)
   if (state === "unclaimed") {
-    if (compact) {
-      return (
-        <button
-          onClick={() => setState("email_form")}
-          className="shrink-0 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors"
+    return (
+      <button
+        ref={triggerButtonRef}
+        onClick={() => setState("email_form")}
+        className="shrink-0 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors"
+      >
+        {t("claimButton")}
+      </button>
+    );
+  }
+
+  // Modal states: email_form, email_sent, pending_bio
+  if (isModalOpen) {
+    return createPortal(
+      <>
+        {/* Backdrop */}
+        <div
+          className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 motion-reduce:transition-none"
+          onClick={handleClose}
+          aria-hidden="true"
+        />
+
+        {/* Dialog */}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("claimButton")}
         >
-          {t("claimButton")}
-        </button>
-      );
-    }
-    return (
-      <div className="flex items-center justify-between rounded-lg border border-primary/20 bg-primary-light/50 px-4 py-2.5">
-        <p className="text-sm text-primary-dark">
-          {t("claimInline")}
-        </p>
-        <button
-          onClick={() => setState("email_form")}
-          className="shrink-0 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors"
-        >
-          {t("claimButton")}
-        </button>
-      </div>
-    );
-  }
-
-  // Email form
-  if (state === "email_form") {
-    return (
-      <div className="rounded-lg border border-primary/20 bg-primary-light/50 p-4 space-y-3">
-        <p className="text-sm text-primary-dark font-medium">
-          {t("emailPrompt", { name })}
-        </p>
-        <form onSubmit={handleSubmitEmail} className="flex gap-2">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-            className="flex-1 rounded-lg border border-primary/30 bg-surface px-3 py-2 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary"
-          />
-          <button
-            type="submit"
-            disabled={submitting}
-            className="shrink-0 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors disabled:opacity-50"
+          <div
+            ref={dialogRef}
+            className="w-full max-w-md rounded-xl border border-border bg-surface shadow-xl"
           >
-            {submitting ? t("sending") : t("sendVerification")}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setState("unclaimed");
-              setError("");
-            }}
-            className="shrink-0 rounded-lg border border-primary/30 px-3 py-2 text-xs font-medium text-primary-dark hover:bg-primary/10 transition-colors"
-          >
-            {t("cancel")}
-          </button>
-        </form>
-        {error && <p className="text-xs text-error">{error}</p>}
-      </div>
-    );
-  }
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-border px-5 py-4">
+              <h2 className="text-base font-semibold text-text">
+                {t("claimButton")}
+              </h2>
+              <button
+                ref={closeButtonRef}
+                onClick={handleClose}
+                className="rounded-lg p-1.5 text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
+                aria-label={t("close")}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
 
-  // Email sent
-  if (state === "email_sent") {
-    return (
-      <div className="rounded-lg border border-primary/20 bg-primary-light/50 p-4 space-y-1">
-        <p className="text-sm text-primary-dark font-semibold">
-          {t("checkInbox")}
-        </p>
-        <p className="text-xs text-primary-dark">
-          {t.rich("emailSentMessage", {
-            email,
-            bold: (chunks) => <span className="font-medium">{chunks}</span>,
-          })}
-        </p>
-      </div>
-    );
-  }
+            {/* Body */}
+            <div className="px-5 py-5 space-y-4">
+              {state === "email_form" && (
+                <>
+                  <p className="text-sm text-text-secondary">
+                    {t("emailPrompt", { name })}
+                  </p>
+                  <form
+                    onSubmit={handleSubmitEmail}
+                    className="space-y-3"
+                  >
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      required
+                      className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary"
+                    />
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-contrast hover:bg-primary-dark transition-colors disabled:opacity-50"
+                    >
+                      {submitting ? t("sending") : t("sendVerification")}
+                    </button>
+                  </form>
+                  {error && <p className="text-xs text-error">{error}</p>}
+                </>
+              )}
 
-  // Pending bio verification
-  if (state === "pending_bio") {
-    return (
-      <div className="rounded-lg border border-primary/20 bg-primary-light/50 p-4 space-y-3">
-        <p className="text-sm text-primary-dark font-medium">
-          {t("bioPrompt", { platform: pLabel })}
-        </p>
-        <div className="flex items-center gap-2">
-          <code className="flex-1 rounded-lg bg-surface border border-primary/20 px-4 py-2.5 text-base font-bold font-mono tracking-wider text-primary text-center">
-            {bioCode}
-          </code>
-          <button
-            onClick={() => copyToClipboard(bioCode)}
-            className="shrink-0 rounded-lg border border-primary/30 px-3 py-2.5 text-xs font-medium text-primary-dark hover:bg-primary/10 transition-colors"
-          >
-            {copied ? t("copied") : t("copy")}
-          </button>
+              {state === "email_sent" && (
+                <>
+                  <p className="text-sm text-text font-semibold">
+                    {t("checkInbox")}
+                  </p>
+                  <p className="text-sm text-text-secondary">
+                    {t.rich("emailSentMessage", {
+                      email,
+                      bold: (chunks) => (
+                        <span className="font-medium">{chunks}</span>
+                      ),
+                    })}
+                  </p>
+                  <button
+                    onClick={handleClose}
+                    className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-text hover:bg-surface-alt transition-colors"
+                  >
+                    {t("close")}
+                  </button>
+                </>
+              )}
+
+              {state === "pending_bio" && (
+                <>
+                  <p className="text-sm text-text-secondary">
+                    {t("bioPrompt", { platform: pLabel })}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 rounded-lg bg-primary-light/50 border border-primary/20 px-4 py-2.5 text-base font-bold font-mono tracking-wider text-primary text-center">
+                      {bioCode}
+                    </code>
+                    <button
+                      onClick={() => copyToClipboard(bioCode)}
+                      className="shrink-0 rounded-lg border border-border px-3 py-2.5 text-xs font-medium text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
+                    >
+                      {copied ? t("copied") : t("copy")}
+                    </button>
+                  </div>
+                  <p className="text-xs text-text-muted">
+                    {t("bioRemovalNote")}
+                  </p>
+                  <button
+                    onClick={handleConfirmBio}
+                    disabled={submitting}
+                    className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-contrast hover:bg-primary-dark transition-colors disabled:opacity-50"
+                  >
+                    {submitting ? t("submitting") : t("bioAdded")}
+                  </button>
+                  {error && <p className="text-xs text-error">{error}</p>}
+                </>
+              )}
+            </div>
+          </div>
         </div>
-        <p className="text-xs text-text-muted">{t("bioRemovalNote")}</p>
-        <button
-          onClick={handleConfirmBio}
-          disabled={submitting}
-          className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors disabled:opacity-50"
-        >
-          {submitting ? t("submitting") : t("bioAdded")}
-        </button>
-        {error && <p className="text-xs text-error">{error}</p>}
-      </div>
+      </>,
+      document.body
     );
   }
 
-  // Pending review
+  // Pending review — inline badge
   if (state === "pending_review") {
     return (
       <div className="rounded-lg border border-primary/20 bg-primary-light/50 p-4 space-y-1">
@@ -263,7 +367,7 @@ export default function ClaimFlow({
     );
   }
 
-  // Claimed by other
+  // Claimed by other — inline badge
   if (state === "claimed_by_other") {
     return (
       <div className="rounded-lg border border-primary/20 bg-primary-light/50 px-4 py-2.5">
@@ -274,7 +378,7 @@ export default function ClaimFlow({
     );
   }
 
-  // Owned — simplified (no badge for now)
+  // Owned — inline badge
   if (state === "owned") {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary-light/50 px-4 py-2.5">

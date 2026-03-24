@@ -272,13 +272,12 @@ export default async function AccountPage({
                 )}
               </h1>
               <PlatformIcon platform={account.platform} size={22} />
-              <div className="hidden sm:block shrink-0 ml-auto">
+              <div className="shrink-0 ml-auto">
                 <ClaimFlow
                   platform={account.platform}
                   handle={account.handle}
                   slug={account.slug}
                   name={account.name}
-                  compact
                 />
               </div>
             </div>
@@ -302,15 +301,6 @@ export default async function AccountPage({
                   {t("viewOn", { platform: pLabel })}
                 </a>
               )}
-              <div className="sm:hidden">
-                <ClaimFlow
-                  platform={account.platform}
-                  handle={account.handle}
-                  slug={account.slug}
-                  name={account.name}
-                  compact
-                />
-              </div>
             </div>
           </div>
         </div>

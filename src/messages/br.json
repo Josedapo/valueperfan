@@ -161,6 +161,7 @@
     "sendVerification": "Enviar verificação",
     "sending": "Enviando...",
     "cancel": "Cancelar",
+    "close": "Fechar",
     "invalidEmail": "Digite um endereço de email válido.",
     "genericError": "Algo deu errado. Tente novamente.",
     "checkInbox": "Verifique sua caixa de entrada!",

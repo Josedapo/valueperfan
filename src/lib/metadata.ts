@@ -31,7 +31,8 @@ export function buildRankingMetadata({
   let displayTitle = title;
   if (platform === "tiktok") displayTitle = `${displayTitle} — TikTok`;
   if (page > 1) displayTitle = `${displayTitle} — Page ${page}`;
-  if (displayTitle.length > 60) displayTitle = `${displayTitle.slice(0, 57)}…`;
+  // Keep under 70 chars total after layout template adds " | ValuePerFan" (15 chars)
+  if (displayTitle.length > 55) displayTitle = `${displayTitle.slice(0, 52)}…`;
 
   return {
     title: displayTitle,
@@ -48,6 +49,7 @@ export function buildRankingMetadata({
     alternates: {
       canonical: url,
       languages: {
+        "x-default": `https://valueperfan.com${normalizedPath || "/"}${suffix}`,
         en: `https://valueperfan.com${normalizedPath || "/"}${suffix}`,
         es: `https://valueperfan.com/es${normalizedPath}${suffix}`,
         "pt-BR": `https://valueperfan.com/br${normalizedPath}${suffix}`,

@@ -72,7 +72,8 @@ export async function generateMetadata({
     totalValue: formatCurrency(account.totalValue),
     vpf: formatVPF(account.valuePerFan),
   });
-  if (title.length > 60) title = `${title.slice(0, 57)}…`;
+  // Keep under 70 chars total after layout template adds " | ValuePerFan" (15 chars)
+  if (title.length > 55) title = `${title.slice(0, 52)}…`;
   const description = t("metaDescription", {
     name: account.name,
     platform: pLabel,
@@ -98,6 +99,7 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
       languages: {
+        "x-default": `https://valueperfan.com${basePath}`,
         en: `https://valueperfan.com${basePath}`,
         es: `https://valueperfan.com/es${basePath}`,
         "pt-BR": `https://valueperfan.com/br${basePath}`,

@@ -35,6 +35,16 @@ export function getAccount(
   );
 }
 
+export function getAccountByHandle(
+  platform: string,
+  handle: string
+): Account | undefined {
+  const data = getAccountsData();
+  return data.accounts.find(
+    (a) => a.platform === platform && a.handle === handle
+  );
+}
+
 export function getAccountsByCategory(category: string): Account[] {
   const data = getAccountsData();
   return data.accounts.filter((a) => a.category === category);

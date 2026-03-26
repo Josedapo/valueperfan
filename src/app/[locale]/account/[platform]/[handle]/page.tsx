@@ -1,8 +1,9 @@
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   getAccountsData,
   getAccount,
+  getAccountByHandle,
   getAccountsByPlatform,
   getNeighbors,
   getAccountsByCountryAndPlatform,
@@ -59,10 +60,17 @@ export async function generateMetadata({
   params: Promise<{ locale: string; platform: string; handle: string }>;
 }) {
   const { locale, platform, handle } = await params;
-  const account = getAccount(platform, handle);
+  let account = getAccount(platform, handle);
   const t = await getTranslations({ locale, namespace: "account" });
 
-  if (!account) return { title: t("notFound") };
+  if (!account) {
+    const byHandle = getAccountByHandle(platform, handle);
+    if (byHandle) {
+      const prefix = locale === "en" ? "" : `/${locale}`;
+      permanentRedirect(`${prefix}/account/${platform}/${byHandle.slug}`);
+    }
+    return { title: t("notFound") };
+  }
 
   const pLabel = platformLabel(account.platform);
   let title = t("metaTitle", {
@@ -117,6 +125,11 @@ export default async function AccountPage({
   const account = getAccount(platform, handle);
 
   if (!account) {
+    const byHandle = getAccountByHandle(platform, handle);
+    if (byHandle) {
+      const prefix = locale === "en" ? "" : `/${locale}`;
+      permanentRedirect(`${prefix}/account/${platform}/${byHandle.slug}`);
+    }
     notFound();
   }
 

@@ -33,6 +33,9 @@ export const CACHE_SEARCH_INDEX = "public, max-age=3600, s-maxage=86400";
 export const CACHE_BADGE_SVG = "public, max-age=86400, s-maxage=86400";
 export const COOKIE_MAX_AGE = 365 * 24 * 60 * 60; // 1 year
 
+// Sitemap: minimum TikTok accounts to include a ?platform=tiktok ranking URL
+export const SITEMAP_MIN_TIKTOK_ACCOUNTS = 10;
+
 // SSG
 export const SSG_TOP_ACCOUNTS = 200;
 // Note: ISR revalidate (86400s) must be a literal in page files per Next.js requirements

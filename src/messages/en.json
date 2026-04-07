@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Social Media Value Calculator | Free Instagram & TikTok Account Valuations",
+    "title": "Free Social Media Value Calculator",
     "description": "Calculate the real economic value of any social media account. Free valuations powered by Paid Media Equivalence (PME) — the methodology used across professional sports and entertainment.",
     "titleTemplate": "%s | ValuePerFan"
   },
@@ -134,7 +134,7 @@
     "neighborhoodVpf": "Per 1K Fans",
     "neighborhoodTv": "Overall",
     "notFound": "Account Not Found",
-    "metaTitle": "{name} {platform} Value — {totalValue} | ValuePerFan",
+    "metaTitle": "{name} {platform} Value — {totalValue}",
     "metaDescription": "{name}'s {platform} is worth {totalValue}. Value Per 1K Fans: {vpf}. Ranked #{rank} of {total}. Real economic value by ValuePerFan.",
     "jsonLdName": "{name} - {platform} Value Per Fan",
     "jsonLdDescription": "Economic valuation of {name}'s {platform} account",
@@ -350,7 +350,7 @@
     }
   },
   "methodology": {
-    "metaTitle": "Paid Media Equivalence (PME) Methodology — How We Calculate Social Media Value",
+    "metaTitle": "How We Calculate Social Media Value (PME)",
     "metaDescription": "Learn how ValuePerFan calculates the real economic value of social media accounts using Paid Media Equivalence (PME) — the methodology used across professional sports and entertainment.",
     "heading": "How we calculate Social Media Value",
     "introTitle": "Paid Media Equivalence (PME)",

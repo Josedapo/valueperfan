@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Calculadora de Valor nas Redes Sociais | Avaliações gratuitas de Instagram e TikTok",
+    "title": "Calculadora de Valor nas Redes Sociais",
     "description": "Calcule o valor econômico real de qualquer conta de redes sociais. Avaliações gratuitas baseadas em Paid Media Equivalence (PME) — a metodologia utilizada no esporte e entretenimento profissional.",
     "titleTemplate": "%s | ValuePerFan"
   },
@@ -134,7 +134,7 @@
     "neighborhoodVpf": "Por 1K Fãs",
     "neighborhoodTv": "Geral",
     "notFound": "Conta não encontrada",
-    "metaTitle": "{name} Valor no {platform} — {totalValue} | ValuePerFan",
+    "metaTitle": "{name} Valor no {platform} — {totalValue}",
     "metaDescription": "A conta de {platform} de {name} vale {totalValue}. Valor por 1K Fãs: {vpf}. Ranking #{rank} de {total}. Valor econômico real por ValuePerFan.",
     "jsonLdName": "{name} - Valor por Fã no {platform}",
     "jsonLdDescription": "Avaliação econômica da conta de {platform} de {name}",
@@ -350,7 +350,7 @@
     }
   },
   "methodology": {
-    "metaTitle": "Metodologia Paid Media Equivalence (PME) — Como Calculamos o Valor nas Redes Sociais",
+    "metaTitle": "Como Calculamos o Valor nas Redes Sociais (PME)",
     "metaDescription": "Saiba como o ValuePerFan calcula o valor econômico real das contas de redes sociais usando Paid Media Equivalence (PME).",
     "heading": "Como calculamos o valor nas redes sociais",
     "introTitle": "Paid Media Equivalence (PME)",

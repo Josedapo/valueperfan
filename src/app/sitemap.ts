@@ -21,19 +21,11 @@ function localizedUrl(path: string, locale: string): string {
 
 // Generate one sitemap entry per locale, each with full hreflang alternates.
 // This ensures every locale URL has its own <url> entry (not just as an alternate reference).
+// Note: <priority> and <changefreq> are intentionally omitted — Google ignores both.
 function localizedEntries(
   path: string,
   props: {
     lastModified: Date;
-    changeFrequency:
-      | "always"
-      | "hourly"
-      | "daily"
-      | "weekly"
-      | "monthly"
-      | "yearly"
-      | "never";
-    priority: number;
   }
 ): MetadataRoute.Sitemap {
   const languages: Record<string, string> = {
@@ -53,18 +45,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const data = getAccountsData();
   const lastMod = new Date(data.meta.lastUpdated);
 
-  const homepageUrls = localizedEntries("/", {
-    lastModified: lastMod,
-    changeFrequency: "weekly",
-    priority: 1.0,
-  });
+  const homepageUrls = localizedEntries("/", { lastModified: lastMod });
 
   const staticUrls = ["/about", "/contact", "/methodology"].flatMap((path) =>
-    localizedEntries(path, {
-      lastModified: lastMod,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    })
+    localizedEntries(path, { lastModified: lastMod })
   );
 
   const toolUrls = [
@@ -74,43 +58,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/tiktok-account-value-calculator",
     "/tools/instagram-engagement-rate-calculator",
     "/tools/tiktok-engagement-rate-calculator",
-  ].flatMap((path) =>
-    localizedEntries(path, {
-      lastModified: lastMod,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    })
-  );
+  ].flatMap((path) => localizedEntries(path, { lastModified: lastMod }));
 
   const countryUrls = getCountries().flatMap(({ name, slug }) => {
-    const entries = localizedEntries(`/ranking/${slug}`, {
-      lastModified: lastMod,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    });
+    const entries = localizedEntries(`/ranking/${slug}`, { lastModified: lastMod });
     if (getAccountsByCountryAndPlatform(name, "tiktok").length >= SITEMAP_MIN_TIKTOK_ACCOUNTS) {
-      entries.push(...localizedEntries(`/ranking/${slug}?platform=tiktok`, {
-        lastModified: lastMod,
-        changeFrequency: "weekly",
-        priority: 0.8,
-      }));
+      entries.push(
+        ...localizedEntries(`/ranking/${slug}?platform=tiktok`, { lastModified: lastMod })
+      );
     }
     return entries;
   });
 
   const categories = getCategories();
   const categoryUrls = categories.flatMap(({ name, slug }) => {
-    const entries = localizedEntries(`/ranking/topic/${slug}`, {
-      lastModified: lastMod,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    });
+    const entries = localizedEntries(`/ranking/topic/${slug}`, { lastModified: lastMod });
     if (getAccountsByCategoryAndPlatform(name, "tiktok").length >= SITEMAP_MIN_TIKTOK_ACCOUNTS) {
-      entries.push(...localizedEntries(`/ranking/topic/${slug}?platform=tiktok`, {
-        lastModified: lastMod,
-        changeFrequency: "weekly",
-        priority: 0.8,
-      }));
+      entries.push(
+        ...localizedEntries(`/ranking/topic/${slug}?platform=tiktok`, { lastModified: lastMod })
+      );
     }
     return entries;
   });
@@ -119,18 +85,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     getCategoryCountries(cat.name).flatMap((country) => {
       const entries = localizedEntries(`/ranking/topic/${cat.slug}/${country.slug}`, {
         lastModified: lastMod,
-        changeFrequency: "weekly",
-        priority: 0.8,
       });
-      if (getAccountsByCategoryCountryAndPlatform(cat.name, country.name, "tiktok").length >= SITEMAP_MIN_TIKTOK_ACCOUNTS) {
-        entries.push(...localizedEntries(
-          `/ranking/topic/${cat.slug}/${country.slug}?platform=tiktok`,
-          {
-            lastModified: lastMod,
-            changeFrequency: "weekly",
-            priority: 0.7,
-          }
-        ));
+      if (
+        getAccountsByCategoryCountryAndPlatform(cat.name, country.name, "tiktok").length >=
+        SITEMAP_MIN_TIKTOK_ACCOUNTS
+      ) {
+        entries.push(
+          ...localizedEntries(
+            `/ranking/topic/${cat.slug}/${country.slug}?platform=tiktok`,
+            { lastModified: lastMod }
+          )
+        );
       }
       return entries;
     })
@@ -139,8 +104,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const accountUrls = data.accounts.flatMap((account) =>
     localizedEntries(`/account/${account.platform}/${account.slug}`, {
       lastModified: lastMod,
-      changeFrequency: "monthly",
-      priority: 0.8,
     })
   );
 

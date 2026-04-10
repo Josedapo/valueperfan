@@ -10,6 +10,7 @@ import { SEARCH_RESULTS_LIMIT, SEARCH_DEBOUNCE_MS, SEARCH_MIN_CHARS } from "../l
 import { useClickOutside } from "../hooks/useClickOutside";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
+import { trackEvent } from "../lib/analytics";
 
 interface BenchmarkData {
   median: number;
@@ -122,7 +123,15 @@ export default function EngagementCalculatorClient({
         const match = platformFilter
           ? data.find((a) => a.platform === platformFilter)
           : data.find((a) => a.platform === entry.platform);
-        setResult(match ?? data[0] ?? null);
+        const selected = match ?? data[0] ?? null;
+        setResult(selected);
+        if (selected) {
+          trackEvent("calculator_search", {
+            handle: selected.handle,
+            platform: selected.platform,
+            calculator_type: "engagement",
+          });
+        }
       }
     } catch {
       // silently fail
@@ -421,6 +430,7 @@ function SuggestForm({
       body: JSON.stringify({ handle: query, platform, email }),
     });
     setSubmitted(true);
+    trackEvent("suggest_submit", { handle: query, platform, source: "engagement_calculator" });
   }
 
   if (submitted) {

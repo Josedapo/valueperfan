@@ -4,22 +4,13 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "../../i18n/navigation";
 import SearchBar from "../../components/SearchBar";
-
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-  }
-}
+import { trackEvent } from "../../lib/analytics";
 
 export default function NotFound() {
   const t = useTranslations("notFound");
 
   useEffect(() => {
-    if (window.gtag) {
-      window.gtag("event", "page_not_found", {
-        page_path: window.location.pathname,
-      });
-    }
+    trackEvent("page_not_found", { page_path: window.location.pathname });
   }, []);
 
   return (

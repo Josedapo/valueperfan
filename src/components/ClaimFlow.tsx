@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import { platformLabel, type Platform } from "../lib/platform";
+import { trackEvent } from "../lib/analytics";
 
 interface ClaimFlowProps {
   platform: Platform;
@@ -163,6 +164,7 @@ export default function ClaimFlow({
       }
 
       setState("email_sent");
+      trackEvent("claim_email_submit", { platform, handle });
     } catch {
       setError(t("genericError"));
     } finally {
@@ -187,6 +189,7 @@ export default function ClaimFlow({
       }
 
       setState("pending_review");
+      trackEvent("claim_bio_confirmed", { platform, handle });
     } catch {
       setError(t("genericError"));
     } finally {
@@ -197,6 +200,7 @@ export default function ClaimFlow({
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
+      trackEvent("claim_bio_copied", { platform, handle });
       setTimeout(() => setCopied(false), 2000);
     });
   }
@@ -209,7 +213,10 @@ export default function ClaimFlow({
     return (
       <button
         ref={triggerButtonRef}
-        onClick={() => setState("email_form")}
+        onClick={() => {
+          trackEvent("claim_start", { platform, handle });
+          setState("email_form");
+        }}
         className="shrink-0 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-primary-contrast hover:bg-primary-dark transition-colors"
       >
         {t("claimButton")}

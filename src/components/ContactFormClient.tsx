@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { trackEvent } from "../lib/analytics";
 
 export default function ContactFormClient() {
   const t = useTranslations("contact");
@@ -26,6 +27,7 @@ export default function ContactFormClient() {
       });
       if (res.ok) {
         setSent(true);
+        trackEvent("contact_submit", { subject });
       } else {
         setError(true);
       }

@@ -10,6 +10,7 @@ import { SEARCH_RESULTS_LIMIT, SEARCH_DEBOUNCE_MS, SEARCH_MIN_CHARS } from "../l
 import { useClickOutside } from "../hooks/useClickOutside";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
+import { trackEvent } from "../lib/analytics";
 
 export default function SearchBar() {
   const t = useTranslations("search");
@@ -59,6 +60,9 @@ export default function SearchBar() {
       setResults(items);
       setIsOpen(true);
       setShowSuggest(items.length === 0 && value.length >= 3);
+      if (items.length > 0) {
+        trackEvent("search_query", { results_count: items.length });
+      }
     },
     [fuse]
   );
@@ -110,6 +114,7 @@ export default function SearchBar() {
                   <Link
                     href={`/account/${entry.platform}/${entry.slug}`}
                     onClick={() => {
+                      trackEvent("search_result_click", { handle: entry.handle, platform: entry.platform });
                       setIsOpen(false);
                       setQuery("");
                     }}
@@ -173,6 +178,7 @@ function SuggestForm({
       body: JSON.stringify({ handle: query, platform, email }),
     });
     setSubmitted(true);
+    trackEvent("suggest_submit", { handle: query, platform, source: "search_bar" });
   }
 
   if (submitted) {

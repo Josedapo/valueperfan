@@ -12,6 +12,7 @@ import { mapCategory } from "../lib/categories";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
 import SearchBar from "./SearchBar";
+import { trackEvent } from "../lib/analytics";
 
 interface CountryOption {
   name: string;
@@ -88,17 +89,20 @@ export default function RankingTable({
   );
 
   function handleMetricChange(m: Metric) {
+    trackEvent("ranking_metric_toggle", { metric: m });
     setMetric(m);
     setPage(1);
   }
 
   function handlePageChange(newPage: number, e?: React.MouseEvent) {
     if (e) e.preventDefault();
+    trackEvent("ranking_page_change", { page: newPage });
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function handleCountryChange(slug: string) {
+    trackEvent("ranking_filter", { filter_type: "country", value: slug });
     const ps = platform === "tiktok" ? "?platform=tiktok" : "";
     if (slug === "all" && currentCategorySlug === "all") {
       router.push("/");
@@ -112,6 +116,7 @@ export default function RankingTable({
   }
 
   function handleCategoryChange(slug: string) {
+    trackEvent("ranking_filter", { filter_type: "category", value: slug });
     const ps = platform === "tiktok" ? "?platform=tiktok" : "";
     if (slug === "all" && currentCountrySlug === "all") {
       router.push("/");

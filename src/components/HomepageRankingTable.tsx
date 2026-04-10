@@ -11,6 +11,7 @@ import { ITEMS_PER_PAGE } from "../lib/config";
 import { mapCategory } from "../lib/categories";
 import AccountAvatar from "./AccountAvatar";
 import PlatformIcon from "./PlatformIcon";
+import { trackEvent } from "../lib/analytics";
 
 interface CountryOption {
   name: string;
@@ -74,24 +75,28 @@ export default function HomepageRankingTable({
   }, []);
 
   function handlePlatformChange(p: Platform) {
+    trackEvent("ranking_platform_change", { platform: p });
     setPlatform(p);
     setPage(1);
     fetchPage(p, metric, 1);
   }
 
   function handleMetricChange(m: Metric) {
+    trackEvent("ranking_metric_toggle", { metric: m });
     setMetric(m);
     setPage(1);
     fetchPage(platform, m, 1);
   }
 
   function handlePageChange(pg: number) {
+    trackEvent("ranking_page_change", { page: pg });
     setPage(pg);
     fetchPage(platform, metric, pg);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function handleCountryChange(slug: string) {
+    trackEvent("ranking_filter", { filter_type: "country", value: slug });
     const platformSuffix = platform === "tiktok" ? "?platform=tiktok" : "";
     if (slug === "all") {
       router.push("/");
@@ -101,6 +106,7 @@ export default function HomepageRankingTable({
   }
 
   function handleCategoryChange(slug: string) {
+    trackEvent("ranking_filter", { filter_type: "category", value: slug });
     const platformSuffix = platform === "tiktok" ? "?platform=tiktok" : "";
     if (slug === "all") {
       router.push("/");

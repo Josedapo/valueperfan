@@ -100,16 +100,41 @@ function Scorecard({
   );
 }
 
+function InfoIcon({ tooltip }: { tooltip: string }) {
+  return (
+    <span className="relative group ml-1 inline-flex">
+      <svg
+        className="w-3.5 h-3.5 text-text-muted cursor-help"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4M12 8h.01" />
+      </svg>
+      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-text text-surface text-xs rounded-md whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+        {tooltip}
+      </span>
+    </span>
+  );
+}
+
 function MiniScorecard({
   label,
   value,
+  tooltip,
 }: {
   label: string;
   value: number;
+  tooltip?: string;
 }) {
   return (
     <div className="bg-surface rounded-lg border border-border p-3">
-      <p className="text-text-secondary text-xs">{label}</p>
+      <p className="text-text-secondary text-xs flex items-center">
+        {label}
+        {tooltip && <InfoIcon tooltip={tooltip} />}
+      </p>
       <p className="text-text text-2xl font-bold mt-1">
         {value.toLocaleString()}
       </p>
@@ -156,6 +181,16 @@ export default function AnalyticsDashboard({ apiKey }: { apiKey: string }) {
   const [period, setPeriod] = useState(28);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hiddenLines, setHiddenLines] = useState<Set<string>>(new Set());
+
+  const handleLegendClick = (dataKey: string) => {
+    setHiddenLines((prev) => {
+      const next = new Set(prev);
+      if (next.has(dataKey)) next.delete(dataKey);
+      else next.add(dataKey);
+      return next;
+    });
+  };
 
   const fetchData = useCallback(
     async (days: number) => {
@@ -267,7 +302,10 @@ export default function AnalyticsDashboard({ apiKey }: { apiKey: string }) {
                   />
                   <YAxis tick={{ fontSize: 11 }} stroke="#9ca3af" />
                   <Tooltip />
-                  <Legend />
+                  <Legend
+                    onClick={(e) => handleLegendClick(e.dataKey as string)}
+                    wrapperStyle={{ cursor: "pointer" }}
+                  />
                   <ReferenceLine
                     y={dailyTarget}
                     stroke={COLORS.amber}
@@ -285,6 +323,7 @@ export default function AnalyticsDashboard({ apiKey }: { apiKey: string }) {
                     stroke={COLORS.gray}
                     strokeWidth={1.5}
                     dot={false}
+                    hide={hiddenLines.has("total")}
                   />
                   <Line
                     type="monotone"
@@ -293,6 +332,7 @@ export default function AnalyticsDashboard({ apiKey }: { apiKey: string }) {
                     stroke={COLORS.primary}
                     strokeWidth={2}
                     dot={false}
+                    hide={hiddenLines.has("organic")}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -380,22 +420,26 @@ export default function AnalyticsDashboard({ apiKey }: { apiKey: string }) {
             <div className="grid grid-cols-4 gap-4 mb-6">
               <MiniScorecard
                 label="Calculator Searches"
+                tooltip="Account lookups in value or engagement calculators"
                 value={sumEvents(data.product.events, [
                   "calculator_search",
                 ])}
               />
               <MiniScorecard
                 label="Search Queries"
+                tooltip="Searches typed in the site search bar"
                 value={sumEvents(data.product.events, ["search_query"])}
               />
               <MiniScorecard
                 label="Search Clicks"
+                tooltip="Clicks on results from the search bar"
                 value={sumEvents(data.product.events, [
                   "search_result_click",
                 ])}
               />
               <MiniScorecard
                 label="Ranking Actions"
+                tooltip="Filter, sort, paginate, or platform switch in rankings"
                 value={sumEvents(data.product.events, [
                   "ranking_filter",
                   "ranking_metric_toggle",

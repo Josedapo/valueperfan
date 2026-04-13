@@ -486,24 +486,32 @@ export default function AnalyticsDashboard({ apiKey }: { apiKey: string }) {
                 <h3 className="text-sm font-medium text-text-secondary mb-4">
                   Calculator Searches by Platform
                 </h3>
-                <ResponsiveContainer width="100%" height={150}>
-                  <BarChart data={data.product.calculatorsByPlatform}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                    <XAxis
-                      dataKey="name"
-                      tick={{ fontSize: 11 }}
-                      stroke="#9ca3af"
-                    />
-                    <YAxis tick={{ fontSize: 11 }} stroke="#9ca3af" />
-                    <Tooltip />
-                    <Bar
-                      dataKey="value"
-                      name="Searches"
-                      fill={COLORS.purple}
-                      radius={[4, 4, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                {data.product.calculatorsByPlatform.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={150}>
+                    <BarChart data={data.product.calculatorsByPlatform}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <XAxis
+                        dataKey="name"
+                        tick={{ fontSize: 11 }}
+                        stroke="#9ca3af"
+                      />
+                      <YAxis tick={{ fontSize: 11 }} stroke="#9ca3af" />
+                      <Tooltip />
+                      <Bar
+                        dataKey="value"
+                        name="Searches"
+                        fill={COLORS.purple}
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-[150px] flex items-center justify-center">
+                    <p className="text-text-muted text-sm">
+                      No calculator searches in this period
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="bg-surface rounded-lg border border-border p-4">

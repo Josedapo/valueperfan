@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "Calculadora de Valor en Redes Sociales",
-    "description": "Calcula el valor económico real de cualquier cuenta de redes sociales. Valoraciones gratuitas basadas en Paid Media Equivalence (PME) — la metodología utilizada en el deporte y el entretenimiento profesional.",
+    "description": "Calcula el valor económico real de cualquier cuenta de redes sociales. Valoraciones gratuitas con Paid Media Equivalence (PME).",
     "titleTemplate": "%s | ValuePerFan"
   },
   "header": {
@@ -354,7 +354,7 @@
   },
   "methodology": {
     "metaTitle": "Cómo Calculamos el Valor en Redes Sociales (PME)",
-    "metaDescription": "Descubre cómo ValuePerFan calcula el valor económico real de las cuentas de redes sociales mediante Paid Media Equivalence (PME).",
+    "metaDescription": "Cómo ValuePerFan calcula el valor de las redes sociales usando Paid Media Equivalence (PME), la metodología del deporte profesional.",
     "heading": "Cómo calculamos el valor en redes sociales",
     "introTitle": "Paid Media Equivalence (PME)",
     "introText": "Cada valoración en ValuePerFan se calcula mediante Paid Media Equivalence (PME) — una metodología que mide el earned media value del contenido orgánico en redes sociales respondiendo a una pregunta: ¿qué pagaría una marca en publicidad para conseguir los mismos resultados?",
@@ -390,7 +390,7 @@
   },
   "about": {
     "metaTitle": "Sobre ValuePerFan — Calculadora de valor en Redes Sociales",
-    "metaDescription": "ValuePerFan proporciona valoraciones economicas de cuentas de redes sociales usando Paid Media Equivalence (PME), la tecnologia detras de Horizm — utilizada por organizaciones profesionales del deporte y el entretenimiento.",
+    "metaDescription": "ValuePerFan ofrece valoraciones económicas gratuitas de cuentas de redes sociales usando PME, la tecnología detrás de Horizm.",
     "heading": "Sobre ValuePerFan",
     "whatIsTitle": "Que es ValuePerFan",
     "whatIsText": "ValuePerFan es una calculadora de valor en redes sociales que proporciona valoraciones economicas de cualquier cuenta de redes sociales usando Paid Media Equivalence (PME). Nuestras valoraciones miden el earned media value del contenido organico — lo que las marcas pagarian en publicidad para conseguir los mismos resultados. A diferencia de puntuaciones arbitrarias o estimaciones basadas en seguidores, es valor real de mercado en dolares.",

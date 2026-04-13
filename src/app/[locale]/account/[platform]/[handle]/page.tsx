@@ -82,8 +82,13 @@ export async function generateMetadata({
   });
   // Keep under 70 chars total after layout template adds " | ValuePerFan" (15 chars)
   if (title.length > 55) title = `${title.slice(0, 52)}…`;
+  // Truncate name if needed to keep description under 160 chars
+  const descName =
+    account.name.length > 40
+      ? `${account.name.slice(0, 37)}…`
+      : account.name;
   const description = t("metaDescription", {
-    name: account.name,
+    name: descName,
     platform: pLabel,
     vpf: formatVPF(account.valuePerFan),
     totalValue: formatCurrency(account.totalValue),

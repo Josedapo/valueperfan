@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "Free Social Media Value Calculator",
-    "description": "Calculate the real economic value of any social media account. Free valuations powered by Paid Media Equivalence (PME) — the methodology used across professional sports and entertainment.",
+    "description": "Calculate the real economic value of any social media account. Free valuations powered by Paid Media Equivalence (PME).",
     "titleTemplate": "%s | ValuePerFan"
   },
   "header": {
@@ -354,7 +354,7 @@
   },
   "methodology": {
     "metaTitle": "How We Calculate Social Media Value (PME)",
-    "metaDescription": "Learn how ValuePerFan calculates the real economic value of social media accounts using Paid Media Equivalence (PME) — the methodology used across professional sports and entertainment.",
+    "metaDescription": "How ValuePerFan calculates social media value using Paid Media Equivalence (PME), the methodology used in professional sports and entertainment.",
     "heading": "How we calculate Social Media Value",
     "introTitle": "Paid Media Equivalence (PME)",
     "introText": "Every valuation on ValuePerFan is calculated using Paid Media Equivalence (PME) — a methodology that measures the earned media value of organic social media content by answering one question: what would a brand pay in paid advertising to achieve the same results?",
@@ -390,7 +390,7 @@
   },
   "about": {
     "metaTitle": "About ValuePerFan — Social Media Value Calculator",
-    "metaDescription": "ValuePerFan provides economic valuations of social media accounts using Paid Media Equivalence (PME), the technology behind Horizm — trusted by professional sports and entertainment organizations worldwide.",
+    "metaDescription": "ValuePerFan provides free economic valuations of social media accounts using PME, the technology behind Horizm.",
     "heading": "About ValuePerFan",
     "whatIsTitle": "What is ValuePerFan",
     "whatIsText": "ValuePerFan is a social media value calculator that provides economic valuations of any social media account using Paid Media Equivalence (PME). Our valuations measure the earned media value of organic content — what brands would pay in advertising to achieve the same results. Unlike arbitrary scores or follower-based estimates, this is real market value in dollars.",

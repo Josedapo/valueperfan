@@ -10,6 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google-analytics/data": "^5.2.1",
     "@neondatabase/serverless": "^1.0.2",
     "@vercel/speed-insights": "^2.0.0",
     "fuse.js": "^7.1.0",
@@ -17,6 +18,7 @@
     "next-intl": "^4.8.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "recharts": "^3.8.1",
     "resend": "^6.9.3"
   },
   "devDependencies": {

@@ -12,6 +12,10 @@ export const env = {
   get resendApiKey() { return getEnv("RESEND_API_KEY"); },
   get notificationEmail() { return getEnv("NOTIFICATION_EMAIL"); },
   get postgresUrl() { return getEnv("POSTGRES_URL"); },
+  get gaPropertyId() { return getEnv("GA_PROPERTY_ID"); },
+  get gaClientEmail() { return getEnv("GA_CLIENT_EMAIL"); },
+  get gaPrivateKey() { return getEnv("GA_PRIVATE_KEY").replace(/\\n/g, "\n"); },
+  get analyticsSecret() { return getEnv("ANALYTICS_SECRET"); },
 };
 
 // App constants

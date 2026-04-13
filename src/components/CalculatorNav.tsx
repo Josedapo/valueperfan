@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import { Link } from "../i18n/navigation";
 
 type CalculatorType = "value" | "engagement";
@@ -17,6 +18,11 @@ const URL_MAP: Record<CalculatorType, Record<Platform, string>> = {
   },
 };
 
+const MORE_CALCULATORS = [
+  { href: "/tools/instagram-account-value-calculator", labelKey: "navInstagramValue" },
+  { href: "/tools/earned-media-value-calculator", labelKey: "navEarnedMedia" },
+];
+
 export default function CalculatorNav({
   activeType,
   activePlatform,
@@ -25,6 +31,7 @@ export default function CalculatorNav({
   activePlatform: Platform;
 }) {
   const t = useTranslations("tools");
+  const pathname = usePathname();
 
   const types: { key: CalculatorType; label: string }[] = [
     { key: "value", label: t("navValue") },
@@ -70,6 +77,26 @@ export default function CalculatorNav({
             {label}
           </Link>
         ))}
+      </div>
+
+      {/* More calculators */}
+      <div className="flex gap-3 justify-center">
+        {MORE_CALCULATORS.map(({ href, labelKey }) => {
+          const isActive = pathname.endsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`text-xs transition-colors ${
+                isActive
+                  ? "text-primary font-medium"
+                  : "text-text-muted hover:text-text-secondary"
+              }`}
+            >
+              {t(labelKey)}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

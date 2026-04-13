@@ -14,7 +14,7 @@
     "description": "Avaliações objetivas baseadas em Paid Media Equivalence — o custo real de alcançar os mesmos resultados por meio de mídia paga.",
     "dataUpdated": "Última atualização: {month}",
     "dataFrom": "Dados de {month} · Publicado em {published}",
-    "copyright": "\u00a92026 ValuePerFan"
+    "copyright": "©2026 ValuePerFan"
   },
   "home": {
     "title": "Calculadora de valor nas Redes Sociais:<br></br>Calcule o <highlight>valor real</highlight> de qualquer conta",
@@ -130,7 +130,7 @@
     "categoryTabLabel": "{category}",
     "categoryCountryRankingsTitle": "{category} em {country} ({count} contas)",
     "categoryCountryTabLabel": "{category} em {country}",
-    "viewRanking": "Ver Ranking \u2192",
+    "viewRanking": "Ver Ranking →",
     "neighborhoodVpf": "Por 1K Fãs",
     "neighborhoodTv": "Geral",
     "notFound": "Conta não encontrada",
@@ -267,7 +267,8 @@
     "United States": "Estados Unidos",
     "Uruguay": "Uruguai",
     "Venezuela": "Venezuela",
-    "Global": "Global"
+    "Global": "Global",
+    "Other Countries": "Outros países"
   },
   "languageSwitcher": {
     "en": "EN",
@@ -347,7 +348,9 @@
       "intro": "Use nossa calculadora de engagement rate no TikTok para verificar o engagement de qualquer conta e comparar com benchmarks da sua categoria. Digite um handle para ver exatamente onde qualquer conta de TikTok se posiciona.",
       "whatIs": "O que é Engagement Rate?",
       "whatIsText": "A taxa de engagement mede a porcentagem de seguidores que interagem ativamente com o conteúdo. Uma taxa mais alta significa que a audiência é mais ativa. Nossos benchmarks comparam cada conta com outras da mesma categoria."
-    }
+    },
+    "navInstagramValue": "Valor da Conta Instagram",
+    "navEarnedMedia": "Valor de Earned Media"
   },
   "methodology": {
     "metaTitle": "Como Calculamos o Valor nas Redes Sociais (PME)",

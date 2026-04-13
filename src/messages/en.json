@@ -14,7 +14,7 @@
     "description": "Objective valuations powered by Paid Media Equivalence — the real cost of achieving the same results through paid media.",
     "dataUpdated": "Last updated: {month}",
     "dataFrom": "Data from {month} · Published {published}",
-    "copyright": "\u00a92026 ValuePerFan"
+    "copyright": "©2026 ValuePerFan"
   },
   "home": {
     "title": "Social Media value calculator:<br></br>Calculate the <highlight>real value</highlight> of any account",
@@ -130,7 +130,7 @@
     "categoryTabLabel": "{category}",
     "categoryCountryRankingsTitle": "{category} in {country} ({count} accounts)",
     "categoryCountryTabLabel": "{category} in {country}",
-    "viewRanking": "View Ranking \u2192",
+    "viewRanking": "View Ranking →",
     "neighborhoodVpf": "Per 1K Fans",
     "neighborhoodTv": "Overall",
     "notFound": "Account Not Found",
@@ -267,7 +267,8 @@
     "United States": "United States",
     "Uruguay": "Uruguay",
     "Venezuela": "Venezuela",
-    "Global": "Global"
+    "Global": "Global",
+    "Other Countries": "Other Countries"
   },
   "languageSwitcher": {
     "en": "EN",
@@ -347,7 +348,9 @@
       "intro": "Use our TikTok engagement rate calculator to check any account's engagement and compare it to category benchmarks. Enter a handle below to see the engagement rate with benchmark comparison — see exactly where any TikTok account stands.",
       "whatIs": "What is Engagement Rate?",
       "whatIsText": "Engagement rate measures the percentage of followers who actively interact with content (likes, comments, shares). A higher engagement rate means the audience is more active and responsive. Our benchmarks compare each account against others in the same category, so you can see exactly where they stand."
-    }
+    },
+    "navInstagramValue": "Instagram Account Value",
+    "navEarnedMedia": "Earned Media Value"
   },
   "methodology": {
     "metaTitle": "How We Calculate Social Media Value (PME)",

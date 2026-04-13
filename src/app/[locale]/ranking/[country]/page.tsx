@@ -1,7 +1,12 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAccountsData } from "../../../../lib/data";
-import { getCountries, slugToCountry } from "../../../../lib/countries";
+import {
+  getCountries,
+  slugToCountry,
+  getMajorCountryNames,
+  OTHER_COUNTRIES_SLUG,
+} from "../../../../lib/countries";
 import { getCategories } from "../../../../lib/categories";
 import { buildRankingMetadata } from "../../../../lib/metadata";
 import { ITEMS_PER_PAGE } from "../../../../lib/config";
@@ -36,9 +41,17 @@ export async function generateMetadata({
   const page = Math.max(1, parseInt(pageParam || "1", 10)) || 1;
   const platform: Platform = platformParam === "tiktok" ? "tiktok" : "instagram";
   const data = getAccountsData();
-  const platformCount = data.accounts.filter(
-    (a) => a.platform === platform && a.country === countryInfo.name
-  ).length;
+  const isOther = slug === OTHER_COUNTRIES_SLUG;
+  const platformCount = isOther
+    ? (() => {
+        const majorNames = getMajorCountryNames();
+        return data.accounts.filter(
+          (a) => a.platform === platform && a.country && !majorNames.has(a.country)
+        ).length;
+      })()
+    : data.accounts.filter(
+        (a) => a.platform === platform && a.country === countryInfo.name
+      ).length;
   const totalPages = Math.ceil(platformCount / ITEMS_PER_PAGE);
 
   const translatedCountry = tCountries.has(countryInfo.name) ? tCountries(countryInfo.name) : countryInfo.name;
@@ -69,9 +82,17 @@ export default async function CountryRankingPage({
   const page = Math.max(1, parseInt(pageParam || "1", 10)) || 1;
   const platform: Platform = platformParam === "tiktok" ? "tiktok" : "instagram";
   const data = getAccountsData();
-  const countryAccounts = data.accounts.filter(
-    (a) => a.country === countryInfo.name && a.platform === platform
-  );
+  const isOther = slug === OTHER_COUNTRIES_SLUG;
+  const countryAccounts = isOther
+    ? (() => {
+        const majorNames = getMajorCountryNames();
+        return data.accounts.filter(
+          (a) => a.country && !majorNames.has(a.country) && a.platform === platform
+        );
+      })()
+    : data.accounts.filter(
+        (a) => a.country === countryInfo.name && a.platform === platform
+      );
   const t = await getTranslations("ranking");
   const tNav = await getTranslations("nav");
   const tCountries = await getTranslations("countries");

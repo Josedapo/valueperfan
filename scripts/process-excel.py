@@ -3,7 +3,7 @@
 Process Excel data export from Horizm into ValuePerFan JSON files.
 
 Usage:
-  python3 scripts/process-excel.py <excel_file> [--month YYYY-MM]
+  python3 scripts/process-excel.py <excel_file> [--month YYYY-MM] [--accounts-sheet NAME] [--countries-sheet NAME]
 
 This script:
 1. Reads the Excel file (accounts sheet + countries sheet)
@@ -100,18 +100,24 @@ def normalize_category(raw_category):
     return None
 
 
-def process_excel(excel_path, month_label):
+def process_excel(excel_path, month_label, accounts_sheet=None, countries_sheet=None):
     """Main processing pipeline."""
     print(f"Reading: {excel_path}")
     wb = openpyxl.load_workbook(excel_path, read_only=True, data_only=True)
 
+    # Select sheets by name or by index (default: first two)
+    cs_name = countries_sheet or wb.sheetnames[1]
+    as_name = accounts_sheet or wb.sheetnames[0]
+    print(f"Accounts sheet: {as_name}")
+    print(f"Countries sheet: {cs_name}")
+
     # Build country maps
-    countries_ws = wb[wb.sheetnames[1]]
+    countries_ws = wb[cs_name]
     country_names = build_country_map(countries_ws)
     country_codes = build_country_code_map(countries_ws)
 
     # Read accounts
-    accounts_ws = wb[wb.sheetnames[0]]
+    accounts_ws = wb[as_name]
     raw_rows = list(accounts_ws.iter_rows(min_row=2, values_only=True))
     print(f"Raw rows: {len(raw_rows)}")
 
@@ -130,10 +136,11 @@ def process_excel(excel_path, month_label):
     accounts = []
 
     for row in raw_rows:
-        # Unpack columns (A through O, ignoring extra empty columns)
+        # Unpack columns (A through O, pad short rows with None)
+        padded = list(row) + [None] * (15 - len(row))
         (handle, platform, name, avatar_url, followers, posts,
          vpf, total_value, impressions, engagement, eng_rate,
-         category, url, country_id, gender) = row[:15]
+         category, url, country_id, gender) = padded[:15]
 
         # Skip empty rows
         if not handle and not platform:
@@ -156,8 +163,11 @@ def process_excel(excel_path, month_label):
             stats["zero_value"] += 1
             continue
 
-        # Normalize handle
-        handle_clean = str(handle).lower().strip()
+        # Normalize handle (handle numeric values stored as floats by Excel)
+        if isinstance(handle, float) and handle == int(handle):
+            handle_clean = str(int(handle)).lower().strip()
+        else:
+            handle_clean = str(handle).lower().strip()
 
         # Duplicate check (same handle + platform)
         dup_key = f"{handle_clean}_{plat}"
@@ -358,19 +368,24 @@ def update_history(accounts, month_label):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python3 process-excel.py <excel_file> [--month YYYY-MM]")
+        print("Usage: python3 process-excel.py <excel_file> [--month YYYY-MM] [--accounts-sheet NAME] [--countries-sheet NAME]")
         sys.exit(1)
 
     excel_file = sys.argv[1]
-    month = None
-    if "--month" in sys.argv:
-        idx = sys.argv.index("--month")
-        if idx + 1 < len(sys.argv):
-            month = sys.argv[idx + 1]
+
+    def get_arg(flag):
+        if flag in sys.argv:
+            idx = sys.argv.index(flag)
+            if idx + 1 < len(sys.argv):
+                return sys.argv[idx + 1]
+        return None
+
+    month = get_arg("--month")
+    accounts_sheet = get_arg("--accounts-sheet")
+    countries_sheet = get_arg("--countries-sheet")
 
     if not month:
-        # Try to infer from filename
         month = "2026-02"  # Default for this first import
         print(f"No --month specified, using: {month}")
 
-    process_excel(excel_file, month)
+    process_excel(excel_file, month, accounts_sheet, countries_sheet)

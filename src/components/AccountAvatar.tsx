@@ -2,8 +2,15 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import brokenAvatars from "../data/broken-avatars.json";
 
 const DEFAULT_AVATAR = "/images/default-avatar.svg";
+const BROKEN_IDS = new Set(brokenAvatars.ids);
+
+function isBroken(src: string): boolean {
+  const match = src.match(/\/clubs\/([^/?&#]+)/);
+  return match ? BROKEN_IDS.has(match[1]) : false;
+}
 
 export default function AccountAvatar({
   src,
@@ -15,7 +22,7 @@ export default function AccountAvatar({
   size?: number;
 }) {
   const [imgSrc, setImgSrc] = useState(
-    src && src.startsWith("http") ? src : DEFAULT_AVATAR
+    src && src.startsWith("http") && !isBroken(src) ? src : DEFAULT_AVATAR
   );
 
   return (

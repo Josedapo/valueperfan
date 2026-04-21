@@ -32,6 +32,7 @@ function localizedEntries(
     en: localizedUrl(path, "en"),
     es: localizedUrl(path, "es"),
     "pt-BR": localizedUrl(path, "br"),
+    "x-default": localizedUrl(path, "en"),
   };
 
   return LOCALES.map((locale) => ({

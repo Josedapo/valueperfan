@@ -52,6 +52,7 @@ export function buildRankingMetadata({
         en: `https://valueperfan.com${normalizedPath || "/"}${suffix}`,
         es: `https://valueperfan.com/es${normalizedPath}${suffix}`,
         "pt-BR": `https://valueperfan.com/br${normalizedPath}${suffix}`,
+        "x-default": `https://valueperfan.com${normalizedPath || "/"}${suffix}`,
       },
     },
   };

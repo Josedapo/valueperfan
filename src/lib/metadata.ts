@@ -23,10 +23,18 @@ export function buildRankingMetadata({
   if (page > 1) params.set("page", String(page));
   const suffix = params.size > 0 ? `?${params.toString()}` : "";
 
+  // Canonical drops ?page=N so paginated ranking pages consolidate into page 1.
+  // ?platform=tiktok is preserved because it represents a distinct ranking dimension.
+  const canonicalParams = new URLSearchParams();
+  if (platform === "tiktok") canonicalParams.set("platform", "tiktok");
+  const canonicalSuffix =
+    canonicalParams.size > 0 ? `?${canonicalParams.toString()}` : "";
+
   const localePath = locale === "en" ? "" : `/${locale}`;
   // Normalize "/" to "" for locale paths to avoid trailing slash redirects (308)
   const normalizedPath = path === "/" ? "" : path;
   const url = `https://valueperfan.com${localePath}${normalizedPath}${suffix}`;
+  const canonicalUrl = `https://valueperfan.com${localePath}${normalizedPath}${canonicalSuffix}`;
 
   let displayTitle = title;
   if (platform === "tiktok") displayTitle = `${displayTitle} — TikTok`;
@@ -47,12 +55,12 @@ export function buildRankingMetadata({
     },
     twitter: { card: "summary" as const, title: displayTitle, description },
     alternates: {
-      canonical: url,
+      canonical: canonicalUrl,
       languages: {
-        en: `https://valueperfan.com${normalizedPath || "/"}${suffix}`,
-        es: `https://valueperfan.com/es${normalizedPath}${suffix}`,
-        "pt-BR": `https://valueperfan.com/br${normalizedPath}${suffix}`,
-        "x-default": `https://valueperfan.com${normalizedPath || "/"}${suffix}`,
+        en: `https://valueperfan.com${normalizedPath || "/"}${canonicalSuffix}`,
+        es: `https://valueperfan.com/es${normalizedPath}${canonicalSuffix}`,
+        "pt-BR": `https://valueperfan.com/br${normalizedPath}${canonicalSuffix}`,
+        "x-default": `https://valueperfan.com${normalizedPath || "/"}${canonicalSuffix}`,
       },
     },
   };

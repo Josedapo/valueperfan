@@ -169,16 +169,26 @@ function SuggestForm({
   const [platform, setPlatform] = useState<Platform>("instagram");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await fetch("/api/suggest", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ handle: query, platform, email }),
-    });
-    setSubmitted(true);
-    trackEvent("suggest_submit", { handle: query, platform, source: "search_bar" });
+    setError(false);
+    try {
+      const res = await fetch("/api/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ handle: query, platform, email }),
+      });
+      if (!res.ok) {
+        setError(true);
+        return;
+      }
+      setSubmitted(true);
+      trackEvent("suggest_submit", { handle: query, platform, source: "search_bar" });
+    } catch {
+      setError(true);
+    }
   }
 
   if (submitted) {
@@ -236,6 +246,9 @@ function SuggestForm({
         >
           {t("suggestButton")}
         </button>
+        {error && (
+          <p className="text-xs text-red-600">{t("suggestError")}</p>
+        )}
       </form>
     </div>
   );

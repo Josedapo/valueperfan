@@ -187,7 +187,8 @@
     "cantFind": "Can't find this account?",
     "suggestPrompt": "Suggest it and we'll add it to our database.",
     "emailOptional": "Your email (optional)",
-    "suggestButton": "Suggest Account"
+    "suggestButton": "Suggest Account",
+    "suggestError": "Something went wrong. Please try again."
   },
   "sponsor": {
     "advertise": "Advertise",

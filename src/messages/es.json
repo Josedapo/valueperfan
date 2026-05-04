@@ -187,7 +187,8 @@
     "cantFind": "¿No encuentras esta cuenta?",
     "suggestPrompt": "Sugiérela y la añadiremos a nuestra base de datos.",
     "emailOptional": "Tu email (opcional)",
-    "suggestButton": "Sugerir cuenta"
+    "suggestButton": "Sugerir cuenta",
+    "suggestError": "Algo ha fallado. Inténtalo de nuevo."
   },
   "sponsor": {
     "advertise": "Anunciarse",

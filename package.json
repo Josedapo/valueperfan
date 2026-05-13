@@ -1,0 +1,9 @@
+{
+  "name": "valueperfan-on-hold",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Static landing while ValuePerFan is on hold. See README.md.",
+  "scripts": {
+    "vercel-build": "echo Static deploy; no build step required."
+  }
+}
